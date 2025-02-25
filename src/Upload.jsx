@@ -3,7 +3,8 @@ import { useState } from "react";
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const fileInputRef = useRef(null);
+  
   // Handle file selection
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]); // Store selected file
@@ -21,12 +22,18 @@ function Upload() {
     alert(`File "${selectedFile.name}" uploaded successfully!`);
   };
 
+  // Trigger file input click
+  const handleBrowseFiles = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <div>
       <Header/>
       <button
         type="button"
         className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        onClick={handleBrowseFiles}
       >
         <svg
           fill="none"
@@ -47,7 +54,7 @@ function Upload() {
       <button
         type="button"
         className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        onClick={handleUpload}
+        onClick={handleBrowseFiles}
         >
         Dateien durchsuchen
       </button>
