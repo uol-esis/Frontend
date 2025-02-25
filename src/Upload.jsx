@@ -21,7 +21,6 @@ function Upload() {
 
   return (
     <div>
-      <Header />
 
       {/* Upload Button als Trigger */}
       <button
