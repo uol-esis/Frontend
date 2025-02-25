@@ -1,10 +1,13 @@
 import Header from "./Header";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import './css/Upload.css'
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null); // Referenz für das versteckte Input-Element
-
+  const navigate = useNavigate();
+  
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -21,12 +24,12 @@ function Upload() {
 
   return (
     <div>
-
+      <div className ="upload-card">
       {/* Upload Button als Trigger */}
       <button
         type="button"
         onClick={() => fileInputRef.current.click()} // Trigger Input per Klick
-        className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        className="relative block mt-15 mb-15 w-1/2 rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
       >
         <svg
           fill="none"
@@ -71,6 +74,15 @@ function Upload() {
       >
         Datei hochladen
       </button>
+
+      <button
+        type="button"
+        className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        onClick={() => navigate("../schemeSelection")}
+        >
+        Schema auswählen
+      </button>
+    </div>
     </div>
   );
 }
