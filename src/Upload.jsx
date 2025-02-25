@@ -1,39 +1,33 @@
 import Header from "./Header";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 function Upload() {
   const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef(null);
-  
-  // Handle file selection
+  const fileInputRef = useRef(null); // Referenz für das versteckte Input-Element
+
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]); // Store selected file
+    setSelectedFile(event.target.files[0]);
   };
 
-  // Handle file upload (Example: Simulate API call)
   const handleUpload = () => {
     if (!selectedFile) {
       alert("Please select a file first!");
       return;
     }
-
-    // Simulate a file upload
     console.log("Uploading:", selectedFile);
     alert(`File "${selectedFile.name}" uploaded successfully!`);
   };
 
-  // Trigger file input click
-  const handleBrowseFiles = () => {
-    fileInputRef.current.click();
-  };
 
   return (
     <div>
-      <Header/>
+      <Header />
+
+      {/* Upload Button als Trigger */}
       <button
         type="button"
+        onClick={() => fileInputRef.current.click()} // Trigger Input per Klick
         className="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-        onClick={handleBrowseFiles}
       >
         <svg
           fill="none"
@@ -51,18 +45,35 @@ function Upload() {
         </svg>
         <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
       </button>
+
+      {/* Zweiter Button, der ebenfalls den Upload auslöst */}
       <button
         type="button"
-        className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        onClick={handleBrowseFiles}
-        >
+        onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
+        className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+      >
         Dateien durchsuchen
       </button>
-      <input type="file" onChange={handleFileChange} />
-      {selectedFile && <p>Selected File: {selectedFile.name}</p>}
+
+      {/* Input-Element verstecken mit "hidden" */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      {selectedFile && <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>}
+
+      <button
+        type="button"
+        onClick={handleUpload}
+        className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+      >
+        Datei hochladen
+      </button>
     </div>
   );
 }
-  
+
 export default Upload;
-  
