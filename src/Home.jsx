@@ -8,7 +8,7 @@ function Home() {
 
   return (
     <>
-    <Header/>
+    <Header />
     <div className='cards'>
       <div className='card'>
         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
