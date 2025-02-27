@@ -4,6 +4,7 @@ import Home from "./Home";
 import Upload from "./Upload";
 import './App.css'
 import SchemeSelection from './SchemeSelection';
+import Preview from './Preview';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/upload" element={<Upload />} /> 
-        <Route path="/schemeSelection" element={<SchemeSelection/>} />
+        <Route path="/preview" element={<Preview/>} />
       </Routes>
     </Router>
   );
