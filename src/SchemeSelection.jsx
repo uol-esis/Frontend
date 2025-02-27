@@ -1,12 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import Header from './Header'
 
 export default function SchemeSelection(){
     return(
         <>
-            <Header/>
-
             <div className='flex justify-center p-10'>
                 <Menu as="div" className="relative inline-block text-left">
                 <div>

@@ -83,7 +83,7 @@ function Upload() {
         Schema auswählen
       </button>
     </div>
-    </div>
+  </div>
   );
 }
 
