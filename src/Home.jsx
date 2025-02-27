@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Header from './Header'
 import arrow from './assets/arrow-right.svg'
 
 
@@ -45,7 +44,6 @@ function Home() {
         </div>
       </div>
     </div> 
-    
   );
 }
 
