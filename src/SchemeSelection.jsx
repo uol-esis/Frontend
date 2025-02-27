@@ -5,7 +5,6 @@ import Header from './Header'
 export default function SchemeSelection(){
     return(
         <>
-            <Header/>
 
             <div className='flex justify-center p-10'>
                 <Menu as="div" className="relative inline-block text-left">
