@@ -2,13 +2,15 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import './css/Upload.css';
+import './css/upload.css';
 
 function Upload() {
-  const [schemaList, setSchemaList] = useState([]);
+  const [schemaList, setSchemaList] = useState(["Schema 1", "Schema 2", "Schema 3", "Schema 4", "Schema 5", "Schema 6", "Schema 7", "Schema 8", "Schema 9", "Schema 10", "Schema 11", "Schema 12", "Schema 13", "Schema 14", "Schema 15", "Schema 16", "Schema 17", "Schema 18", "Schema 19", "Schema 20", "Schema 21", "Schema 22", "Schema 23", "Schema 24"]); // State for the list of schemata
+  const [themaList, setThemaList] = useState(["Thema 1", "Thema 2", "Thema 3", "Thema 4", "Thema 5", "Thema 6", "Thema 7", "Thema 8", "Thema 9", "Thema 10", "Thema 11", "Thema 12", "Thema 13", "Thema 14", "Thema 15", "Thema 16", "Thema 17", "Thema 18", "Thema 19", "Thema 20", "Thema 21", "Thema 22", "Thema 23", "Thema 24"]); // State for the list of themes
   const [Th1, setTh1] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
@@ -25,7 +27,7 @@ function Upload() {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new Th1.ApiClient("http://pg-doener-dev.virt.uni-oldenburg.de:8080/v1");
     const api = new Th1.DefaultApi(client);
     const files = [
       "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\REMOVE_ROW_BY_INDEX_ts1_OK1.json", 
@@ -33,7 +35,12 @@ function Upload() {
       "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\FILL_EMPTY_CELLS_ts2_OK1.json"
     ];
     files.forEach(file => {
-      api.createTableStructure(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const fileContent = e.target.result;
+        api.createTableStructure(fileContent);
+      };
+      reader.readAsText(file);
     });
   };
 
@@ -49,7 +56,7 @@ function Upload() {
       setSchemaList(response); // Store the response in state
     });
   };
-  
+
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -63,11 +70,30 @@ function Upload() {
     alert(`File "${selectedFile.name}" uploaded successfully!`);
   };
 
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    setSelectedFile(file);
+  };
+
+  const filteredSchemaList = schemaList.filter(schema =>
+    schema.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
   return (
     <div className="flex flex-col justify-start bg-white h-screen">
       <div className="flex flex-row justify-start space-x-[5vw]">
         {/* Upload Box */}
-        <div className="flex flex-col justify-end p-4 w-[30vw] h-[70vh] ml-[5vw] mt-[5vh] bg-gray-100 rounded-[10px]">
+        <div
+          className="flex flex-col justify-end p-4 w-[30vw] h-[70vh] ml-[5vw] mt-[5vh] bg-gray-100 rounded-[10px]"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
+        >
           {/* Upload Button als Trigger */}
           <button
             type="button"
@@ -94,8 +120,8 @@ function Upload() {
           {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
             type="button"
-            //onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
-            onClick={() => uploadSchemata()}
+          //onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
+            onClick={() => getSchemaList()}
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Dateien durchsuchen
@@ -125,40 +151,32 @@ function Upload() {
               </div>
               <MenuItems
                 transition
-                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                className="absolute left-0 z-10 w-56 h-[40vh] origin-top-left overflow-y-auto overflow-x-auto rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
               >
                 <div className="py-1">
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                    >
-                      Work in progress
-                    </a>
-                  </MenuItem>
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                    >
-                      Work in progress
-                    </a>
-                  </MenuItem>
-                  <MenuItem>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                    >
-                      Work in progress
-                    </a>
-                  </MenuItem>    
+                  {themaList.map((thema, index) => (
+                    <MenuItem key={index}>
+                      <a
+                        href="#"
+                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
+                      >
+                        {thema}
+                      </a>
+                    </MenuItem>
+                  ))}
                 </div>
               </MenuItems>
             </Menu>
 
             {/* Suchfeld */}
             <label className="border-2 border-gray-200 w-full input input-bordered flex items-center gap-2 bg-white">
-              <input type="text" className="grow" placeholder="Search (Work in Progress)" />
+              <input
+                type="text"
+                className="grow"
+                placeholder="Suche..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)} // Update search query
+              />
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
@@ -175,7 +193,7 @@ function Upload() {
           {/* Auswahlliste für Schema */}
           <div className="flex flex-col justify-start p-1 w-full h-full bg-white rounded-[10px] overflow-y-auto overflow-x-auto">
             <ul>
-              {["file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 4", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", ].map((schema, index) => (
+              {filteredSchemaList.map((schema, index) => (
                 <li
                   key={index}
                   className={`cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded whitespace-nowrap ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
@@ -218,8 +236,8 @@ function Upload() {
             navigate("/preview");
           }}
           className={`mt-4 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-          disabled={!selectedFile || !selectedSchema} 
-       >
+          disabled={!selectedFile || !selectedSchema}
+        >
           Anwenden
         </button>
       </div>
