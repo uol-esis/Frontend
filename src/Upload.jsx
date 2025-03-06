@@ -5,7 +5,11 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import './css/upload.css';
 
 function Upload() {
-  const [schemaList, setSchemaList] = useState(["Schema 1", "Schema 2", "Schema 3", "Schema 4", "Schema 5", "Schema 6", "Schema 7", "Schema 8", "Schema 9", "Schema 10", "Schema 11", "Schema 12", "Schema 13", "Schema 14", "Schema 15", "Schema 16", "Schema 17", "Schema 18", "Schema 19", "Schema 20", "Schema 21", "Schema 22", "Schema 23", "Schema 24"]); // State for the list of schemata
+  const [schemaList, setSchemaList] = useState([
+    { name: "Schema 1", description: "Description for Schema 1" },
+    { name: "Schema 2", description: "Description for Schema 2" },
+    { name: "Schema 3", description: "Description for Schema 3" }
+  ]); // Default for the list of schemata
   const [themaList, setThemaList] = useState(["Thema 1", "Thema 2", "Thema 3", "Thema 4", "Thema 5", "Thema 6", "Thema 7", "Thema 8", "Thema 9", "Thema 10", "Thema 11", "Thema 12", "Thema 13", "Thema 14", "Thema 15", "Thema 16", "Thema 17", "Thema 18", "Thema 19", "Thema 20", "Thema 21", "Thema 22", "Thema 23", "Thema 24"]); // State for the list of themes
   const [Th1, setTh1] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -14,6 +18,7 @@ function Upload() {
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
+  {/* Load the Th1 module and get the Schema List from the api*/}
   useEffect(() => {
     import('th1').then(module => {
       setTh1(module);
@@ -22,27 +27,11 @@ function Upload() {
     });
   }, []);
 
-  const uploadSchemata = function() {
-    if (!Th1) {
-      console.error("Th1 module is not loaded yet.");
-      return;
+  useEffect(() => {
+    if (Th1) {
+      getSchemaList();
     }
-    const client = new Th1.ApiClient("http://pg-doener-dev.virt.uni-oldenburg.de:8080/v1");
-    const api = new Th1.DefaultApi(client);
-    const files = [
-      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\REMOVE_ROW_BY_INDEX_ts1_OK1.json", 
-      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\REMOVE_COLUMN_BY_INDEX_ts1_OK1.json", 
-      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\FILL_EMPTY_CELLS_ts2_OK1.json"
-    ];
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const fileContent = e.target.result;
-        api.createTableStructure(fileContent);
-      };
-      reader.readAsText(file);
-    });
-  };
+  }, [Th1]);
 
   const getSchemaList = function() {
     if (!Th1) {
@@ -51,23 +40,15 @@ function Upload() {
     }
     const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
     const api = new Th1.DefaultApi(client);
-    api.getTableStructures().then((response) => {
-      console.log(response); // Print the response to the console
-      setSchemaList(response); // Store the response in state
+    api.getTableStructures((error, response) => {
+      console.log("Response:", response);
+      setSchemaList(response);
     });
   };
 
+  {/* helper functions */}
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-  };
-
-  const handleUpload = () => {
-    if (!selectedFile) {
-      alert("Please select a file first!");
-      return;
-    }
-    console.log("Uploading:", selectedFile);
-    alert(`File "${selectedFile.name}" uploaded successfully!`);
   };
 
   const handleDragOver = (event) => {
@@ -80,11 +61,11 @@ function Upload() {
     setSelectedFile(file);
   };
 
-  const filteredSchemaList = schemaList.filter(schema =>
-    schema.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredSchemaList = schemaList
+    .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
 
 
+  {/* Actual page */}
   return (
     <div className="flex flex-col justify-start bg-white h-screen">
       <div className="flex flex-row justify-start space-x-[5vw]">
@@ -94,7 +75,7 @@ function Upload() {
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          {/* Upload Button als Trigger */}
+          {/* Upload Drag and drop box */}
           <button
             type="button"
             onClick={() => fileInputRef.current.click()} // Trigger Input per Klick
@@ -120,8 +101,7 @@ function Upload() {
           {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
             type="button"
-          //onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
-            onClick={() => getSchemaList()}
+            onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Dateien durchsuchen
@@ -199,7 +179,7 @@ function Upload() {
                   className={`cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded whitespace-nowrap ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
                   onClick={() => setSelectedSchema(schema)}
                 >
-                  {schema}
+                  {schema.name}
                 </li>
               ))}
             </ul>
@@ -232,8 +212,8 @@ function Upload() {
           type="button"
           onClick={() => {
             console.log("Selected file:", selectedFile);
-            console.log("Selected schema:", selectedSchema);
-            navigate("/preview");
+            console.log("Selected schema:", selectedSchema.name, selectedSchema?.id );
+            navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
           }}
           className={`mt-4 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
           disabled={!selectedFile || !selectedSchema}

@@ -1,8 +1,12 @@
 import Table from "./Table"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Preview(){
   const navigate = useNavigate();
+  const location = useLocation();
+  const { selectedFile, selectedSchema } = location.state || {}; // Destructure the state
+  console.log("Preview", selectedFile);
+  console.log("preview", selectedSchema);
   const people = [
     {name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
     {name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member' },
