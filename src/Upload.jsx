@@ -1,10 +1,51 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import './css/Upload.css';
 
-function UploadNew() {
+function Upload() {
+  const [schemaList, setSchemaList] = useState([]);
+  const [Th1, setTh1] = useState(null);
+
+  useEffect(() => {
+    import('th1').then(module => {
+      setTh1(module);
+    }).catch(error => {
+      console.error("Error loading th1 module:", error);
+    });
+  }, []);
+
+  const uploadSchemata = function() {
+    if (!Th1) {
+      console.error("Th1 module is not loaded yet.");
+      return;
+    }
+    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const api = new Th1.DefaultApi(client);
+    const files = [
+      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\REMOVE_ROW_BY_INDEX_ts1_OK1.json", 
+      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\REMOVE_COLUMN_BY_INDEX_ts1_OK1.json", 
+      "C:\\Users\\Chris\\OneDrive\\Dokumente\\Studium\\Master\\PG\\Frontend\\testSchema\\FILL_EMPTY_CELLS_ts2_OK1.json"
+    ];
+    files.forEach(file => {
+      api.createTableStructure(file);
+    });
+  };
+
+  const getSchemaList = function() {
+    if (!Th1) {
+      console.error("Th1 module is not loaded yet.");
+      return;
+    }
+    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const api = new Th1.DefaultApi(client);
+    api.getTableStructures().then((response) => {
+      console.log(response); // Print the response to the console
+      setSchemaList(response); // Store the response in state
+    });
+  };
+
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
@@ -31,7 +72,7 @@ function UploadNew() {
           <button
             type="button"
             onClick={() => fileInputRef.current.click()} // Trigger Input per Klick
-            className="relative block w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <svg
               fill="none"
@@ -53,7 +94,8 @@ function UploadNew() {
           {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
             type="button"
-            onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
+            //onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
+            onClick={() => uploadSchemata()}
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Dateien durchsuchen
@@ -69,13 +111,6 @@ function UploadNew() {
 
           {selectedFile && <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>}
         </div>
-
-
-
-
-
-
-
 
         {/* Schema Box */}
         <div className="flex flex-col justify-start p-4 w-[55vw] h-[70vh] mt-[5vh] bg-gray-100 rounded-[10px]">
@@ -121,8 +156,6 @@ function UploadNew() {
               </MenuItems>
             </Menu>
 
-
-
             {/* Suchfeld */}
             <label className="border-2 border-gray-200 w-full input input-bordered flex items-center gap-2 bg-white">
               <input type="text" className="grow" placeholder="Search (Work in Progress)" />
@@ -140,14 +173,24 @@ function UploadNew() {
           </div>
 
           {/* New Structure Underneath */}
-          <div className="flex flex-col justify-start p-4 w-full h-full bg-white rounded-[10px]">
-            {/* Add your new structure content here */}
+          <div className="flex flex-col justify-start p-1 w-full h-full bg-white rounded-[10px] overflow-y-auto overflow-x-hidden mt-2">
+            <ul>
+              {["file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", ].map((file, index) => (
+                <li
+                  key={index}
+                  className="cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded"
+                  onClick={() => console.log(`Selected file: ${file}`)}
+                >
+                  {file}
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Neues Schema Button */}
           <button
             type="button"
-            onClick={() => navigate("../schemeSelection")}
+            onClick={() => navigate("/wip")}
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Neues Schema
@@ -169,7 +212,7 @@ function UploadNew() {
         {/* Anwenden Button (weiter) */}
         <button
           type="button"
-          onClick={() => navigate("/schemeSelection")}
+          onClick={() => navigate("/preview")}
           className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Anwenden
@@ -180,5 +223,5 @@ function UploadNew() {
   );
 }
 
-export default UploadNew;
+export default Upload;
 
