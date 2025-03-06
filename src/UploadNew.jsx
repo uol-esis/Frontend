@@ -70,13 +70,6 @@ function UploadNew() {
           {selectedFile && <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>}
         </div>
 
-
-
-
-
-
-
-
         {/* Schema Box */}
         <div className="flex flex-col justify-start p-4 w-[55vw] h-[70vh] mt-[5vh] bg-gray-100 rounded-[10px]">
           <div className="flex flex-row justify-between">
@@ -147,7 +140,7 @@ function UploadNew() {
           {/* Neues Schema Button */}
           <button
             type="button"
-            onClick={() => navigate("../schemeSelection")}
+            onClick={() => navigate("/")}
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Neues Schema
@@ -169,7 +162,7 @@ function UploadNew() {
         {/* Anwenden Button (weiter) */}
         <button
           type="button"
-          onClick={() => navigate("/schemeSelection")}
+          onClick={() => navigate("/preview")}
           className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Anwenden
