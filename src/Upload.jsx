@@ -7,6 +7,10 @@ import './css/Upload.css';
 function Upload() {
   const [schemaList, setSchemaList] = useState([]);
   const [Th1, setTh1] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedSchema, setSelectedSchema] = useState(null);
+  const fileInputRef = useRef(null); // Reference for the hidden input element
+  const navigate = useNavigate();
 
   useEffect(() => {
     import('th1').then(module => {
@@ -45,10 +49,6 @@ function Upload() {
       setSchemaList(response); // Store the response in state
     });
   };
-
-  const [selectedFile, setSelectedFile] = useState(null);
-  const fileInputRef = useRef(null); // Reference for the hidden input element
-  const navigate = useNavigate();
   
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -172,16 +172,16 @@ function Upload() {
             </label>
           </div>
 
-          {/* New Structure Underneath */}
-          <div className="flex flex-col justify-start p-1 w-full h-full bg-white rounded-[10px] overflow-y-auto overflow-x-hidden mt-2">
+          {/* Auswahlliste für Schema */}
+          <div className="flex flex-col justify-start p-1 w-full h-full bg-white rounded-[10px] overflow-y-auto overflow-x-auto">
             <ul>
-              {["file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", ].map((file, index) => (
+              {["file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", "file 4", "file 2", "file 3", "file 1", "file 2", "file 3", "file 1", "file 2", "file 3", ].map((schema, index) => (
                 <li
                   key={index}
-                  className="cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded"
-                  onClick={() => console.log(`Selected file: ${file}`)}
+                  className={`cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded whitespace-nowrap ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
+                  onClick={() => setSelectedSchema(schema)}
                 >
-                  {file}
+                  {schema}
                 </li>
               ))}
             </ul>
@@ -212,9 +212,14 @@ function Upload() {
         {/* Anwenden Button (weiter) */}
         <button
           type="button"
-          onClick={() => navigate("/preview")}
-          className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+          onClick={() => {
+            console.log("Selected file:", selectedFile);
+            console.log("Selected schema:", selectedSchema);
+            navigate("/preview");
+          }}
+          className={`mt-4 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+          disabled={!selectedFile || !selectedSchema} 
+       >
           Anwenden
         </button>
       </div>
