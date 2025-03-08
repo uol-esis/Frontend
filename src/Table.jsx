@@ -10,23 +10,21 @@ const headers = ["Name", "Title", "Email", "Role"]
                 <table className="min-w-full divide-y divide-gray-300">
                   <thead className="bg-gray-50">
                     <tr>
-                        {props.header.map((header) => (
-                            <th scope="col" className="py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
-                                {header}
+                      <th scope="col" className="py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Index</th>
+                      {props.data.length > 0 && Object.keys(props.data[0]).map((key, index) => (
+                            <th key={index} scope="col" className="py-2 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                                {key}
                             </th>
                         ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {props.data.map((person, index) => (
-                      <tr key={person.email}>
-                        <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{index}</td>
-                        <td className="whitespace-nowrap py-1.5 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{person.name} </td>
-                        <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{person.title}</td>
-                        <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{person.email}</td>
-                        <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{person.role}</td>
-                        <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                        </td>
+                    {props.data.map((row, i) => (
+                      <tr key={i}>
+                        <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{i}</td>
+                        {Object.values(row).map((cell, j) => (
+                          <td key={j} className="whitespace-nowrap py-1.5 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{cell} </td>
+                        ))}
                       </tr>
                     ))}
                   </tbody>
