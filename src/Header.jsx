@@ -1,109 +1,140 @@
 'use client'
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Dialog, DialogPanel } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import React, { useState, useRef } from 'react';
 
-const navigation = [
-  { name: 'Product', href: '/uploadNew' },
-  { name: 'Features', href: '#' },
-  { name: 'Marketplace', href: '#' },
-  { name: 'Company', href: '#' },
+// Navigation items for the left section
+const leftNavigation = [
+  { name: 'Schema', href: '/uploadNew' },
+  { name: 'Wiki', href: '/wiki' },
+  { name: 'Metabase', href: 'http://pg-doener-dev.virt.uni-oldenburg.de:3000/' },
+];
+
+// Navigation items for the right section
+const rightNavigation = [
+  { name: 'Einstellungen', href: '#', onClick: null },
+  { name: 'User', href: '#', onClick: null },
+  { name: 'Login', href: '/login' },
 ];
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isUserOpen, setIsUserOpen] = useState(false);
+
+  const [settingsPopupPos, setSettingsPopupPos] = useState({ top: 0, right: 0 });
+  const [userPopupPos, setUserPopupPos] = useState({ top: 0, right: 0 });
+
+  const settingsPopupRef = useRef(null);
+  const userPopupRef = useRef(null);
+
+  function openSettingsPopup(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    setSettingsPopupPos({ top: rect.bottom + 5, right: 0 });
+    setIsSettingsOpen(true);
+  }
+
+  function openUserPopup(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    setUserPopupPos({ top: rect.bottom + 5, right: 0 });
+    setIsUserOpen(true);
+  }
+
+  function closeSettingsPopup() {
+    setIsSettingsOpen(false);
+  }
+
+  function closeUserPopup() {
+    setIsUserOpen(false);
+  }
+
+  rightNavigation[0].onClick = openSettingsPopup;
+  rightNavigation[1].onClick = openUserPopup;
+
   return (
-    <header className="bg-gray-100 sticky top-2 z-50">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+    <header className="bg-gray-100 sticky top-0 z-50">
+      <nav aria-label="Global" className="flex w-full items-center justify-between px-4 py-3">
         <div className="flex items-center gap-x-12">
           <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
-              alt=""
+              alt="Logo"
               src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
               className="h-8 w-auto"
             />
           </a>
-
-          {/* Large screen navigation, only used for large screens */}
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <a key={item.name} href={item.href} className="text-sm/6 font-semibold text-gray-900">
+          <div className="flex gap-x-12">
+            {leftNavigation.map((item) => (
+              <a 
+                key={item.name} 
+                href={item.href}
+                target={item.name === 'Metabase' ? '_blank' : '_self'}
+                rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
+                className="text-sm/6 font-semibold text-gray-900 flex items-center hover:scale-105 transition-transform"
+              >
                 {item.name}
+                {item.name === 'Metabase' && (
+                  <img 
+                    src="arrow-mb.svg" 
+                    alt="Metabase Icon" 
+                    className="inline-block ml-1"
+                  />
+                )}
               </a>
             ))}
           </div>
         </div>
-
-        {/* Mobile Menu button, only used for small screens */}
-        <div className="flex lg:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(true)}
-            className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span className="sr-only">Open main menu</span>
-            <Bars3Icon aria-hidden="true" className="size-6" />
-          </button>
-        </div>
-        
-        {/* Log in link, only for large screens */}
-        <div className="hidden lg:flex">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+        <div className="flex items-center gap-x-6">
+          {rightNavigation.map((item, index) => (
+            <React.Fragment key={item.name}>
+              {index === 2 && (
+                <span className="border-l border-gray-400 h-6 mx-2"></span>
+              )}
+              <a 
+                href={item.href} 
+                onClick={item.onClick} 
+                className={`text-sm/6 font-semibold hover:scale-105 transition-transform ${item.name === 'Login' ? 'text-blue-500' : 'text-gray-900'}`}
+              >
+                {item.name === 'Einstellungen' ? (
+                  <img 
+                    src="einstellungen.svg" 
+                    alt="Einstellungen" 
+                    className="inline-block"
+                  />
+                ) : (
+                  item.name
+                )}
+              </a>
+            </React.Fragment>
+          ))}
         </div>
       </nav>
-
-      {/* Mobile menu, only for small screens */}
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-        <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-              <img
-                alt=""
-                src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-                className="h-8 w-auto"
-              />
-            </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="size-6" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-              <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
-              </div>
-            </div>
-          </div>
-        </DialogPanel>
-      </Dialog>
+      {isSettingsOpen && (
+        <div 
+          ref={settingsPopupRef} 
+          id="settings-popup" 
+          style={{ top: settingsPopupPos.top, right: settingsPopupPos.right }}
+          className="absolute bg-white shadow-lg rounded-lg p-4"
+        >
+          <h2>Hier kommen die Einstellungen hin</h2>
+          <button onClick={closeSettingsPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
+            Schließen
+          </button>
+        </div>
+      )}
+      {isUserOpen && (
+        <div 
+          ref={userPopupRef} 
+          id="user-popup" 
+          style={{ top: userPopupPos.top, right: userPopupPos.right }}
+          className="absolute bg-white shadow-lg rounded-lg p-4"
+        >
+          <h2>Hier kommt der User hin</h2>
+          <button onClick={closeUserPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
+            Schließen
+          </button>
+        </div>
+      )}
     </header>
   );
 }
