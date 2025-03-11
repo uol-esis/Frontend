@@ -59,11 +59,11 @@ export default function Header() {
             <span className="sr-only">Your Company</span>
             <img
               alt="Logo"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+              src="home2-placeholder.svg"
               className="h-8 w-auto"
             />
           </a>
-          <div className="flex gap-x-12">
+          <div className="flex gap-x-7">
             {leftNavigation.map((item) => (
               <a 
                 key={item.name} 
@@ -84,11 +84,11 @@ export default function Header() {
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-x-6">
+        <div className="flex items-center gap-x-7">
           {rightNavigation.map((item, index) => (
             <React.Fragment key={item.name}>
               {index === 2 && (
-                <span className="border-l border-gray-400 h-6 mx-2"></span>
+                <span className="border-l border-gray-400 h-6"></span>
               )}
               <a 
                 href={item.href} 
