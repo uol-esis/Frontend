@@ -70,6 +70,7 @@ export default function Preview(){
             console.log('API called to get preview successfully. Returned data: ' + data);
             console.log('API response: ' + response);
             resolve(data);
+            setData(data);
           }
         });
       });
@@ -79,12 +80,10 @@ export default function Preview(){
   };
   
 
-
+  {/* Send the converted table to the server, when the preview is good */}
   const sendTableToServer = () =>{
     const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
     const api = new DefaultApi(client);
-    const tableStructureId = 789; // {Number} 
-    const file = "/path/to/file"; // {File} 
     const callback = function(error, data, response) {
       if (error) {
         console.error(error);
@@ -92,7 +91,7 @@ export default function Preview(){
         console.log('API called successfully.');
       }
     };
-    api.convertTable(tableStructureId, file, callback);
+    api.convertTable(selectedSchema.id, selectedFile, callback);
   }
 
 
