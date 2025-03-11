@@ -189,7 +189,7 @@ function Upload() {
             </ul>
           </div>
           
-          <div classname="flex flex-col w-full">
+          <div className="flex gap-4 justify-center w-full">
             {/* Schema bearbeiten Button */}
             <button
               type="button"
