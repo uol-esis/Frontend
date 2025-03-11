@@ -62,6 +62,7 @@ export default function Preview(){
   
       await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
+        console.log("selectedFileType: ", selectedFile.type);
         api.previewConvertTable(selectedFile, actualSchema, (error, data, response) => {
           if (error) {
             reject(error);

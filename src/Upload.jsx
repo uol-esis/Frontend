@@ -71,7 +71,7 @@ function Upload() {
 
   {/* Actual page */}
   return (
-    <div className="flex flex-col justify-start bg-white h-screen">
+    <div className="flex flex-col justify-start bg-white h-[85vh]">
       <div className="flex flex-row justify-start space-x-[5vw]">
         {/* Upload Box */}
         <div
@@ -194,7 +194,7 @@ function Upload() {
             <button
               type="button"
               onClick={() => navigate("/wip")}
-              className={`mt-4 align-left w-4/9 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+              className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
               disabled={!selectedSchema}
             >
               Schema bearbeiten
@@ -204,7 +204,7 @@ function Upload() {
             <button
               type="button"
               onClick={() => navigate("/wip")}
-              className="mt-4 w-4/9 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="mt-4 flex-1 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               Neues Schema
             </button>
