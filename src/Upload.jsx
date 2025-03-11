@@ -41,8 +41,12 @@ function Upload() {
     const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
     const api = new Th1.DefaultApi(client);
     api.getTableStructures((error, response) => {
-      console.log("Response:", response);
-      setSchemaList(response);
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Response:", response);
+        setSchemaList(response);
+      }
     });
   };
 
@@ -184,15 +188,27 @@ function Upload() {
               ))}
             </ul>
           </div>
+          
+          <div classname="flex flex-col w-full">
+            {/* Schema bearbeiten Button */}
+            <button
+              type="button"
+              onClick={() => navigate("/wip")}
+              className={`mt-4 align-left w-4/9 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+              disabled={!selectedSchema}
+            >
+              Schema bearbeiten
+            </button>
 
-          {/* Neues Schema Button */}
-          <button
-            type="button"
-            onClick={() => navigate("/wip")}
-            className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Neues Schema
-          </button>
+            {/* Neues Schema Button */}
+            <button
+              type="button"
+              onClick={() => navigate("/wip")}
+              className="mt-4 w-4/9 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Neues Schema
+            </button>
+          </div>
 
         </div>
       </div>
@@ -212,7 +228,7 @@ function Upload() {
           type="button"
           onClick={() => {
             console.log("Selected file:", selectedFile);
-            console.log("Selected schema:", selectedSchema.name, selectedSchema?.id );
+            console.log("Selected schema:", selectedSchema );
             navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
           }}
           className={`mt-4 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}

@@ -1,0 +1,62 @@
+[
+  {
+    "Name": "Lindsay Walton",
+    "Title": "Front-end Developer",
+    "Email": "lindsay.walton@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "John Doe",
+    "Title": "Back-end Developer",
+    "Email": "john.doe@example.com",
+    "Role": "Admin"
+  },
+  {
+    "Name": "Jane Smith",
+    "Title": "Full-stack Developer",
+    "Email": "jane.smith@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "Alice Johnson",
+    "Title": "UI/UX Designer",
+    "Email": "alice.johnson@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "Bob Brown",
+    "Title": "Project Manager",
+    "Email": "bob.brown@example.com",
+    "Role": "Admin"
+  },
+  {
+    "Name": "Charlie Davis",
+    "Title": "DevOps Engineer",
+    "Email": "charlie.davis@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "Diana Evans",
+    "Title": "QA Engineer",
+    "Email": "diana.evans@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "Ethan Harris",
+    "Title": "Data Scientist",
+    "Email": "ethan.harris@example.com",
+    "Role": "Member"
+  },
+  {
+    "Name": "Fiona Green",
+    "Title": "Product Owner",
+    "Email": "fiona.green@example.com",
+    "Role": "Admin"
+  },
+  {
+    "Name": "George White",
+    "Title": "Scrum Master",
+    "Email": "george.white@example.com",
+    "Role": "Member"
+  }
+]
