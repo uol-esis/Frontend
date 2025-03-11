@@ -17,19 +17,15 @@ const rightNavigation = [
 ];
 
 export default function Header() {
-  // State for popup visibility
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
 
-  // State for popup positions
   const [settingsPopupPos, setSettingsPopupPos] = useState({ top: 0, right: 0 });
   const [userPopupPos, setUserPopupPos] = useState({ top: 0, right: 0 });
 
-  // Refs for popup elements
   const settingsPopupRef = useRef(null);
   const userPopupRef = useRef(null);
 
-  // Open the settings popup and set its position
   function openSettingsPopup(event) {
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
@@ -37,7 +33,6 @@ export default function Header() {
     setIsSettingsOpen(true);
   }
 
-  // Open the user popup and set its position
   function openUserPopup(event) {
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
@@ -45,23 +40,20 @@ export default function Header() {
     setIsUserOpen(true);
   }
 
-  // Close the settings popup
   function closeSettingsPopup() {
     setIsSettingsOpen(false);
   }
 
-  // Close the user popup
   function closeUserPopup() {
     setIsUserOpen(false);
   }
 
-  // Assign click handlers to the corresponding right navigation items
   rightNavigation[0].onClick = openSettingsPopup;
   rightNavigation[1].onClick = openUserPopup;
 
   return (
     <header className="bg-gray-100 sticky top-0 z-50">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-3 lg:px-8"> 
+      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8">
         <div className="flex items-center gap-x-12">
           <a href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
