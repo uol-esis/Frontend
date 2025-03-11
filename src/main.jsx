@@ -7,8 +7,12 @@ import Footer from './Footer'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Header />
-    <App />
-    <Footer />
-  </StrictMode>,
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-grow">
+        <App />
+      </main>
+      <Footer />
+    </div>
+  </StrictMode>
 )
