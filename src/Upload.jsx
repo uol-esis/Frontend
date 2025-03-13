@@ -57,6 +57,10 @@ function Upload() {
     setSelectedFile(event.target.files[0]);
   }
 
+  const handleFileInputClick = () => {
+    fileInputRef.current.click();
+  };
+
   useEffect(() => {
     if (selectedFile) {
       if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
@@ -101,6 +105,54 @@ function Upload() {
     .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
 
 
+  {/* Popups for WIP handling */}
+  const [isNewOpen, setIsNewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const [newPopupPos, setNewPopupPos] = useState({ top: 0, right: 0 });
+  const [editPopupPos, setEditPopupPos] = useState({ top: 0, right: 0 });
+  const [deletePopupPos, setDeletePopupPos] = useState({ top: 0, right: 0 });
+
+  const newPopupRef = useRef(null);
+  const editPopupRef = useRef(null);
+  const deletePopupRef = useRef(null);
+
+  function openNewPopup(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    setNewPopupPos({ top: rect.top-rect.height*3.2, left: rect.left });
+    setIsNewOpen(true);
+  }
+
+  function openEditPopup(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    setEditPopupPos({ top: rect.top-rect.height*3.2, left: rect.left });
+    setIsEditOpen(true);
+  }
+
+  function openDeletePopup(event) {
+    event.preventDefault();
+    const rect = event.target.getBoundingClientRect();
+    setDeletePopupPos({ top: rect.top-rect.height*3.2, left: rect.left - 50});
+    setIsDeleteOpen(true);
+  }
+
+  function closeNewPopup() {
+    setIsNewOpen(false);
+  }
+
+  function closeEditPopup() {
+    setIsEditOpen(false);
+  }
+
+  function closeDeletePopup() {
+    setIsDeleteOpen(false);
+  }
+
+
+
   {/* Actual page */}
   return (
     <div className="flex flex-col justify-start bg-white h-[85vh]">
@@ -115,7 +167,7 @@ function Upload() {
           {/* Upload Drag and drop box */}
           <button
             type="button"
-            onClick={() => fileInputRef.current.click()} // Trigger Input per Klick
+            onClick={handleFileInputClick} // Use the same function
             className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           >
             <svg
@@ -138,7 +190,7 @@ function Upload() {
           {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
             type="button"
-            onClick={() => fileInputRef.current.click()} // Input per Button-Klick öffnen
+            onClick={handleFileInputClick} // Use the same function
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Dateien durchsuchen
@@ -223,24 +275,73 @@ function Upload() {
           </div>
           
           <div className="flex gap-4 justify-center w-full">
+            {/* Neues Schema Button */}
+            <button
+              type="button"
+              onClick={openNewPopup}
+              className="mt-4 flex-1 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Neues Schema
+            </button>
+            {isNewOpen && (
+              <div 
+                ref={newPopupRef} 
+                id="new-popup" 
+                style={{ top: newPopupPos.top, left: newPopupPos.left }}
+                className="absolute bg-white shadow-lg rounded-lg p-4"
+              >
+                <h2>Weiterleitung, um neues Schema zu erstellen</h2>
+                <button onClick={closeNewPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
+                  Schließen
+                </button>
+              </div>
+            )}
+            
             {/* Schema bearbeiten Button */}
             <button
               type="button"
-              onClick={() => navigate("/wip")}
+              onClick={openEditPopup}
               className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
               disabled={!selectedSchema}
             >
               Schema bearbeiten
             </button>
+            {isEditOpen && (
+              <div 
+                ref={editPopupRef} 
+                id="edit-popup" 
+                style={{ top: editPopupPos.top, left: editPopupPos.left }}
+                className="absolute bg-white shadow-lg rounded-lg p-4"
+              >
+                <h2>Weiterleitung, um Schema zu bearbeiten</h2>
+                <button onClick={closeEditPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
+                  Schließen
+                </button>
+              </div>
+            )}
 
-            {/* Neues Schema Button */}
+            {/* Schema löschen Button */}
             <button
               type="button"
-              onClick={() => navigate("/wip")}
-              className="mt-4 flex-1 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={openDeletePopup}
+              className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+              disabled={!selectedSchema}
             >
-              Neues Schema
+              Schema löschen
             </button>
+            {isDeleteOpen && (
+              <div 
+                ref={deletePopupRef} 
+                id="delete-popup" 
+                style={{ top: deletePopupPos.top, left: deletePopupPos.left }}
+                className="absolute bg-white shadow-lg rounded-lg p-4"
+              >
+                <h2>Schema löschen ist in der Demo deaktiviert</h2>
+                <button onClick={closeDeletePopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
+                  Schließen
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
