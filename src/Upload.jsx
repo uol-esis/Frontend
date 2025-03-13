@@ -351,7 +351,7 @@ function Upload() {
         </div>
       </div>
 
-      <div className="flex justify-end pr-[5vw] gap-[5vw] w-full">
+      <div className="flex justify-between px-[5vw] gap-[5vw] w-full">
         {/* Zurück Button */}
         <button
           type="button"
@@ -369,7 +369,7 @@ function Upload() {
             console.log("Selected schema:", selectedSchema );
             navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
           }}
-          className={`mt-[2vh] rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+          className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
           disabled={!selectedFile || !selectedSchema || helpType !== "check"}
         >
           Weiter

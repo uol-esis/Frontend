@@ -102,60 +102,63 @@ export default function Preview(){
   }, []);
 
 
-  return(
-    <div>
-      <Alert text={
-        <>
-          Achten Sie bei der Vorschau auf folgende Aspekte:<br />
-          - Alle Kategorien sollten in der ersten Zeile auftauchen und es gibt keine verschachtelten Zeilen oder Spalten<br />
-          - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
-        </>
-      }
-      type="info" />
-      <div className="flex gap-[2vw]">
+  return (
+    <div className="flex flex-col h-[85vh]">
+      <div className="flex-shrink-0">
+        <Alert 
+          text={
+            <>
+              Ist die Tabelle korrekt umgewandelt? Wenn ja, klicken Sie auf fertigstellen, andernfalls gehen Sie zurück und passen Sie das Schema an!<br />
+              - Alle Kategorien dürfen nur in der ersten Zeile auftauchen und es gibt keine verschachtelten Zeilen oder Spalten<br />
+              - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
+            </>
+          }
+          type="info" 
+        />
+      </div>
+      <div className="flex flex-1 overflow-hidden gap-[2vw]">
         {/* Überschrift und Informationen zum Schema */}
-        <div className="flex flex-col p-4 gap-4 text-left">
+        <div className="flex flex-col p-4 gap-4 text-left flex-shrink-0">
           <div className="flex justify-content-left text-lg font-semibold">Vorschau</div>
-            <div className="flex flex-col items-start">
-              <p className="text-base font-semibold">Thema (Work in Progress):</p>
-              <p className="text-base font-normal">Wohnräume</p>
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-base font-semibold">Schema:</p>
-              <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
-            </div>
-            <div className="flex flex-col items-start">
-              <p className="text-base font-semibold">Datei:</p>
-              <p className="text-base font-normal max-w-[25vw]">{selectedFile?.name || "keine Datei ausgewählt"}</p>
-            </div>
+          <div className="flex flex-col items-start">
+            <p className="text-base font-semibold">Thema (Work in Progress):</p>
+            <p className="text-base font-normal">Wohnräume</p>
+          </div>
+          <div className="flex flex-col items-start">
+            <p className="text-base font-semibold">Schema:</p>
+            <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
+          </div>
+          <div className="flex flex-col items-start">
+            <p className="text-base font-semibold">Datei:</p>
+            <p className="text-base font-normal max-w-[25vw]">{selectedFile?.name || "keine Datei ausgewählt"}</p>
+          </div>
         </div>
         {/* Tabelle mit Vorschau */}
-        {/* <input type="file" accept=".csv" onChange={handleFileUpload} /> */}
-        {data.length ? (
-          <TableFromJSON
-            data={data}
-          />
-        ) : null}
+        <div className="flex-1 overflow-auto">
+          {data.length ? (
+            <TableFromJSON
+              data={data}
+            />
+          ) : null}
+        </div>
       </div>
-
       {/* Knöpfe */}
-      <div className="flex justify-between p-4 mt-2.5">
+      <div className="flex justify-between py-[2vh] flex-shrink-0">
         <button
           type="button"
-          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           onClick={() => navigate("/upload")}
         >
           Zurück
         </button>
         <button
           type="button"
-          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           onClick={sendTableToServer}
         >
-          Anwenden
+          Fertigstellen
         </button>
       </div>
     </div>
-    
   );
 }
