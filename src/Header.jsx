@@ -4,7 +4,7 @@ import React, { useState, useRef } from 'react';
 
 // Navigation items for the left section
 const leftNavigation = [
-  { name: 'Schema', href: '/uploadNew' },
+  { name: 'Schema', href: '/preview' },
   { name: 'Wiki', href: '/wiki' },
   { name: 'Metabase', href: 'http://pg-doener-dev.virt.uni-oldenburg.de:3000/' },
 ];
