@@ -111,44 +111,45 @@ export default function Preview(){
           - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
         </>
       }
-      type="info"/>
-      {/* Überschrift und Informationen zum Schema */}
-      <h1 className="flex justify-content-left p-2 text-lg font-semibold">Vorschau</h1>
-      <div className="flex justify-content-left pl-2 gap-[10vw] font-semibold">
-        <div className="flex flex-col items-start">
-          <p className="text-base">Thema (Work in Progress):</p>
-          <p className="text-base font-normal">Wohnräume</p>
+      type="info" />
+      <div className="flex gap-[2vw]">
+        {/* Überschrift und Informationen zum Schema */}
+        <div className="flex flex-col p-4 gap-4 text-left">
+          <div className="flex justify-content-left text-lg font-semibold">Vorschau</div>
+            <div className="flex flex-col items-start">
+              <p className="text-base font-semibold">Thema (Work in Progress):</p>
+              <p className="text-base font-normal">Wohnräume</p>
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-base font-semibold">Schema:</p>
+              <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
+            </div>
+            <div className="flex flex-col items-start">
+              <p className="text-base font-semibold">Datei:</p>
+              <p className="text-base font-normal max-w-[25vw]">{selectedFile?.name || "keine Datei ausgewählt"}</p>
+            </div>
         </div>
-        <div className="flex flex-col items-start">
-          <p className="text-base">Schema:</p>
-          <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
-        </div>
-        <div className="flex flex-col items-start">
-          <p className="text-base">Datei:</p>
-          <p className="text-base font-normal">{selectedFile?.name || "keine Datei ausgewählt"}</p>
-        </div>
+        {/* Tabelle mit Vorschau */}
+        {/* <input type="file" accept=".csv" onChange={handleFileUpload} /> */}
+        {data.length ? (
+          <TableFromJSON
+            data={data}
+          />
+        ) : null}
       </div>
 
-      {/* Tabelle mit Vorschau */}
-      {/* <input type="file" accept=".csv" onChange={handleFileUpload} /> */}
-      {data.length ? (
-        <TableFromJSON
-          data={data}
-        />
-      ) : null}
-
       {/* Knöpfe */}
-      <div className="flex p-2 mt-2.5 gap-[10vw] ">
+      <div className="flex justify-between p-4 mt-2.5">
         <button
           type="button"
-          className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           onClick={() => navigate("/upload")}
         >
           Zurück
         </button>
         <button
           type="button"
-          className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           onClick={sendTableToServer}
         >
           Anwenden
