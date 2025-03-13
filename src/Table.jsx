@@ -1,6 +1,4 @@
-const headers = ["Name", "Title", "Email", "Role"]
-  
-  export default function Table(props) {
+export default function Table(props) {
     return (
       <div className="sm:flex sm:items-center px-4 sm:px-6 lg:px-8">
         <div className="mt-8 flow-root">

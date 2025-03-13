@@ -3,6 +3,7 @@ import TableFromJSON from "./TableFromJSON";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ApiClient, DefaultApi } from "th1";
+import Alert from "./Alert";
 
 export default function Preview(){
   const navigate = useNavigate();
@@ -97,31 +98,34 @@ export default function Preview(){
 
   {/* lädt JSON aus Dateipfad */}
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("/example_data.json");
-      const jsonData = await response.json();
-      setData(jsonData);
-    };
-    fetchData();
+    getPreview();
   }, []);
 
 
   return(
     <div>
+      <Alert text={
+        <>
+          Achten Sie bei der Vorschau auf folgende Aspekte:<br />
+          - Alle Kategorien sollten in der ersten Zeile auftauchen und es gibt keine verschachtelten Zeilen oder Spalten<br />
+          - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
+        </>
+      }
+      color="bg-blue-100" />
       {/* Überschrift und Informationen zum Schema */}
-      <h1 className="flex justify-content-left p-2 text-xl font-semibold">Vorschau</h1>
-      <div className="flex justify-content-left pl-2 gap-20 text-lg font-semibold">
+      <h1 className="flex justify-content-left p-2 text-lg font-semibold">Vorschau</h1>
+      <div className="flex justify-content-left pl-2 gap-[10vw] font-semibold">
         <div className="flex flex-col items-start">
-          <h2>Thema (Work in Progress):</h2>
-          <p className="text-lg font-normal">Wohnräume</p>
+          <p className="text-base">Thema (Work in Progress):</p>
+          <p className="text-base font-normal">Wohnräume</p>
         </div>
         <div className="flex flex-col items-start">
-          <h2>Schema:</h2>
-          <p className="text-lg font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
+          <p className="text-base">Schema:</p>
+          <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
         </div>
         <div className="flex flex-col items-start">
-          <h2>Datei:</h2>
-          <p className="text-lg font-normal">{selectedFile?.name || "keine Datei ausgewählt"}</p>
+          <p className="text-base">Datei:</p>
+          <p className="text-base font-normal">{selectedFile?.name || "keine Datei ausgewählt"}</p>
         </div>
       </div>
 
@@ -134,7 +138,7 @@ export default function Preview(){
       ) : null}
 
       {/* Knöpfe */}
-      <div className="flex p-2 mt-5 gap-[10vw] ">
+      <div className="flex p-2 mt-2.5 gap-[10vw] ">
         <button
           type="button"
           className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -149,15 +153,6 @@ export default function Preview(){
         >
           Anwenden
         </button>
-        <button
-          type="button"
-          className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"          
-          onClick={getPreview}
-        >
-          Preview
-        </button>
-        
-            
       </div>
     </div>
     
