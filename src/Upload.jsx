@@ -15,6 +15,8 @@ function Upload() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
+  const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
+  const [helpColor, setHelpColor] = useState("bg-green-100");
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
@@ -53,7 +55,37 @@ function Upload() {
   {/* helper functions */}
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-  };
+  }
+
+  useEffect(() => {
+    if (selectedFile) {
+      if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
+        setHelp("Die hochgeladene Datei ist kein csv- oder Excel-File. Bitte laden Sie eine csv- oder Excel-Datei hoch!");
+        setHelpColor("bg-red-100");
+        return;
+      }
+      else {
+        setHelpColor("bg-green-100");
+      }
+      if (selectedFile && !selectedSchema) {
+        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie das passende Schema dazu aus und klicken anschließend auf weiter!");
+      }
+      else if (selectedFile && selectedSchema) {
+        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
+      }
+    };
+  }, [selectedFile]);
+
+  useEffect(() => {
+    if (selectedSchema && helpColor === "bg-green-100") {
+      if (!selectedFile && selectedSchema) {
+        setHelp("Schema ausgewählt. Bitte laden Sie eine passende Excel- oder csv-Datei hoch und klicken anschließend auf weiter!");
+      }
+      else if (selectedFile && selectedSchema) {
+        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
+      }
+    };
+  }, [selectedSchema]);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -72,10 +104,11 @@ function Upload() {
   {/* Actual page */}
   return (
     <div className="flex flex-col justify-start bg-white h-[85vh]">
+      <div className={`flex h-[8vh] mt-[2vh] ${helpColor} rounded-[10px] pl-[2vh] mx-[5vw] items-center`}>{help}</div>
       <div className="flex flex-row justify-start space-x-[5vw]">
         {/* Upload Box */}
         <div
-          className="flex flex-col justify-end p-4 w-[30vw] h-[70vh] ml-[5vw] mt-[5vh] bg-gray-100 rounded-[10px]"
+          className="flex flex-col justify-end p-4 w-[30vw] h-[62vh] ml-[5vw] mt-[2vh] bg-gray-100 rounded-[10px]"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
@@ -123,7 +156,7 @@ function Upload() {
         </div>
 
         {/* Schema Box */}
-        <div className="flex flex-col justify-start p-4 w-[55vw] h-[70vh] mt-[5vh] bg-gray-100 rounded-[10px]">
+        <div className="flex flex-col justify-start p-4 w-[55vw] h-[62vh] mt-[2vh] bg-gray-100 rounded-[10px]">
           <div className="flex flex-row justify-between">
             {/* Dropdown Menu für Thema */}
             <Menu as="div" className="relative inline-block text-left">
@@ -218,12 +251,12 @@ function Upload() {
         <button
           type="button"
           onClick={() => navigate("/")}
-          className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Zurück
         </button>
 
-        {/* Anwenden Button (weiter) */}
+        {/* Weiter Button */}
         <button
           type="button"
           onClick={() => {
@@ -231,10 +264,10 @@ function Upload() {
             console.log("Selected schema:", selectedSchema );
             navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
           }}
-          className={`mt-4 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-          disabled={!selectedFile || !selectedSchema}
+          className={`mt-[2vh] rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpColor === "bg-green-100"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+          disabled={!selectedFile || !selectedSchema || helpColor === "bg-red-100"}
         >
-          Anwenden
+          Weiter
         </button>
       </div>
 
