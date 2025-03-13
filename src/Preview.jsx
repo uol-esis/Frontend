@@ -111,7 +111,7 @@ export default function Preview(){
           - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
         </>
       }
-      color="bg-blue-100" />
+      type="info"/>
       {/* Überschrift und Informationen zum Schema */}
       <h1 className="flex justify-content-left p-2 text-lg font-semibold">Vorschau</h1>
       <div className="flex justify-content-left pl-2 gap-[10vw] font-semibold">
