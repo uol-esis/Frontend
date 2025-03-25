@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Alert from "./Alert";
-import './css/upload.css';
 
 function Upload() {
   const [schemaList, setSchemaList] = useState([
@@ -65,7 +64,7 @@ function Upload() {
   useEffect(() => {
     if (selectedFile) {
       if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
-        setHelp("Die hochgeladene Datei ist kein Excel- oder csv-File. Bitte laden Sie eine csv- oder Excel-Datei hoch!");
+        setHelp("Die hochgeladene Datei ist kein Excel- oder CSV-File. Bitte laden Sie eine csv- oder Excel-Datei hoch!");
         setHelpType("error");
         return;
       }
@@ -83,7 +82,7 @@ function Upload() {
   useEffect(() => {
     if (selectedSchema && helpType !== "error") {
       if (!selectedFile && selectedSchema) {
-        setHelp("Schema ausgewählt. Bitte laden Sie eine passende Excel- oder csv-Datei hoch und klicken anschließend auf weiter!");
+        setHelp("Schema ausgewählt. Bitte laden Sie eine passende Excel- oder CSV-Datei hoch und klicken anschließend auf weiter!");
         setHelpType("info");
       }
       else if (selectedFile && selectedSchema) {

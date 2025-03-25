@@ -109,7 +109,8 @@ export default function Preview(){
           text={
             <>
               Ist die Tabelle korrekt umgewandelt? Wenn ja, klicken Sie auf fertigstellen, andernfalls gehen Sie zurück und passen Sie das Schema an!<br />
-              - Alle Kategorien dürfen nur in der ersten Zeile auftauchen und es gibt keine verschachtelten Zeilen oder Spalten<br />
+              - Alle Kategorien dürfen nur in der ersten Zeile auftauchen<br />
+              - Es gibt keine komplett leeren Zeilen oder Spalten<br />
               - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
             </>
           }
@@ -156,7 +157,7 @@ export default function Preview(){
           className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           onClick={sendTableToServer}
         >
-          Fertigstellen
+          Hochladen
         </button>
       </div>
     </div>

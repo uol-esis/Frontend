@@ -4,7 +4,7 @@ import Home from "./Home";
 import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
-import './App.css'
+import './css/App.css'
 
 function App() {
   const [count, setCount] = useState(0)
