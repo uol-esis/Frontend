@@ -79,6 +79,11 @@ function Upload() {
     };
   }, [selectedFile]);
 
+  const isValidFile= selectedFile && ( //to check if the file ist valid (for svg in dragndrop)
+    selectedFile.name.endsWith(".csv") ||
+    selectedFile.name.endsWith(".xlsx") ||
+    selectedFile.name.endsWith(".xls")  );
+
   useEffect(() => {
     if (selectedSchema && helpType !== "error") {
       if (!selectedFile && selectedSchema) {
@@ -169,26 +174,79 @@ function Upload() {
         >
           {/* Upload Drag and drop box */}
           <button
-            type="button"
-            onClick={handleFileInputClick} // Use the same function
-            className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            <svg
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 48 48"
-              aria-hidden="true"
-              className="mx-auto size-12 text-gray-400"
+              type="button"
+              onClick={handleFileInputClick}
+              className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              <path
-                d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
-          </button>
+              {selectedFile ? (
+                <>
+                  {isValidFile ? (
+                    // green for valid svg
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                      className="mx-auto h-12 w-12 text-green-500"
+                    >
+                      <path
+                        d="M14 24l8 8 12-12"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  ) : (
+                    // red for not valid svg
+                    <svg
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                      className="mx-auto h-12 w-12 text-red-500"
+                    >
+                      <line
+                        x1="12"
+                        y1="12"
+                        x2="36"
+                        y2="36"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                      />
+                      <line
+                        x1="36"
+                        y1="12"
+                        x2="12"
+                        y2="36"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  )} 
+                  <span className="mt-2 block text-sm font-semibold text-gray-900">{selectedFile.name}</span> 
+                </> //filename in dragndrop box
+              ) : (   //normal svg
+                <> 
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                    className="mx-auto h-12 w-12 text-gray-400"
+                  >
+                    <path
+                      d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
+                </>
+              )}
+            </button>
+
+
 
           {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
