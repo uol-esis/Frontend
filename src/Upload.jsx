@@ -52,6 +52,29 @@ function Upload() {
     });
   };
 
+  {/* Generate a new Schema for the selected File*/}
+  const generateNewSchema = function() {
+    if (!Th1) {
+      console.error("Th1 module is not loaded yet.");
+      return;
+    }
+    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const api = new Th1.DefaultApi(client);
+    // 
+    const callback = function(error, data, response) {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('API called successfully.');
+        console.log('Data:', data);
+        console.log('Response:', response);
+        //setSchemaList(schemaList, data OR response);
+      }
+    };
+    api.generateNewSchema(selectedSchema.id, selectedFile, callback);
+  };
+
+
   {/* helper functions */}
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -336,6 +359,16 @@ function Upload() {
           </div>
           
           <div className="flex gap-4 justify-center w-full">
+            {/* Schema generieren Button */}
+            <button
+              type="button"
+              //onClick = {generateNewSchema}
+              className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+              disabled={!selectedFile || !isValidFile}
+            >
+              Schema generieren
+            </button>
+
             {/* Neues Schema Button */}
             <button
               type="button"
