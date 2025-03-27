@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { ApiClient, DefaultApi } from "th1";
 import Alert from "./Alert";
+import Popup from "./Popup";
 
 export default function Preview(){
   const navigate = useNavigate();
@@ -104,6 +105,7 @@ export default function Preview(){
 
   return (
     <div className="flex flex-col h-[85vh]">
+      <Popup />
       <div className="flex-shrink-0">
         <Alert 
           text={
