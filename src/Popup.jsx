@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Falls du React Router nutzt
+import { useLocation } from "react-router-dom"; 
 
 export default function Popup() {
   const [showPopup, setShowPopup] = useState(false);
@@ -8,7 +8,6 @@ export default function Popup() {
 
   useEffect(() => {
     const hidePopup = localStorage.getItem("hidePopup");
-    // Zeige das Pop-up nur auf "/preview", falls kein Flag gesetzt ist
     if (!hidePopup && location.pathname === "/preview") {
       setShowPopup(true);
     } else {
@@ -28,12 +27,12 @@ export default function Popup() {
       <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center overflow-y-auto">
         <div className="bg-white  shadow-2xl max-w-lg w-full flex flex-col">
           {/* Scrollbarer Bereich für den Tutorial-Inhalt */}
-          <div className="px-6 py-4 overflow-y-auto" style={{ maxHeight: "60vh" }}>
+          <div className="px-6 py-4 overflow-y-auto max-w-prose" style={{ maxHeight: "60vh" }}>
             <h1 className="text-2xl font-bold mb-4">
-              Warum und wie wir deine Excel-Tabellen optimieren
+              Warum und wie Sie Excel-Tabellen optimieren müssen
             </h1>
-            <p className="mb-4">
-              Unsere Anwendung verarbeitet Excel-Tabellen, um Daten in eine Datenbank zu importieren.
+            <p className="mb-4 text-left pl-5 ">
+              Diese Anwendung verarbeitet Ihre Excel-Tabellen, um Daten in eine Datenbank zu importieren.
               Häufig sind diese Tabellen jedoch sehr verschachtelt oder unstrukturiert. Damit unsere
               Software die Daten richtig lesen und verarbeiten kann, müssen die Tabellen in ein
               „maschinenlesbares“ und „datenbankkonformes“ Format gebracht werden.
@@ -42,11 +41,11 @@ export default function Popup() {
             <h2 className="text-xl font-semibold mb-2">
               1. Was bedeutet „maschinenlesbar“ und „datenbankkonform“?
             </h2>
-            <p className="mb-4">
+            <p className="mb-4 text-left pl-5">
               <strong>Maschinenlesbar:</strong> Daten sind so formatiert, dass Computer sie
               problemlos verstehen und verarbeiten können – in klaren, getrennten Spalten und Zeilen.
             </p>
-            <p className="mb-4">
+            <p className="mb-4 text-left pl-5">
               <strong>Datenbankkonform:</strong> Die Struktur entspricht den Anforderungen einer
               Datenbank:
               <ul className="list-disc ml-6">
@@ -55,26 +54,26 @@ export default function Popup() {
                 <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
               </ul>
             </p>
-            <img src="./testbild.png" alt="Vergleich unstrukturierte vs. optimierte Tabelle" className="my-4" />
+            <img src="./Verschachtelung1.png" alt="Vergleich unstrukturierte vs. optimierte Tabelle" className="my-4 mx-auto" />
             <p className="text-center text-sm mb-6">
-              Bild: Links – Verschachtelte Tabelle; Rechts – Optimierte, klare Struktur.
+              Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.
             </p>
 
             <h2 className="text-xl font-semibold mb-2">
               2. Warum müssen Tabellen überarbeitet werden?
             </h2>
             <h3 className="text-lg font-semibold mb-1">Problem 1: Verschachtelte Daten</h3>
-            <p className="mb-4">
+            <p className="mb-4 text-left pl-5">
               Mehrere Überschriften und zusammengeführte Zellen erschweren es, Daten eindeutig zu
              zuordnen.
             </p>
-            <img src="./testbild.png" alt="Screenshot verschachtelte Tabelle" className="my-4" />
-            <p className="text-center text-sm mb-6">
+            <img src="./Verschachtelung2.png" alt="Screenshot verschachtelte Tabelle" className="my-4 mx-auto" />
+            <p className="text-center text-sm mb-6 mx-auto">
               Bild: Beispiel einer verschachtelten Tabelle mit zusammengeführten Zellen.
             </p>
 
             <h3 className="text-lg font-semibold mb-1">Problem 2: Uneinheitliche Formatierung</h3>
-            <p className="mb-4">
+            <p className="mb-4 text-left pl-5">
               Unterschiedliche Formatierungen (wie Zahlen als Text) machen die automatische Verarbeitung
               schwierig.
             </p>
@@ -82,7 +81,7 @@ export default function Popup() {
             <h2 className="text-xl font-semibold mb-2">
               3. Wie sollte eine optimierte Tabelle aussehen?
             </h2>
-            <ul className="list-disc ml-6 mb-4">
+            <ul className="list-disc ml-6 mb-4 text-left pl-5">
               <li>
                 <strong>Klare Überschriften:</strong> Jede Spalte hat eine eindeutige Überschrift.
               </li>
@@ -96,7 +95,7 @@ export default function Popup() {
                 <strong>Flache Struktur:</strong> Eine Überschriftenzeile, gefolgt von den Daten.
               </li>
             </ul>
-            <img src="./testbild.png" alt="Optimierte Tabelle" className="my-4" />
+            <img src="./Verschachtelung3.png" alt="Optimierte Tabelle" className="my-4 mx-auto" />
             <p className="text-center text-sm mb-6">
               Bild: Optimierte Tabelle mit klaren Überschriften, einheitlichen Daten und ohne verschachtelte Zellen.
             </p>
@@ -104,27 +103,27 @@ export default function Popup() {
             <h2 className="text-xl font-semibold mb-2">
               4. Praktische Schritte zur Optimierung deiner Tabelle
             </h2>
-            <h3 className="text-lg font-semibold mb-1">Schritt 1: Tabelle überprüfen</h3>
-            <p className="mb-4">
-              Überprüfe, ob es zusammengeführte Zellen oder mehrere Überschriften gibt und ob jedes Feld
+            <h3 className="text-lg font-semibold mb-1 text-left pl-5">Schritt 1: Tabelle überprüfen</h3>
+            <p className="mb-4 text-left pl-5">
+              Überprüfen Sie, ob es zusammengeführte Zellen oder mehrere Überschriften gibt und ob jedes Feld
               ein einheitliches Format hat.
             </p>
-            <h3 className="text-lg font-semibold mb-1">Schritt 2: Tabelle aufräumen</h3>
-            <p className="mb-4">
+            <h3 className="text-lg font-semibold mb-1 text-left pl-5">Schritt 2: Tabelle aufräumen</h3>
+            <p className="mb-4 text-left pl-5">
               - <strong>Zusammengeführte Zellen auflösen:</strong> Jede Zelle sollte einen eindeutigen Wert
               enthalten.<br />
-              - <strong>Eindeutige Überschriften erstellen:</strong> Sorge für klare Überschriften in der
+              - <strong>Eindeutige Überschriften erstellen:</strong> Sorgen Sie für klare Überschriften in der
               ersten Zeile.<br />
               - <strong>Format vereinheitlichen:</strong> Stelle sicher, dass alle Daten das gleiche Format haben.
             </p>
-            <h3 className="text-lg font-semibold mb-1">Schritt 3: Testen und Importieren</h3>
-            <p className="mb-4">
-              Speichere die optimierte Tabelle und importiere sie in unsere Anwendung. Prüfe, ob alle
+            <h3 className="text-lg font-semibold mb-1 text-left pl-5">Schritt 3: Testen und Importieren</h3>
+            <p className="mb-4 text-left pl-5">
+              Speichern Sie die optimierte Tabelle und importiere sie diese in unsere Anwendung oder führen Sie die Prüfung direkt in der Anwendung durch. Prüfen Sie, ob alle
               Daten korrekt verarbeitet werden.
             </p>
 
-            <h2 className="text-xl font-semibold mb-2">Zusammenfassung</h2>
-            <ul className="list-disc ml-6 mb-4">
+            <h2 className="text-xl font-semibold mb-2 text-left pl-5">Zusammenfassung</h2>
+            <ul className="list-disc ml-6 mb-4 text-left pl-5">
               <li>
                 <strong>Warum:</strong> Damit unsere App die Excel-Daten fehlerfrei verarbeiten kann.
               </li>
@@ -136,13 +135,10 @@ export default function Popup() {
                 Formatierung.
               </li>
             </ul>
-            <img src="./testbild.png" alt="Flussdiagramm Optimierung" className="my-4" />
-            <p className="text-center text-sm mb-6">
-              Bild: Flussdiagramm vom unstrukturierten Import bis zum erfolgreichen Datenbankimport.
-            </p>
-            <p className="mb-4">
-              Mit diesen Schritten wird deine Tabelle optimal für den Import vorbereitet. Solltest du
-              Fragen haben oder Unterstützung benötigen, wende dich bitte an unseren Support!
+            
+            <p className="mb-4 text-left pl-5">
+              Mit diesen Schritten werden Ihre Tabellen optimal für den Import vorbereitet. Sollten Sie
+              Fragen haben oder Unterstützung benötigen, wenden Sie sich bitte an unseren Support!
             </p>
           </div>
 
