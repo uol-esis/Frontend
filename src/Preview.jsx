@@ -8,7 +8,7 @@ import Alert from "./Alert";
 export default function Preview(){
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const [files, setFiles] = useState([]);
 
