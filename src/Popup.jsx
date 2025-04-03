@@ -62,7 +62,7 @@ export default function Popup() {
                 Computer sie problemlos verstehen und verarbeiten können – in klaren,
                 getrennten Spalten und Zeilen.
               </p>
-              <p className="mb-4 text-left pl-5">
+              <div className="mb-4 text-left pl-5">
                 <strong>Datenbankkonform:</strong> Die Struktur entspricht den
                 Anforderungen einer Datenbank:
                 <ul className="list-disc ml-6">
@@ -73,7 +73,7 @@ export default function Popup() {
                   <li>Überschriften stehen eindeutig in der ersten Zeile.</li>
                   <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
                 </ul>
-              </p>
+              </div>
               {renderImage("./Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
               <p className="text-center text-sm mb-6">
                 Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.

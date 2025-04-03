@@ -48,11 +48,13 @@ export default function Preview(){
       console.log("generatedSchema id: ", generatedSchema.id);
     }
     
+    let actualSchema;
+
     try {
       if (generatedSchema) {
-        const actualSchema = generatedSchema;
+        actualSchema = generatedSchema;
       } else if (selectedSchema) {
-        const actualSchema = await new Promise((resolve, reject) => {
+        actualSchema = await new Promise((resolve, reject) => {
           api.getTableStructure(selectedSchema.id, (error, data, response) => {
             if (error) {
               reject(error);
