@@ -11,6 +11,7 @@ ENV VITE_API_KEY=$VITE_API_KEY
 WORKDIR /app
 
 COPY package.json .
+RUN apk add --no-cache git
 RUN npm install
 COPY . .
 
