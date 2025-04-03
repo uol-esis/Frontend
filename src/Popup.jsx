@@ -74,7 +74,7 @@ export default function Popup() {
                   <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
                 </ul>
               </div>
-              {renderImage("./Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
+              {renderImage("/Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
               <p className="text-center text-sm mb-6">
                 Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.
               </p>
@@ -101,7 +101,7 @@ export default function Popup() {
                   Daten.
                 </li>
               </ul>
-              {renderImage("./Verschachtelung3.png", "Optimierte Tabelle")}
+              {renderImage("/Verschachtelung3.png", "Optimierte Tabelle")}
               <p className="text-center text-sm mb-6">
                 Bild: Optimierte Tabelle mit klaren Überschriften, einheitlichen Daten und
                 ohne verschachtelte Zellen.
