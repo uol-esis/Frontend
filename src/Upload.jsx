@@ -95,11 +95,7 @@ function Upload() {
         return;
       }
       if (selectedFile && !selectedSchema) {
-        setHelp(
-          <>
-          Datei erfolgreich hochgeladen. Bitte wählen Sie das passende Schema dazu aus und klicken anschließend auf weiter! <br/>
-          Sie können auch ein Schema generieren lassen.
-          </>)
+        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie ein passendes Schema aus oder lassen ein neues Schema generieren!")
         setHelpType("info");
       }
       else if (selectedFile && selectedSchema) {
