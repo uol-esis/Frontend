@@ -9,7 +9,7 @@ import Popup from "./Popup";
 export default function Preview(){
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const [files, setFiles] = useState([]);
 
@@ -29,7 +29,7 @@ export default function Preview(){
       console.error("No file selected");
       return;
     }
-    if (!selectedSchema) {
+    if (!selectedSchema && !generatedSchema) {
       console.error("No schema selected");
       return;
     }
@@ -42,24 +42,34 @@ export default function Preview(){
       return;
     }      
     console.log("fileToServer: ", selectedFile);
-    console.log("selectedSchema id: ", selectedSchema.id);
+    if (selectedSchema) {
+      console.log("selectedSchema id: ", selectedSchema.id);
+    } else if (generatedSchema) {
+      console.log("generatedSchema id: ", generatedSchema.id);
+    }
+    
+    let actualSchema;
 
     try {
-      const actualSchema = await new Promise((resolve, reject) => {
-        api.getTableStructure(selectedSchema.id, (error, data, response) => {
-          if (error) {
-            reject(error);
-          } else {
-            console.log('API called to get tableStructure successfully. Returned data: ' + data);
-            console.log('API response: ' + response);
-            resolve(data);
-          }
+      if (generatedSchema) {
+        actualSchema = generatedSchema;
+      } else if (selectedSchema) {
+        actualSchema = await new Promise((resolve, reject) => {
+          api.getTableStructure(selectedSchema.id, (error, data, response) => {
+            if (error) {
+              reject(error);
+            } else {
+              console.log('API called to get tableStructure successfully. Returned data: ' + data);
+              console.log('API response: ' + response);
+              resolve(data);
+            }
+          });
         });
-      });
-  
-      if (!actualSchema) {
-        console.error("Failed to get actual schema");
-        return;
+      
+        if (!actualSchema) {
+          console.error("Failed to get actual schema");
+          return;
+        }
       }
   
       await new Promise((resolve, reject) => {
@@ -83,7 +93,7 @@ export default function Preview(){
   
 
   {/* Send the converted table to the server, when the preview is good */}
-  const sendTableToServer = () =>{
+  const sendTableToServer = (schemaId) =>{
     const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
     const api = new DefaultApi(client);
     const callback = function(error, data, response) {
@@ -93,7 +103,33 @@ export default function Preview(){
         console.log('API called successfully.');
       }
     };
-    api.convertTable(selectedSchema.id, selectedFile, callback);
+    if (schemaId = null) {
+      schemaId = selectedSchema.id
+    }
+    api.convertTable(schemaId, selectedFile, callback);
+  }
+
+  {/* Send the generated schema to the server (if a generated schema was used) */}
+  const sendGeneratedSchemaToServer = () => {
+    if (!generatedSchema) {
+      console.error("No generated schema to send");
+      return null;
+    }
+    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const api = new DefaultApi(client);
+    return new Promise((resolve, reject) => {
+      api.addSchema(generatedSchema, (error, data, response) => {
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else {
+          console.log('API called successfully. data: ', data);
+          console.log('API response: ', response);
+          const id = response; // Assuming `response` contains the ID
+          resolve(id);
+        }
+      });
+    });
   }
 
 
@@ -146,21 +182,39 @@ export default function Preview(){
         </div>
       </div>
       {/* Knöpfe */}
-      <div className="flex justify-between py-[2vh] flex-shrink-0">
-        <button
-          type="button"
-          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => navigate("/upload")}
-        >
-          Zurück
-        </button>
-        <button
-          type="button"
-          className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={sendTableToServer}
-        >
-          Hochladen
-        </button>
+      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
+        <div className="flex justify-start w-[35vw]">
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => navigate("/upload")}
+          >
+            Zurück
+          </button>
+        </div>
+        
+        <div className="flex justify-between w-[55vw]">
+          <button
+            type="button"
+            className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed"
+          >
+            Schema anpassen
+          </button>
+          <button
+            type="button"
+            className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={async () => {
+              let schemaId = null;
+              if (generatedSchema) {
+                schemaId = await sendGeneratedSchemaToServer(); 
+              }
+              sendTableToServer(schemaId);
+              navigate("/home");
+            }}
+          >
+            Hochladen
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -52,6 +52,32 @@ function Upload() {
     });
   };
 
+  {/* Generate a new Schema for the selected File*/}
+  const generateNewSchema = function() {
+    if (!Th1) {
+      console.error("Th1 module is not loaded yet.");
+      return;
+    }
+    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const api = new Th1.DefaultApi(client);
+    // 
+    const callback = function(error, data, response) {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('API called successfully.');
+        console.log('Data:', data);
+        console.log('Response:', response);
+        // Go to preview page
+        console.log("Selected file:", selectedFile);
+        console.log("Generated schema:", response ); // or data
+        navigate("/preview", { state: { selectedFile, generatedSchema: response } }) // or data // Pass data to preview page
+      }
+    };
+    api.generateNewSchema(selectedFile, callback);
+  };
+
+
   {/* helper functions */}
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -69,7 +95,7 @@ function Upload() {
         return;
       }
       if (selectedFile && !selectedSchema) {
-        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie das passende Schema dazu aus und klicken anschließend auf weiter!");
+        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie ein passendes Schema aus oder lassen ein neues Schema generieren!")
         setHelpType("info");
       }
       else if (selectedFile && selectedSchema) {
@@ -408,29 +434,43 @@ function Upload() {
         </div>
       </div>
 
-      <div className="flex justify-between px-[5vw] gap-[5vw] w-full">
-        {/* Zurück Button */}
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-          Zurück
-        </button>
+      <div className="flex flex-row px-[5vw] w-full">
+        <div className="flex justify-start w-[35vw]">
+          {/* Zurück Button */}
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Zurück
+          </button>
+        </div>
+        
+        <div className="flex justify-between w-[55vw]">
+          {/* Schema generieren Button */}
+          <button
+            type="button"
+            //onClick = {generateNewSchema}
+            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+            disabled={!selectedFile || !isValidFile}
+          >
+            Schema generieren
+          </button>
 
-        {/* Weiter Button */}
-        <button
-          type="button"
-          onClick={() => {
-            console.log("Selected file:", selectedFile);
-            console.log("Selected schema:", selectedSchema );
-            navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
-          }}
-          className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-          disabled={!selectedFile || !selectedSchema || helpType !== "check"}
-        >
-          Weiter
-        </button>
+          {/* Weiter Button */}
+          <button
+            type="button"
+            onClick={() => {
+              console.log("Selected file:", selectedFile);
+              console.log("Selected schema:", selectedSchema );
+              navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
+            }}
+            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+            disabled={!selectedFile || !selectedSchema || helpType !== "check"}
+          >
+            Weiter
+          </button>
+        </div>
       </div>
 
     </div>
