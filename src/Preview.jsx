@@ -12,6 +12,7 @@ export default function Preview(){
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const [files, setFiles] = useState([]);
+  const [showPopup, setShowPopup] = useState(true); // State to control the popup visibility
 
   const createDataObject = () => {
     if (!selectedFile) {
@@ -25,6 +26,7 @@ export default function Preview(){
 
   {/* If a file and schema are selected, sends them to the server to get a preview*/}
   const getPreview = async () => {
+    console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
       return;
@@ -55,6 +57,7 @@ export default function Preview(){
         actualSchema = generatedSchema;
       } else if (selectedSchema) {
         actualSchema = await new Promise((resolve, reject) => {
+          console.log('requested to get tablestructure from server')
           api.getTableStructure(selectedSchema.id, (error, data, response) => {
             if (error) {
               reject(error);
@@ -71,21 +74,27 @@ export default function Preview(){
           return;
         }
       }
-  
-      await new Promise((resolve, reject) => {
-        console.log("selectedFile: ", selectedFile);
-        console.log("selectedFileType: ", selectedFile.type);
-        api.previewConvertTable(selectedFile, actualSchema, (error, data, response) => {
-          if (error) {
-            reject(error);
-          } else {
-            console.log('API called to get preview successfully. Returned data: ' + data);
-            console.log('API response: ' + response);
-            resolve(data);
-            setData(data);
-          }
+      
+      console.log("actualSchema: ", actualSchema);
+      try{
+        await new Promise((resolve, reject) => {
+          console.log("selectedFile: ", selectedFile);
+          console.log("selectedFileType: ", selectedFile.type);
+          api.previewConvertTable(selectedFile, actualSchema, undefined, (error, data, response) => {
+            if (error) {
+              console.error("error" + error)
+              reject(error);
+            } else {
+              console.log('API called to get preview successfully to get preview. Returned data: ' + data);
+              console.log('API response: ' + response);
+              setData(data);
+              resolve(data);
+            }
+          });
         });
-      });
+      } catch {
+        console.log("Error during previewConvertTable:");
+      }
     } catch (error) {
       console.error("Error during API call:", error);
     }
@@ -103,9 +112,10 @@ export default function Preview(){
         console.log('API called successfully.');
       }
     };
-    if (schemaId = null) {
+    if (schemaId === null) {
       schemaId = selectedSchema.id
     }
+    console.log(schemaId)
     api.convertTable(schemaId, selectedFile, callback);
   }
 
@@ -118,14 +128,13 @@ export default function Preview(){
     const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
     const api = new DefaultApi(client);
     return new Promise((resolve, reject) => {
-      api.addSchema(generatedSchema, (error, data, response) => {
+      api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
           console.error(error);
           reject(error);
         } else {
           console.log('API called successfully. data: ', data);
-          console.log('API response: ', response);
-          const id = response; // Assuming `response` contains the ID
+          const id = data; // Assuming `response` contains the ID
           resolve(id);
         }
       });
@@ -141,7 +150,7 @@ export default function Preview(){
 
   return (
     <div className="flex flex-col h-[85vh]">
-      <Popup />
+      <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
       <div className="flex-shrink-0">
         <Alert 
           text={
@@ -165,7 +174,7 @@ export default function Preview(){
           </div>
           <div className="flex flex-col items-start">
             <p className="text-base font-semibold">Schema:</p>
-            <p className="text-base font-normal">{selectedSchema?.name || "kein Schema ausgewählt"}</p>
+            <p className="text-base font-normal">{selectedSchema?.name || (generatedSchema ? "Generiertes Schema" : "kein Schema ausgewählt")}</p>
           </div>
           <div className="flex flex-col items-start">
             <p className="text-base font-semibold">Datei:</p>
@@ -191,6 +200,16 @@ export default function Preview(){
           >
             Zurück
           </button>
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => {
+              setShowPopup(true);
+              localStorage.setItem("hidePopup", false);
+            }}
+          >
+            Hilfe
+          </button>
         </div>
         
         <div className="flex justify-between w-[55vw]">
@@ -208,8 +227,9 @@ export default function Preview(){
               if (generatedSchema) {
                 schemaId = await sendGeneratedSchemaToServer(); 
               }
+              console.log(schemaId + "hallo")
               sendTableToServer(schemaId);
-              navigate("/home");
+              navigate("/");
             }}
           >
             Hochladen
