@@ -1,24 +1,25 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-export default function Popup() {
-  const [showPopup, setShowPopup] = useState(false);
+export default function Popup({showPopup, setShowPopup}) {
+  //const [showPopup, setShowPopup] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [enlargedImage, setEnlargedImage] = useState(null);
   const location = useLocation();
 
+
+  
   useEffect(() => {
     const hidePopup = localStorage.getItem("hidePopup");
-    if (!hidePopup && location.pathname === "/preview") {
-      setShowPopup(true);
-    } else {
+    if (hidePopup) {
       setShowPopup(false);
     }
-  }, [location.pathname]);
+  }, []);
+  
 
   const handleClose = () => {
     if (dontShowAgain) {
-      localStorage.setItem("hidePopup", "true");
+      localStorage.setItem("hidePopup", true);
     }
     setShowPopup(false);
   };
@@ -32,6 +33,8 @@ export default function Popup() {
       onClick={() => setEnlargedImage(src)}
     />
   );
+
+  if (!showPopup) return null;
 
   return (
     <>

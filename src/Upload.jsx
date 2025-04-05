@@ -65,16 +65,15 @@ function Upload() {
       if (error) {
         console.error(error);
       } else {
-        console.log('API called successfully.');
-        console.log('Data:', data);
-        console.log('Response:', response);
-        // Go to preview page
+        console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
-        console.log("Generated schema:", response ); // or data
-        navigate("/preview", { state: { selectedFile, generatedSchema: response } }) // or data // Pass data to preview page
+        console.log("Generated schema:", data ); // or data
+        // Go to preview page
+        console.log("Going to preview page")
+        navigate("/preview", { state: { selectedFile, generatedSchema: data } }) // or data // Pass data to preview page
       }
     };
-    api.generateNewSchema(selectedFile, callback);
+    api.generateTableStructure(selectedFile, callback);
   };
 
 
@@ -450,7 +449,7 @@ function Upload() {
           {/* Schema generieren Button */}
           <button
             type="button"
-            //onClick = {generateNewSchema}
+            onClick = {generateNewSchema}
             className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
             disabled={!selectedFile || !isValidFile}
           >
