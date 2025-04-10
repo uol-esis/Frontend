@@ -40,7 +40,7 @@ function Upload() {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new Th1.ApiClient("/v1");
     const api = new Th1.DefaultApi(client);
     api.getTableStructures((error, response) => {
       if (error) {
@@ -58,7 +58,7 @@ function Upload() {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new Th1.ApiClient("/v1");
     const api = new Th1.DefaultApi(client);
     // 
     const callback = function(error, data, response) {
