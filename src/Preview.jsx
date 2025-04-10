@@ -36,7 +36,7 @@ export default function Preview(){
       return;
     }
     
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new ApiClient("/v1");
     const api = new DefaultApi(client);
     const fileToServer = createDataObject();
     if (!selectedFile) {
@@ -103,7 +103,7 @@ export default function Preview(){
 
   {/* Send the converted table to the server, when the preview is good */}
   const sendTableToServer = (schemaId) =>{
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new ApiClient("/v1");
     const api = new DefaultApi(client);
     const callback = function(error, data, response) {
       if (error) {
@@ -125,7 +125,7 @@ export default function Preview(){
       console.error("No generated schema to send");
       return null;
     }
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new ApiClient("/v1");
     const api = new DefaultApi(client);
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
