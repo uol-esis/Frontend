@@ -3,14 +3,19 @@ server {
     server_name _;
     client_max_body_size 200M;
 
+    # Setting the dns resolver (Google DNS).
+    # I'm not sure, why this is required, but without it, the API calls fail because the 'injected' API HOST cant be resolved ¯\_(ツ)_/¯
+    resolver 8.8.8.8;
+
+    # default routing of requests to the normal frontend files
     location / {
         root /usr/share/nginx/html;
         index index.html index.htm;
         try_files $uri $uri/ /index.html;
     }
-
-    resolver 8.8.8.8;
-
+    
+    # if requesting the API, proxy redirectes to the correct server
+    # NOTE: This is object to change: /v1/ should be replaced with /api/ when the openAPI document is updated
     location /v1/ {
         proxy_pass $API_HOST$request_uri;
         proxy_set_header Host $host;
@@ -19,6 +24,8 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
+    # if requesting the metabase, redirect to the correct server
+    # This is more like a workaround to make the metabase url adjustable as env var
     location /metabase {
         return 301 $METABASE_HOST;
     }

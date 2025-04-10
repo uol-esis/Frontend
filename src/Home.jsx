@@ -36,10 +36,10 @@ function Home() {
             <button
               type="button"
               className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => location.href = "/metabase/"}
+              onClick={() => window.location.href = "/metabase/"}
             >
               <div className="flex items-center justify-center g-3">
-                Metabase 
+                Metabase
                 <img src={arrow} alt="" />
               </div>
             </button>
