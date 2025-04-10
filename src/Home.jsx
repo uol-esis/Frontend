@@ -9,7 +9,7 @@ function Home() {
       <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh]'>
         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
           <div className="px-4 py-5 sm:p-6">
-            <img style={{ height: "192px", width: "100%", objectFit: "contain" }} src="src/assets/DB.png" alt="Logo" />
+            <img style={{ height: "192px", width: "100%", objectFit: "contain" }} src="/DB.png" alt="Logo" />
           </div>
           <div className="flex flex-col justify-start gap-4 p-4">
             <p className='text-xl font-semibold'>Daten und Schemata</p>
@@ -28,7 +28,7 @@ function Home() {
       <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh]'>
         <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
           <div className="px-4 py-5 sm:p-6">
-            <img style={{ height: "192px", width: "100%", objectFit: "contain" }} src="src/assets/Metabase.png" alt="Logo" />
+            <img style={{ height: "192px", width: "100%", objectFit: "contain" }} src="/Metabase.png" alt="Logo" />
           </div>
           <div className="flex flex-col justify-start gap-4 p-4">
             <p className='text-xl font-semibold'>Metabase</p>
@@ -36,7 +36,7 @@ function Home() {
             <button
               type="button"
               className="rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => window.location.href = "http://pg-doener-dev.virt.uni-oldenburg.de:3000/"}
+              onClick={() => location.href = "/metabase/"}
             >
               <div className="flex items-center justify-center g-3">
                 Metabase 
