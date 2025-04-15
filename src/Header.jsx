@@ -6,7 +6,7 @@ import React, { useState, useRef } from 'react';
 const leftNavigation = [
   { name: 'Schema', href: '/preview' },
   { name: 'Wiki', href: '/wiki' },
-  { name: 'Metabase', href: 'http://pg-doener-dev.virt.uni-oldenburg.de:3000/' },
+  { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
 ];
 
 // Navigation items for the right section
@@ -65,8 +65,8 @@ export default function Header() {
           </a>
           <div className="flex gap-x-12">
             {leftNavigation.map((item) => (
-              <a 
-                key={item.name} 
+              <a
+                key={item.name}
                 href={item.href}
                 target={item.name === 'Metabase' ? '_blank' : '_self'}
                 rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
@@ -74,9 +74,9 @@ export default function Header() {
               >
                 {item.name}
                 {item.name === 'Metabase' && (
-                  <img 
-                    src="arrow-mb.svg" 
-                    alt="Metabase Icon" 
+                  <img
+                    src="arrow-mb.svg"
+                    alt="Metabase Icon"
                     className="inline-block ml-1"
                   />
                 )}
@@ -90,15 +90,15 @@ export default function Header() {
               {index === 2 && (
                 <span className="border-l border-gray-400 h-6 mx-2"></span>
               )}
-              <a 
-                href={item.href} 
-                onClick={item.onClick} 
+              <a
+                href={item.href}
+                onClick={item.onClick}
                 className={`text-sm/6 font-semibold hover:scale-105 transition-transform ${item.name === 'Login' ? 'text-blue-500' : 'text-gray-900'}`}
               >
                 {item.name === 'Einstellungen' ? (
-                  <img 
-                    src="einstellungen.svg" 
-                    alt="Einstellungen" 
+                  <img
+                    src="einstellungen.svg"
+                    alt="Einstellungen"
                     className="inline-block"
                   />
                 ) : (
@@ -110,9 +110,9 @@ export default function Header() {
         </div>
       </nav>
       {isSettingsOpen && (
-        <div 
-          ref={settingsPopupRef} 
-          id="settings-popup" 
+        <div
+          ref={settingsPopupRef}
+          id="settings-popup"
           style={{ top: settingsPopupPos.top, right: settingsPopupPos.right }}
           className="absolute bg-white shadow-lg rounded-lg p-4"
         >
@@ -123,9 +123,9 @@ export default function Header() {
         </div>
       )}
       {isUserOpen && (
-        <div 
-          ref={userPopupRef} 
-          id="user-popup" 
+        <div
+          ref={userPopupRef}
+          id="user-popup"
           style={{ top: userPopupPos.top, right: userPopupPos.right }}
           className="absolute bg-white shadow-lg rounded-lg p-4"
         >

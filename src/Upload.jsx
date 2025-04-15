@@ -20,7 +20,7 @@ function Upload() {
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
-  {/* Load the Th1 module and get the Schema List from the api*/}
+  {/* Load the Th1 module and get the Schema List from the api*/ }
   useEffect(() => {
     import('th1').then(module => {
       setTh1(module);
@@ -35,12 +35,12 @@ function Upload() {
     }
   }, [Th1]);
 
-  const getSchemaList = function() {
+  const getSchemaList = function () {
     if (!Th1) {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new Th1.DefaultApi(client);
     api.getTableStructures((error, response) => {
       if (error) {
@@ -52,22 +52,22 @@ function Upload() {
     });
   };
 
-  {/* Generate a new Schema for the selected File*/}
-  const generateNewSchema = function() {
+  {/* Generate a new Schema for the selected File*/ }
+  const generateNewSchema = function () {
     if (!Th1) {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    const client = new Th1.ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new Th1.DefaultApi(client);
     // 
-    const callback = function(error, data, response) {
+    const callback = function (error, data, response) {
       if (error) {
         console.error(error);
       } else {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
-        console.log("Generated schema:", data ); // or data
+        console.log("Generated schema:", data); // or data
         // Go to preview page
         console.log("Going to preview page")
         navigate("/preview", { state: { selectedFile, generatedSchema: data } }) // or data // Pass data to preview page
@@ -77,7 +77,7 @@ function Upload() {
   };
 
 
-  {/* helper functions */}
+  {/* helper functions */ }
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   }
@@ -104,10 +104,10 @@ function Upload() {
     };
   }, [selectedFile]);
 
-  const isValidFile= selectedFile && ( //to check if the file ist valid (for svg in dragndrop)
+  const isValidFile = selectedFile && ( //to check if the file ist valid (for svg in dragndrop)
     selectedFile.name.endsWith(".csv") ||
     selectedFile.name.endsWith(".xlsx") ||
-    selectedFile.name.endsWith(".xls")  );
+    selectedFile.name.endsWith(".xls"));
 
   useEffect(() => {
     if (selectedSchema && helpType !== "error") {
@@ -136,7 +136,7 @@ function Upload() {
     .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
 
 
-  {/* Popups for WIP handling */}
+  {/* Popups for WIP handling */ }
   const [isNewOpen, setIsNewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -152,21 +152,21 @@ function Upload() {
   function openNewPopup(event) {
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
-    setNewPopupPos({ top: rect.top-rect.height*3.2, left: rect.left });
+    setNewPopupPos({ top: rect.top - rect.height * 3.2, left: rect.left });
     setIsNewOpen(true);
   }
 
   function openEditPopup(event) {
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
-    setEditPopupPos({ top: rect.top-rect.height*3.2, left: rect.left });
+    setEditPopupPos({ top: rect.top - rect.height * 3.2, left: rect.left });
     setIsEditOpen(true);
   }
 
   function openDeletePopup(event) {
     event.preventDefault();
     const rect = event.target.getBoundingClientRect();
-    setDeletePopupPos({ top: rect.top-rect.height*3.2, left: rect.left - 50});
+    setDeletePopupPos({ top: rect.top - rect.height * 3.2, left: rect.left - 50 });
     setIsDeleteOpen(true);
   }
 
@@ -184,12 +184,12 @@ function Upload() {
 
 
 
-  {/* Actual page */}
+  {/* Actual page */ }
   return (
     <div className="flex flex-col justify-start bg-white h-[85vh]">
-      <Alert 
+      <Alert
         text={help}
-        type={helpType}/>      
+        type={helpType} />
       <div className="flex flex-row justify-start space-x-[5vw]">
         {/* Upload Box */}
         <div
@@ -199,77 +199,77 @@ function Upload() {
         >
           {/* Upload Drag and drop box */}
           <button
-              type="button"
-              onClick={handleFileInputClick}
-              className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              {selectedFile ? (
-                <>
-                  {isValidFile ? (
-                    // green for valid svg
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                      className="mx-auto h-12 w-12 text-green-500"
-                    >
-                      <path
-                        d="M14 24l8 8 12-12"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ) : (
-                    // red for not valid svg
-                    <svg
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 48 48"
-                      aria-hidden="true"
-                      className="mx-auto h-12 w-12 text-red-500"
-                    >
-                      <line
-                        x1="12"
-                        y1="12"
-                        x2="36"
-                        y2="36"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                      />
-                      <line
-                        x1="36"
-                        y1="12"
-                        x2="12"
-                        y2="36"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  )} 
-                  <span className="mt-2 block text-sm font-semibold text-gray-900">{selectedFile.name}</span> 
-                </> //filename in dragndrop box
-              ) : (   //normal svg
-                <> 
+            type="button"
+            onClick={handleFileInputClick}
+            className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            {selectedFile ? (
+              <>
+                {isValidFile ? (
+                  // green for valid svg
                   <svg
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 48 48"
                     aria-hidden="true"
-                    className="mx-auto h-12 w-12 text-gray-400"
+                    className="mx-auto h-12 w-12 text-green-500"
                   >
                     <path
-                      d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
+                      d="M14 24l8 8 12-12"
                       strokeWidth={2}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                   </svg>
-                  <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
-                </>
-              )}
-            </button>
+                ) : (
+                  // red for not valid svg
+                  <svg
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 48 48"
+                    aria-hidden="true"
+                    className="mx-auto h-12 w-12 text-red-500"
+                  >
+                    <line
+                      x1="12"
+                      y1="12"
+                      x2="36"
+                      y2="36"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                    />
+                    <line
+                      x1="36"
+                      y1="12"
+                      x2="12"
+                      y2="36"
+                      strokeWidth={2}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                )}
+                <span className="mt-2 block text-sm font-semibold text-gray-900">{selectedFile.name}</span>
+              </> //filename in dragndrop box
+            ) : (   //normal svg
+              <>
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 48 48"
+                  aria-hidden="true"
+                  className="mx-auto h-12 w-12 text-gray-400"
+                >
+                  <path
+                    d="M8 14v20c0 4.418 7.163 8 16 8 1.381 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v14m0-4c0 4.418-7.163 8-16 8S8 28.418 8 24m32 10v6m0 0v6m0-6h6m-6 0h-6"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
+              </>
+            )}
+          </button>
 
 
 
@@ -300,7 +300,7 @@ function Upload() {
             <Menu as="div" className="relative inline-block text-left">
               <div>
                 <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-400">
-                  Thema 
+                  Thema
                   <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
                 </MenuButton>
               </div>
@@ -338,9 +338,9 @@ function Upload() {
                 fill="currentColor"
                 className="h-4 w-4 opacity-70">
                 <path
-                fillRule="evenodd"
-                d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                clipRule="evenodd" />
+                  fillRule="evenodd"
+                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                  clipRule="evenodd" />
               </svg>
             </label>
           </div>
@@ -359,7 +359,7 @@ function Upload() {
               ))}
             </ul>
           </div>
-          
+
           <div className="flex gap-4 justify-center w-full">
             {/* Neues Schema Button */}
             <button
@@ -370,9 +370,9 @@ function Upload() {
               Neues Schema
             </button>
             {isNewOpen && (
-              <div 
-                ref={newPopupRef} 
-                id="new-popup" 
+              <div
+                ref={newPopupRef}
+                id="new-popup"
                 style={{ top: newPopupPos.top, left: newPopupPos.left }}
                 className="absolute bg-white shadow-lg rounded-lg p-4"
               >
@@ -382,7 +382,7 @@ function Upload() {
                 </button>
               </div>
             )}
-            
+
             {/* Schema bearbeiten Button */}
             <button
               type="button"
@@ -393,9 +393,9 @@ function Upload() {
               Schema bearbeiten
             </button>
             {isEditOpen && (
-              <div 
-                ref={editPopupRef} 
-                id="edit-popup" 
+              <div
+                ref={editPopupRef}
+                id="edit-popup"
                 style={{ top: editPopupPos.top, left: editPopupPos.left }}
                 className="absolute bg-white shadow-lg rounded-lg p-4"
               >
@@ -416,9 +416,9 @@ function Upload() {
               Schema löschen
             </button>
             {isDeleteOpen && (
-              <div 
-                ref={deletePopupRef} 
-                id="delete-popup" 
+              <div
+                ref={deletePopupRef}
+                id="delete-popup"
                 style={{ top: deletePopupPos.top, left: deletePopupPos.left }}
                 className="absolute bg-white shadow-lg rounded-lg p-4"
               >
@@ -444,13 +444,13 @@ function Upload() {
             Zurück
           </button>
         </div>
-        
+
         <div className="flex justify-between w-[55vw]">
           {/* Schema generieren Button */}
           <button
             type="button"
-            onClick = {generateNewSchema}
-            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+            onClick={generateNewSchema}
+            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
             disabled={!selectedFile || !isValidFile}
           >
             Schema generieren
@@ -461,10 +461,10 @@ function Upload() {
             type="button"
             onClick={() => {
               console.log("Selected file:", selectedFile);
-              console.log("Selected schema:", selectedSchema );
+              console.log("Selected schema:", selectedSchema);
               navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
             }}
-            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check" ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
             disabled={!selectedFile || !selectedSchema || helpType !== "check"}
           >
             Weiter

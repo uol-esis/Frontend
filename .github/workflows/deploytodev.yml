@@ -6,8 +6,11 @@ on:
     - main
 
 jobs:
-  
+
+  docker:
+    uses: ./.github/workflows/docker.yaml
   deploy:
+    needs: docker
     name: Deploy
     runs-on: ubuntu-latest
     steps:
