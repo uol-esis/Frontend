@@ -1,10 +1,14 @@
 //import Table from "./Table"
 import TableFromJSON from "./TableFromJSON";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
 import Alert from "./Alert";
 import Popup from "./Popup";
+import CheckBox from "./CheckBox";
+import NewPopup from "./NewPopup";
+
+{/* TODO Upload Erfolgreich Fenster, Upload wieder aktivieren, dialog auslagern  */}
 
 export default function Preview(){
   const navigate = useNavigate();
@@ -12,7 +16,13 @@ export default function Preview(){
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const [files, setFiles] = useState([]);
-  const [showPopup, setShowPopup] = useState(true); // State to control the popup visibility
+  const [showPopup, setShowPopup] = useState(false); // State to control the popup visibility
+  const [allCheck, setAllCheck] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+
+  const helpDialogRef = useRef();
+  const uploadDialogRef = useRef();
+  const checkboxDialogRef = useRef();
 
   const createDataObject = () => {
     if (!selectedFile) {
@@ -145,12 +155,86 @@ export default function Preview(){
   {/* lädt JSON aus Dateipfad */}
   useEffect(() => {
     getPreview();
+    const hidePopup = localStorage.getItem("hidePopup");
+    if (hidePopup) {
+      setShowPopup(false);
+    }
   }, []);
 
+  useEffect(() => {
+    if(!dontShowAgain){
+      localStorage.setItem("hidePopup", true);
+    }
+  }, [dontShowAgain]);
 
   return (
     <div className="flex flex-col h-[85vh]">
+      <dialog ref={helpDialogRef} className="self-center justify-self-center bg-gray-100">
+        <div>
+          <NewPopup/>
+          <button
+              type="button"
+              className="p-5 m-5  rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => {
+                helpDialogRef.current?.close();
+              }}
+          >Close
+          </button>
+        </div>
+      </dialog>
+
+      <dialog ref={uploadDialogRef} className="self-center justify-self-center bg-gray-100">
+        <div>
+          <NewPopup/>
+
+          <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={dontShowAgain}
+                  onChange={() => setDontShowAgain(!dontShowAgain)}
+                />
+                <span>Tutorial das nächste Mal nicht mehr anzeigen</span>
+              </label>
+                
+          <button
+              type="button"
+              className="p-5 m-5  rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => {
+                uploadDialogRef.current?.close();
+                checkboxDialogRef.current?.showModal();
+              }}
+          >Close
+          </button>
+        </div>
+      </dialog>
+
+      <dialog ref={checkboxDialogRef} className="self-center justify-self-center bg-gray-100">
+        <div>
+          <CheckBox setAllCheck={setAllCheck} className=""/>
+          <button
+            type="button"
+            className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${allCheck ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
+            disabled={!allCheck}
+            onClick={() => {
+              navigate("/");
+            }}
+        >Hochladen
+        </button>
+
+          <button
+              type="button"
+              className="p-5 m-5  rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => {
+                checkboxDialogRef.current?.close();
+                
+              }}
+          >Close
+          </button>
+        </div>
+      </dialog>
+
       <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
+      
       <div className="flex-shrink-0">
         <Alert 
           text={
@@ -204,8 +288,11 @@ export default function Preview(){
             type="button"
             className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={() => {
-              setShowPopup(true);
-              localStorage.setItem("hidePopup", false);
+              //setShowPopup(true);
+              helpDialogRef.current?.showModal();
+              localStorage.setItem("hidePopup", true);
+              
+              
             }}
           >
             Hilfe
@@ -221,15 +308,20 @@ export default function Preview(){
           </button>
           <button
             type="button"
-            className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="mr-[5vw] p-5 rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={async () => {
-              let schemaId = null;
-              if (generatedSchema) {
-                schemaId = await sendGeneratedSchemaToServer(); 
-              }
-              console.log(schemaId + "hallo")
-              sendTableToServer(schemaId);
-              navigate("/");
+              if (!dontShowAgain) {
+                uploadDialogRef.current?.showModal();
+              } else checkboxDialogRef.current?.showModal();
+              
+              
+              // let schemaId = null;
+              // if (generatedSchema) {
+              //   schemaId = await sendGeneratedSchemaToServer(); 
+              // }
+              // console.log(schemaId + "hallo")
+              // sendTableToServer(schemaId);
+              // navigate("/");
             }}
           >
             Hochladen

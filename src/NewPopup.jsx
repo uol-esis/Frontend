@@ -1,30 +1,10 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
-export default function Popup({showPopup, setShowPopup}) {
-  //const [showPopup, setShowPopup] = useState(false);
-  const [dontShowAgain, setDontShowAgain] = useState(false);
-  const [enlargedImage, setEnlargedImage] = useState(null);
-  const location = useLocation();
+export default function NewPopup(){
 
+    const [enlargedImage, setEnlargedImage] = useState(null);
 
-  
-  useEffect(() => {
-    const hidePopup = localStorage.getItem("hidePopup");
-    if (hidePopup) {
-      setShowPopup(false);
-    }
-  }, []);
-  
-
-  const handleClose = () => {
-    if (dontShowAgain) {
-      localStorage.setItem("hidePopup", true);
-    }
-    setShowPopup(false);
-  };
-
-  //klickbar bild
+    //klickbar bild
   const renderImage = (src, alt) => (
     <img
       src={src}
@@ -34,13 +14,11 @@ export default function Popup({showPopup, setShowPopup}) {
     />
   );
 
-  if (!showPopup) return null;
-
-  return (
-    <>
-      {showPopup && (
-        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-          <div className="bg-white shadow-2xl max-w-lg w-full flex flex-col">
+    return(
+        <>
+      
+       
+          <div className="  max-w-lg w-full flex flex-col">
             
             <div
               className="px-6 py-4 overflow-y-auto max-w-prose"
@@ -136,27 +114,9 @@ export default function Popup({showPopup, setShowPopup}) {
                 wenden Sie sich bitte an unseren Support!
               </p>
             </div>
-
-            {/* Checkbox und Schließen */}
-            <div className="border-t px-6 py-4 flex flex-col">
-              <label className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  checked={dontShowAgain}
-                  onChange={() => setDontShowAgain(!dontShowAgain)}
-                />
-                <span>Tutorial das nächste Mal nicht mehr anzeigen</span>
-              </label>
-              <button
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full"
-                onClick={handleClose}
-              >
-                Schließen
-              </button>
-            </div>
           </div>
-        </div>
-      )}
+        
+      
 
       {/* Vergrößerungs-Overlay für Bilder */}
       {enlargedImage && (
@@ -178,5 +138,5 @@ export default function Popup({showPopup, setShowPopup}) {
         </div>
       )}
     </>
-  );
+    );
 }
