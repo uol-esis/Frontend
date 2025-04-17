@@ -15,8 +15,7 @@ server {
     }
     
     # if requesting the API, proxy redirectes to the correct server
-    # NOTE: This is object to change: /v1/ should be replaced with /api/ when the openAPI document is updated
-    location /v1/ {
+    location /api/ {
         proxy_pass $API_HOST$request_uri;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
