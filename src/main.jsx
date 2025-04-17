@@ -6,7 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+//  <StrictMode>
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
@@ -14,5 +14,5 @@ createRoot(document.getElementById('root')).render(
       </main>
       <Footer />
     </div>
-  </StrictMode>
+//  </StrictMode>
 )
