@@ -17,6 +17,8 @@ function Upload() {
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // State name-popup
+
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
@@ -187,7 +189,8 @@ function Upload() {
     setIsDeleteOpen(false);
   }
 
-
+  const openConfirmModal = () => setIsConfirmModalOpen(true); //name-popup open
+  const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
   return (
@@ -328,16 +331,11 @@ function Upload() {
             <div className="mt-4">
               <button
                 type="button"
-                onClick={() => {
-                  console.log("Ausgewählte Datei:", selectedFile);
-                  console.log("Ausgewähltes Schema:", selectedSchema);
-                  navigate("/preview", { state: { selectedFile, selectedSchema } });
-                }}
-                className={`w-full rounded-md py-2 text-sm font-semibold text-white shadow-sm 
-                  ${selectedFile && selectedSchema && helpType === "check"
-                    ? 'bg-gray-600 hover:bg-indigo-500'
-                    : 'bg-gray-400 cursor-not-allowed'}`}
-                disabled={!(selectedFile && selectedSchema && helpType === "check")}
+                onClick={openConfirmModal}
+                className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
+                  selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
+                }`}
+                disabled={!selectedFile || !selectedSchema}
               >
                 Weiter
               </button>
@@ -370,8 +368,24 @@ function Upload() {
         >
           Zurück
         </button>
-        
       </div>
+
+      {/* name popup */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-xs flex items-center justify-center">
+          <div className="bg-gray-100 rounded-[10px] p-6 relative w-1/2 border border-gray-300">
+            <h3 className="mb-4 text-lg font-semibold">Funktionalität Ticket #27</h3>
+              
+              <button
+                type="button"
+                onClick={handleConfirm}
+                className="absolute bottom-4 right-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+              >
+                Bestätigen
+              </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
