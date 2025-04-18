@@ -295,7 +295,7 @@ function Upload() {
                   </div>
                 </MenuItems>
               </Menu>
-              {/* Suchfeld */}
+              {/* Search */}
               <label className="flex w-full items-center gap-2 border border-gray-200 bg-white px-2">
                 <input
                   type="text"
@@ -313,7 +313,7 @@ function Upload() {
                 </svg>
               </label>
             </div>
-            {/* Liste der existierenden Schemata */}
+            {/* list existing scheme */}
             <div className="p-1 w-full h-[25vh] bg-white rounded-[10px] overflow-auto">
               <ul>
                 {filteredSchemaList.map((schema, index) => (
@@ -327,7 +327,7 @@ function Upload() {
                 ))}
               </ul>
             </div>
-            {/* Weiter-Button im Block 1 */}
+            {/* Weiter Button */}
             <div className="mt-4">
               <button
                 type="button"
@@ -342,7 +342,7 @@ function Upload() {
             </div>
           </div>
 
-          {/* Block 2: Neues Schema erstellen */}
+          {/* Down new scheme */}
           <div className="p-4 bg-gray-100 rounded-[10px]">
             <h2 className="text-xl font-bold mb-4">Neues Schema erstellen</h2>
             <button
