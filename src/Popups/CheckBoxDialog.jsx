@@ -2,7 +2,7 @@ import CheckBox from "/src/CheckBox";
 
 export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onConfirm }) {
     return (
-      <dialog ref={dialogRef} className="self-center justify-self-center bg-gray-100">
+      <dialog ref={dialogRef} className="self-center justify-self-center shadow-md bg-gray-100">
         <div>
           <CheckBox setAllCheck={setAllCheck} />
           <button
@@ -20,7 +20,7 @@ export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onCon
             className="p-5 m-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             onClick={() => dialogRef.current?.close()}
           >
-            Close
+            Zurück
           </button>
         </div>
       </dialog>
