@@ -2,7 +2,7 @@ import CheckBox from "/src/CheckBox";
 
 export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onConfirm }) {
     return (
-      <dialog ref={dialogRef} className="self-center justify-self-center shadow-md bg-gray-100">
+      <dialog ref={dialogRef} className="self-center justify-self-end shadow-md bg-gray-100">
         <div>
           <CheckBox setAllCheck={setAllCheck} />
           <button
