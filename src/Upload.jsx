@@ -194,7 +194,7 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className=" bg-white  p-4 space-y-6">
+    <div className=" bg-white  p-2 space-y-6">
       <Alert text={help} type={helpType} />
       
       {/* Container: File Upload + Schema (left, right) */}
@@ -272,8 +272,8 @@ function Upload() {
         {/* Right Up, Down */}
         <div className={`flex flex-col  h-[62vh] space-y-6 w-[55vw] ${schemaBlockClass}`}>
           {/* Right Up  */}
-          <div className="flex-1 p-4 bg-gray-100 rounded-[10px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Bestehendes Schema verwenden</h2>
+          <div className="flex-1 p-2 bg-gray-100 rounded-[10px] ">
+            <h2 className="text-xl font-bold mb-2">Bestehendes Schema verwenden</h2>
             <div className="flex flex-row justify-between mb-2">
               {/* Dropdown-Menü für Thema */}
               <Menu as="div" className="relative inline-block text-left">
@@ -343,8 +343,8 @@ function Upload() {
           </div>
 
           {/* Down new scheme */}
-          <div className="p-4 bg-gray-100 rounded-[10px]">
-            <h2 className="text-xl font-bold mb-4">Neues Schema erstellen</h2>
+          <div className="p-2 bg-gray-100 rounded-[10px]">
+            <h2 className="text-xl font-bold mb-2">Neues Schema erstellen</h2>
             <button
               type="button"
               onClick={openConfirmModal}
@@ -360,7 +360,7 @@ function Upload() {
       </div>
 
       {/* Navigationsbereich unten */}
-      <div className="fixed bottom-0 left-0 w-full bg-white  p-4 flex justify-start px-[6.5vw] z-10">
+      <div className="fixed bottom-8 left-0 w-full bg-white p-1 flex justify-start px-[6.5vw] z-10">
         <button
           type="button"
           onClick={() => navigate("/")}
