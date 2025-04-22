@@ -331,7 +331,7 @@ function Upload() {
             <div className="mt-4">
               <button
                 type="button"
-                onClick={openConfirmModal}
+                onClick={handleConfirm}
                 className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
                   selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
                 }`}
@@ -347,7 +347,7 @@ function Upload() {
             <h2 className="text-xl font-bold mb-4">Neues Schema erstellen</h2>
             <button
               type="button"
-              onClick={generateNewSchema}
+              onClick={openConfirmModal}
               className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
                 selectedFile && isValidFile ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
               }`}
@@ -378,7 +378,7 @@ function Upload() {
               
               <button
                 type="button"
-                onClick={handleConfirm}
+                onClick={generateNewSchema}
                 className="absolute bottom-4 right-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
               >
                 Bestätigen
