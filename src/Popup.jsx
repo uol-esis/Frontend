@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function NewPopup(){
+export default function Popup(){
 
     const [enlargedImage, setEnlargedImage] = useState(null);
 

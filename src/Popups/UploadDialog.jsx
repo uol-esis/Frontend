@@ -1,4 +1,4 @@
-import NewPopup from "/src/NewPopup.jsx";
+import Popup from "/src/Popup.jsx";
 import { useEffect } from "react";
 
 
@@ -14,7 +14,7 @@ export default function UploadDialog({ dialogRef, dontShowAgain, setDontShowAgai
 
     return (
       <dialog ref={dialogRef} className="self-center justify-self-center shadow-md bg-gray-100">
-          <NewPopup />
+          <Popup />
           <div className="flex flex-col mt-4 justify-content-center">
             <label>
               <input
