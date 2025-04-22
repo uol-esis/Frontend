@@ -194,7 +194,7 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className="flex flex-col bg-white min-h-[85vh] p-4 space-y-6">
+    <div className=" bg-white  p-4 space-y-6">
       <Alert text={help} type={helpType} />
       
       {/* Container: File Upload + Schema (left, right) */}
@@ -360,7 +360,7 @@ function Upload() {
       </div>
 
       {/* Navigationsbereich unten */}
-      <div className="flex justify-between px-[5vw]">
+      <div className="fixed bottom-0 left-0 w-full bg-white  p-4 flex justify-start px-[6.5vw] z-10">
         <button
           type="button"
           onClick={() => navigate("/")}
