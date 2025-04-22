@@ -4,7 +4,6 @@ import React, { useState, useRef } from 'react';
 
 // Navigation items for the left section
 const leftNavigation = [
-  { name: 'Schema', href: '/preview' },
   { name: 'Wiki', href: '/wiki' },
   { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
 ];

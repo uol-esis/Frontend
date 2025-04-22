@@ -1,10 +1,16 @@
 //import Table from "./Table"
 import TableFromJSON from "./TableFromJSON";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
 import Alert from "./Alert";
 import Popup from "./Popup";
+import HelpDialog from "./Popups/HelpDialog";
+import UploadDialog from "./Popups/UploadDialog";
+import CheckboxDialog from "./Popups/CheckBoxDialog";
+import { HeartIcon } from "@heroicons/react/24/solid";
+import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
+
 
 export default function Preview() {
   const navigate = useNavigate();
@@ -12,7 +18,14 @@ export default function Preview() {
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const [files, setFiles] = useState([]);
-  const [showPopup, setShowPopup] = useState(true); // State to control the popup visibility
+  const [allCheck, setAllCheck] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+
+  const helpDialogRef = useRef();
+  const uploadDialogRef = useRef();
+  const checkboxDialogRef = useRef();
+  const uploadFinishedDialogRef = useRef();
+
 
   const createDataObject = () => {
     if (!selectedFile) {
@@ -142,15 +155,52 @@ export default function Preview() {
   }
 
 
-  {/* lädt JSON aus Dateipfad */ }
+  {/* lädt JSON aus Dateipfad und überprüft ob Popup angezeigt werden soll */}
   useEffect(() => {
     getPreview();
+    const hidePopup = localStorage.getItem("hidePopup");
+    if (hidePopup) {
+      setDontShowAgain(true);
+    }
   }, []);
-
 
   return (
     <div className="flex flex-col h-[85vh]">
-      <Popup showPopup={showPopup} setShowPopup={setShowPopup} />
+      
+      {/* Popups */}
+      <HelpDialog dialogRef={helpDialogRef}/>
+
+      <UploadDialog
+        dialogRef={uploadDialogRef}
+        dontShowAgain={dontShowAgain}
+        setDontShowAgain={setDontShowAgain}
+        nextDialogRef={checkboxDialogRef}
+      />
+
+      <CheckboxDialog
+        dialogRef={checkboxDialogRef}
+        allCheck={allCheck}
+        setAllCheck={setAllCheck}
+        onConfirm={async () => {
+          checkboxDialogRef.current?.close(); 
+          try {
+            let schemaId = null;
+            if (generatedSchema) {
+                schemaId = await sendGeneratedSchemaToServer(); 
+              }
+              console.log(schemaId + "hallo")
+              sendTableToServer(schemaId);
+              uploadFinishedDialogRef.current?.showModal(); 
+          } catch (error) {
+            console.log("error");
+            errorDialogRef.current?.showModal();
+          }
+          
+        }}
+      />
+
+      <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
+      
       <div className="flex-shrink-0">
         <Alert
           text={
@@ -181,7 +231,7 @@ export default function Preview() {
             <p className="text-base font-normal max-w-[25vw]">{selectedFile?.name || "keine Datei ausgewählt"}</p>
           </div>
         </div>
-        {/* Tabelle mit Vorschau */}
+        {/* Tabelle mit Vorschau */} 
         <div className="flex-1 overflow-auto">
           {data.length ? (
             <TableFromJSON
@@ -204,8 +254,7 @@ export default function Preview() {
             type="button"
             className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={() => {
-              setShowPopup(true);
-              localStorage.setItem("hidePopup", false);
+              helpDialogRef.current?.showModal();      
             }}
           >
             Hilfe
@@ -221,15 +270,11 @@ export default function Preview() {
           </button>
           <button
             type="button"
-            className="mr-[5vw] rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={async () => {
-              let schemaId = null;
-              if (generatedSchema) {
-                schemaId = await sendGeneratedSchemaToServer();
-              }
-              console.log(schemaId + "hallo")
-              sendTableToServer(schemaId);
-              navigate("/");
+            className="mr-[5vw] p-5 rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={ () => {
+              if (!dontShowAgain) {
+                uploadDialogRef.current?.showModal();
+              } else checkboxDialogRef.current?.showModal();
             }}
           >
             Hochladen
