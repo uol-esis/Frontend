@@ -12,7 +12,7 @@ import { HeartIcon } from "@heroicons/react/24/solid";
 import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
 
 
-export default function Preview(){
+export default function Preview() {
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
@@ -37,7 +37,7 @@ export default function Preview(){
     return formData;
   };
 
-  {/* If a file and schema are selected, sends them to the server to get a preview*/}
+  {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
@@ -48,21 +48,21 @@ export default function Preview(){
       console.error("No schema selected");
       return;
     }
-    
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new DefaultApi(client);
     const fileToServer = createDataObject();
     if (!selectedFile) {
       console.error("Failed to create FormData object");
       return;
-    }      
+    }
     console.log("fileToServer: ", selectedFile);
     if (selectedSchema) {
       console.log("selectedSchema id: ", selectedSchema.id);
     } else if (generatedSchema) {
       console.log("generatedSchema id: ", generatedSchema.id);
     }
-    
+
     let actualSchema;
 
     try {
@@ -81,15 +81,15 @@ export default function Preview(){
             }
           });
         });
-      
+
         if (!actualSchema) {
           console.error("Failed to get actual schema");
           return;
         }
       }
-      
+
       console.log("actualSchema: ", actualSchema);
-      try{
+      try {
         await new Promise((resolve, reject) => {
           console.log("selectedFile: ", selectedFile);
           console.log("selectedFileType: ", selectedFile.type);
@@ -112,13 +112,13 @@ export default function Preview(){
       console.error("Error during API call:", error);
     }
   };
-  
 
-  {/* Send the converted table to the server, when the preview is good */}
-  const sendTableToServer = (schemaId) =>{
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+
+  {/* Send the converted table to the server, when the preview is good */ }
+  const sendTableToServer = (schemaId) => {
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new DefaultApi(client);
-    const callback = function(error, data, response) {
+    const callback = function (error, data, response) {
       if (error) {
         console.error(error);
       } else {
@@ -132,13 +132,13 @@ export default function Preview(){
     api.convertTable(schemaId, selectedFile, callback);
   }
 
-  {/* Send the generated schema to the server (if a generated schema was used) */}
+  {/* Send the generated schema to the server (if a generated schema was used) */ }
   const sendGeneratedSchemaToServer = () => {
     if (!generatedSchema) {
       console.error("No generated schema to send");
       return null;
     }
-    const client = new ApiClient("https://pg-doener-dev.virt.uni-oldenburg.de/v1");
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new DefaultApi(client);
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
@@ -202,7 +202,7 @@ export default function Preview(){
       <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
       
       <div className="flex-shrink-0">
-        <Alert 
+        <Alert
           text={
             <>
               Ist die Tabelle korrekt umgewandelt? Wenn ja, klicken Sie auf fertigstellen, andernfalls gehen Sie zurück und passen Sie das Schema an!<br />
@@ -211,7 +211,7 @@ export default function Preview(){
               - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
             </>
           }
-          type="info" 
+          type="info"
         />
       </div>
       <div className="flex flex-1 overflow-hidden gap-[2vw]">
@@ -260,7 +260,7 @@ export default function Preview(){
             Hilfe
           </button>
         </div>
-        
+
         <div className="flex justify-between w-[55vw]">
           <button
             type="button"

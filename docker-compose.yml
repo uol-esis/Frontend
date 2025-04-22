@@ -1,6 +1,5 @@
 services:
-  react-app:  
-    build: .  
+  react-app:
+    build: .
     ports:
-      - "5173:5173"  
-  
+      - "5173:80"
