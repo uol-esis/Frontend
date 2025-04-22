@@ -270,10 +270,10 @@ function Upload() {
         </div>
 
         {/* Right Up, Down */}
-        <div className={`flex flex-col  h-[62vh] space-y-6 w-[55vw] ${schemaBlockClass}`}>
+        <div className={`flex flex-col space-y-6 w-[55vw] ${schemaBlockClass}`}>
           {/* Right Up  */}
           <div className="flex-1 p-2 bg-gray-100 rounded-[10px] ">
-            <h2 className="text-xl font-bold mb-2">Bestehendes Schema verwenden</h2>
+            <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
             <div className="flex flex-row justify-between mb-2">
               {/* Dropdown-Menü für Thema */}
               <Menu as="div" className="relative inline-block text-left">
@@ -344,7 +344,7 @@ function Upload() {
 
           {/* Down new scheme */}
           <div className="p-2 bg-gray-100 rounded-[10px]">
-            <h2 className="text-xl font-bold mb-2">Neues Schema erstellen</h2>
+            <h2 className="text-xl font-bold mb-2">Neue Tabellentransformation erstellen</h2>
             <button
               type="button"
               onClick={openConfirmModal}
@@ -353,7 +353,7 @@ function Upload() {
               }`}
               disabled={!selectedFile || !isValidFile}
             >
-              Neues Schema erstellen
+              Generierung
             </button>
           </div>
         </div>
