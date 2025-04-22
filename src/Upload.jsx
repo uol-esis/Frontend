@@ -6,16 +6,16 @@ import Alert from "./Alert";
 
 function Upload() {
   const [schemaList, setSchemaList] = useState([
-    { name: "Schema 1", description: "Description for Schema 1" },
-    { name: "Schema 2", description: "Description for Schema 2" },
-    { name: "Schema 3", description: "Description for Schema 3" }
+    { name: "Tabellenumformung 1", description: "Description for Schema 1" },
+    { name: "Tabellenumformung 2", description: "Description for Schema 2" },
+    { name: "Tabellenumformung 3", description: "Description for Schema 3" }
   ]); // Default for the list of schemata
   const [themaList, setThemaList] = useState(["Thema 1", "Thema 2", "Thema 3", "Thema 4", "Thema 5", "Thema 6", "Thema 7", "Thema 8", "Thema 9", "Thema 10", "Thema 11", "Thema 12", "Thema 13", "Thema 14", "Thema 15", "Thema 16", "Thema 17", "Thema 18", "Thema 19", "Thema 20", "Thema 21", "Thema 22", "Thema 23", "Thema 24"]); // State for the list of themes
   const [Th1, setTh1] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
-  const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
+  const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen die passende Umformung dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
@@ -31,7 +31,8 @@ function Upload() {
 
   useEffect(() => {
     if (Th1) {
-      getSchemaList();
+      console.log("")
+      //getSchemaList();
     }
   }, [Th1]);
 
@@ -94,7 +95,7 @@ function Upload() {
         return;
       }
       if (selectedFile && !selectedSchema) {
-        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie ein passendes Schema aus oder lassen ein neues Schema generieren!")
+        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie eine passende Umformung aus oder lassen eine neue Umformung generieren!")
         setHelpType("info");
       }
       else if (selectedFile && selectedSchema) {
@@ -367,7 +368,7 @@ function Upload() {
               onClick={openNewPopup}
               className="mt-4 flex-1 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Neues Schema
+              Neue Umformung erstellen
             </button>
             {isNewOpen && (
               <div 
@@ -390,7 +391,7 @@ function Upload() {
               className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
               disabled={!selectedSchema}
             >
-              Schema bearbeiten
+              Umformung bearbeiten
             </button>
             {isEditOpen && (
               <div 
@@ -413,7 +414,7 @@ function Upload() {
               className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
               disabled={!selectedSchema}
             >
-              Schema löschen
+              Umformung löschen
             </button>
             {isDeleteOpen && (
               <div 
@@ -453,7 +454,7 @@ function Upload() {
             className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
             disabled={!selectedFile || !isValidFile}
           >
-            Schema generieren
+            Neue Umformung generieren
           </button>
 
           {/* Weiter Button */}
@@ -467,7 +468,7 @@ function Upload() {
             className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check"? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
             disabled={!selectedFile || !selectedSchema || helpType !== "check"}
           >
-            Weiter
+            Ausgewählte Umformung anwenden
           </button>
         </div>
       </div>
