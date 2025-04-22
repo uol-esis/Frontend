@@ -195,7 +195,6 @@ function Upload() {
   {/* Actual page */ }
   return (
     <div className=" bg-white  p-2 space-y-6">
-      <Alert text={help} type={helpType} />
       
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-row justify-center space-x-8">
