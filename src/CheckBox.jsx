@@ -42,7 +42,7 @@ export default function CheckBox({setAllCheck}) {
       <legend className="sr-only">Notifications</legend>
       <div className="flex flex-col p-5 space-y-5 text-left">
         <p className="text-base text-gray-700">
-          Überprüfe vor dem Hochladen, ob die folgenden Eigenschaften auf die Tabelle zutreffen:
+          Überprüfe vor dem Hochladen, ob die folgenden Eigenschaften <br /> auf die Tabelle zutreffen:
         </p>
 
        {/*CheckBox 1*/}
