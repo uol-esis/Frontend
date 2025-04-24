@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+
 import Alert from "./Alert";
 
 function Upload() {
@@ -194,16 +196,17 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className=" bg-white  p-2 space-y-6">
+    <div className="bg-white h-full p-2 space-y-6 mx-7 my-5">
       
       {/* Container: File Upload + Schema (left, right) */}
-      <div className="flex flex-row justify-center space-x-8">
+      <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0">
         {/*Left Upload */}
         <div
-          className="flex flex-col p-4 w-[30vw] h-[62vh] bg-gray-100 rounded-[10px]"
+          className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px]"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
+        
           <button
             type="button"
             onClick={handleFileInputClick}
@@ -269,7 +272,7 @@ function Upload() {
         </div>
 
         {/* Right Up, Down */}
-        <div className={`flex flex-col space-y-6 w-[55vw] ${schemaBlockClass}`}>
+        <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${schemaBlockClass}`}>
           {/* Right Up  */}
           <div className="flex-1 p-2 bg-gray-100 rounded-[10px] ">
             <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
@@ -313,7 +316,7 @@ function Upload() {
               </label>
             </div>
             {/* list existing scheme */}
-            <div className="p-1 w-full h-[25vh] bg-white rounded-[10px] overflow-auto">
+            <div className="p-1 w-full h-auto max-h-[60%] bg-white rounded-[10px] overflow-auto">
               <ul>
                 {filteredSchemaList.map((schema, index) => (
                   <li
@@ -359,7 +362,7 @@ function Upload() {
       </div>
 
       {/* Navigationsbereich unten */}
-      <div className="mt-6 p-1 flex justify-start px-[6.5vw]">
+      <div className="mt-6 p-1 flex justify-start ">
         <button
           type="button"
           onClick={() => navigate("/")}
