@@ -359,7 +359,7 @@ function Upload() {
       </div>
 
       {/* Navigationsbereich unten */}
-      <div className="fixed bottom-8 left-0 w-full bg-white p-1 flex justify-start px-[6.5vw] z-10">
+      <div className="mt-6 p-1 flex justify-start px-[6.5vw]">
         <button
           type="button"
           onClick={() => navigate("/")}
