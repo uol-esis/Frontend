@@ -196,10 +196,10 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className="bg-white h-full p-2 space-y-6 mx-7 my-5">
+    <div className="bg-white h-screen p-2 space-y-6 mx-2 my-5 pb-24 overflow-y-auto">
       
       {/* Container: File Upload + Schema (left, right) */}
-      <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0">
+      <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
         {/*Left Upload */}
         <div
           className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px]"
@@ -361,17 +361,7 @@ function Upload() {
         </div>
       </div>
 
-      {/* Navigationsbereich unten */}
-      <div className="mt-6 p-1 flex justify-start ">
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-        >
-          Zurück
-        </button>
-      </div>
-
+     
       {/* name popup */}
       {isConfirmModalOpen && (
         <div className="fixed inset-0 bg-opacity-30 backdrop-blur-xs flex items-center justify-center">
@@ -388,6 +378,19 @@ function Upload() {
           </div>
         </div>
       )}
+
+      
+      {/* Navigationsbereich unten */}
+      <div className="flex justify-start mt-6">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="fixed bottom-[5vh] flex items-center gap-2 rounded-lg bg-gray-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
+        >
+          Zurück
+          
+        </button>
+      </div>
     </div>
   );
 }
