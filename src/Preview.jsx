@@ -122,11 +122,8 @@ export default function Preview() {
           console.log("selectedFileType: ", selectedFile.type);
           //set amount of rows based on window height
           const limit = computeTablelimit();
-          console.log(limit); 
           if(limit < 5) {limit = 5}
-          const opts = {
-            "limit" : limit
-          };
+          const opts = {"limit" : limit};
           api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
             if (error) {
               console.error("error" + error)
@@ -189,7 +186,7 @@ export default function Preview() {
   }
 
 
-  {/* lädt JSON aus Dateipfad und überprüft ob Popup angezeigt werden soll */}
+  {/* Load json and check if hidePopup is set */}
   useEffect(() => {
     getPreview();
     const hidePopup = localStorage.getItem("hidePopup");
@@ -200,7 +197,7 @@ export default function Preview() {
 
   return (
 <div>
-      {/*Text und Tabelle */}
+      {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
   
         {/* Popups */}
@@ -238,14 +235,14 @@ export default function Preview() {
         <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
   
         <div className="flex justify-self-center ">
-          {/* Überschrift und Informationen zum Schema */}
+          {/* Information text */}
           <div className="flex flex-col mt-7 text-left flex-shrink-0">
           <p className="p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md">
             Vorschau
           </p>
             <StackedList headerTextArray={previewText}/>
           </div>
-          {/* Tabelle mit Vorschau */}
+          {/* Table */}
           <div className="flex-1">
             {data.length ? (
               <TableFromJSON
@@ -255,7 +252,7 @@ export default function Preview() {
           </div>
         </div>
         </div>
-      {/* Knöpfe */}
+      {/* Buttons */}
       <div className="flex flex-row h-[10-vh]  px-[5vw] w-full py-[2vh] flex-shrink-0">
       <div className="flex justify-start w-[35vw]">
         <button
