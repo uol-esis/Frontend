@@ -6,8 +6,7 @@ function Home() {
 
   return (
     <div className='flex justify-around items-around h-[85vh] bg-[#FEFAFA]'>
-      <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh]'>
-        <div className="divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow">
+      <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh] divide-y divide-gray-200 overflow-hidden rounded-lg bg-white shadow'>
           <div className="px-4 py-5 sm:p-6">
             <img style={{ height: "192px", width: "100%", objectFit: "contain" }} src="/UploadPic.png" alt="Logo" />
           </div>
@@ -22,7 +21,6 @@ function Home() {
               Daten hochladen
             </button>
           </div>
-        </div>
       </div>
 
       <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh]'>
