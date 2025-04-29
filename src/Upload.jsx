@@ -313,6 +313,7 @@ function Upload() {
                     clipRule="evenodd"
                   />
                 </svg>
+                {/* KOmmt neuer Plus Button noch rein? */}
               </label>
             </div>
             {/* list existing scheme */}
@@ -325,6 +326,18 @@ function Upload() {
                     onClick={() => setSelectedSchema(schema)}
                   >
                     {schema.name}
+                    <div className="">
+                      <button type="button" className=" hover:bg-gray-900 ">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
+                          <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2L3 10.207V13h2.793L14 4.793 11.207 2z" />
+                        </svg> 
+                      </button>
+                      <button type="button" className="hover:bg-gray-900">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4">
+                        <path fillRule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1h13V2a1 1 0 0 0-1-1h-11zm13 4H1v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5zm-3.5 2a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5zm-4 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5zm-4 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0v-6a.5.5 0 0 1 .5-.5z" clipRule="evenodd" />
+                      </svg>
+                      </button>
+                    </div>
                   </li>
                 ))}
               </ul>
