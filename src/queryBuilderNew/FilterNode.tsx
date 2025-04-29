@@ -1,0 +1,59 @@
+import React from "react";
+import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
+import {dbSchemaAtom, QueryNode, selectedTableAtom} from "./queryAtoms";
+import {useAtom} from "jotai";
+
+const columns = ["id", "name", "age", "price", "created_at"];
+const operators = ["=", "!=", ">", "<", ">=", "<="];
+
+type Props = {
+    node: QueryNode & { type: "filter" };
+    updateNode: (updates: Partial<QueryNode>) => void;
+};
+
+export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
+    const [selectedTable] = useAtom(selectedTableAtom);
+    const [dbSchema] = useAtom(dbSchemaAtom);
+
+    const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+
+    return (
+        <Stack
+            direction={{xs: "column", sm: "row"}}
+            spacing={1}
+            mt={1}
+            alignItems="stretch"
+            sx={{width: "100%"}}
+        >
+            <Box sx={{flex: 1}}>
+                <Select
+                    fullWidth
+                    value={node.column}
+                    onChange={(e) => updateNode({column: e.target.value})}
+                >
+                    {columns.map((col) => (
+                        <MenuItem key={col} value={col}>{col}</MenuItem>
+                    ))}
+                </Select>
+            </Box>
+            <Box sx={{flex: 1}}>
+                <Select
+                    fullWidth
+                    value={node.operator}
+                    onChange={(e) => updateNode({operator: e.target.value})}
+                >
+                    {operators.map((op) => (
+                        <MenuItem key={op} value={op}>{op}</MenuItem>
+                    ))}
+                </Select>
+            </Box>
+            <Box sx={{flex: 2}}>
+                <TextField
+                    fullWidth
+                    value={node.value}
+                    onChange={(e) => updateNode({value: e.target.value})}
+                />
+            </Box>
+        </Stack>
+    );
+}
