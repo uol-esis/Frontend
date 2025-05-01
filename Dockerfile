@@ -1,6 +1,18 @@
 # Stage 1: Build the React application
 FROM node:18.17.1-alpine AS builder
 
+
+# Define build arguments for environment variables
+ARG OAUTH_URL
+ARG OAUTH_REALM
+ARG OAUTH_CLIENT_ID
+
+# Set environment variables during the build process
+ENV VITE_OAUTH_URL=$OAUTH_URL
+ENV VITE_OAUTH_REALM=$OAUTH_REALM
+ENV VITE_OAUTH_CLIENT_ID=$OAUTH_CLIENT_ID
+
+
 WORKDIR /app
 
 COPY package*.json ./
