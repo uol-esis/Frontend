@@ -1,5 +1,10 @@
 services:
   react-app:
-    build: .
+    build:
+      context: .
+      args:
+        OAUTH_URL: ${OAUTH_URL}
+        OAUTH_REALM: ${OAUTH_REALM}
+        OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
     ports:
       - "5173:80"

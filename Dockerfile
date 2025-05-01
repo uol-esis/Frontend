@@ -6,11 +6,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN apk add --no-cache git
 
-RUN npm install --frozen-lockfile || yarn install --frozen-lockfile
+RUN npm install --frozen-lockfile
 
 COPY . .
 
-RUN npm run build || yarn build
+RUN npm run build
 
 # Stage 2: Serve the built application with Nginx
 FROM nginx:stable-alpine
