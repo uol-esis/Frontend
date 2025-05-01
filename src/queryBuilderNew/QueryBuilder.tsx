@@ -23,6 +23,7 @@ const tableColumns: Record<string, string[]> = {
 const columns = ["id", "name", "age", "price", "created_at"];
 const operators = ["=", "!=", ">", "<", ">=", "<="];
 const aggregations = ["COUNT", "MIN", "MAX", "AVG"];
+const directions = ["ASC", "DESC"];
 
 export const QueryBuilder3 = () => {
     const [selectedTable, setSelectedTable] = useAtom(selectedTableAtom);
@@ -65,6 +66,18 @@ export const QueryBuilder3 = () => {
                 table: sampleTables[0],
                 sourceColumn: columns[0],
                 targetColumn: columns[0],
+            },
+        ]);
+    };
+
+    const addSort = () => {
+        if (!columns.length) return;
+        setChain((prev) => [
+            ...prev,
+            {
+                type: "orderBy",
+                column: columns[0],
+                direction: directions[0],
             },
         ]);
     };
@@ -113,6 +126,9 @@ export const QueryBuilder3 = () => {
             <Stack direction="row" spacing={2} mb={2}>
                 <Button variant="outlined" onClick={addFilter}>
                     + Filter
+                </Button>
+                <Button variant="outlined" onClick={addSort}>
+                    + Sortierung
                 </Button>
                 <Button variant="outlined" onClick={addAggregation}>
                     + Aggregation

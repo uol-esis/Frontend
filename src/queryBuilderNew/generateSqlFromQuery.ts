@@ -18,8 +18,8 @@ export function generateSql(table: string, chain: QueryNode[]): string {
             }
         } else if (node.type === "join") {
             joins.push(`JOIN ${node.table} ON ${table}.${node.sourceColumn} = ${node.table}.${node.targetColumn}`);
-        } else if (node.type === "groupBy") {
-            groupBy.push(node.column);
+        //} else if (node.type === "groupBy") {
+        //    groupBy.push(node.column);
         } else if (node.type === "orderBy") {
             orderBy.push(`${node.column} ${node.direction}`);
         }

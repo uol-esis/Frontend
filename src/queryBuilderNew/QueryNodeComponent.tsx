@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { FilterNode } from "./FilterNode";
 import { AggregationNode } from "./AggregationNode";
 import { JoinNode } from "./JoinNode";
+import {SortNode} from "./SortNode";
 
 export const QueryNodeComponent = ({ node, index }: { node: QueryNode; index: number }) => {
     const [chain, setChain] = useAtom(queryChainAtom);
@@ -30,6 +31,8 @@ export const QueryNodeComponent = ({ node, index }: { node: QueryNode; index: nu
                 return <AggregationNode node={node} updateNode={updateNode} />;
             case "join":
                 return <JoinNode node={node} updateNode={updateNode} />;
+            case "orderBy":
+                return <SortNode node={node} updateNode={updateNode} />;
         }
     };
 
