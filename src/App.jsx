@@ -5,7 +5,7 @@ import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
 import './css/App.css'
-import {QueryBuilder3} from "./queryBuilderNew/QueryBuilder.js";
+import {QueryBuilder} from "./queryBuilderNew/QueryBuilder.js";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,7 +17,7 @@ function App() {
         <Route path="/upload" element={<Upload />} />
         <Route path="/preview" element={<Preview/>} />
         <Route path="/wip" element={<WorkInProgress />} />
-        <Route path="/test3" element={<QueryBuilder3 />} />
+        <Route path="/query-builder" element={<QueryBuilder />} />
       </Routes>
     </Router>
   );

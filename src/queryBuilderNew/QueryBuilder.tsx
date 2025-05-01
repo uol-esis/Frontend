@@ -23,7 +23,7 @@ const operators = ["=", "!=", ">", "<", ">=", "<="];
 const aggregations = ["COUNT", "MIN", "MAX", "AVG"];
 const directions = ["ASC", "DESC"];
 
-export const QueryBuilder3 = () => {
+export const QueryBuilder = () => {
     const [selectedTable, setSelectedTable] = useAtom(selectedTableAtom);
     const [chain, setChain] = useAtom(queryChainAtom);
     const [dbSchema, setDbSchema] = useAtom(dbSchemaAtom);
