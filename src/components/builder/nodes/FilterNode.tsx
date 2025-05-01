@@ -1,7 +1,15 @@
 import React from "react";
 import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
-import {dbSchemaAtom, QueryNode, selectedTableAtom} from "../../../atoms/queryAtoms";
+import {
+    dbSchemaAtom,
+    QueryNode,
+    selectableColumnsAtom,
+    selectedColumnAtom,
+    selectedTableAtom
+} from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
+import {TableSelect} from "@/components/shared/TableSelect";
+import {ColumnSelect} from "../../shared/ColumnSelect";
 
 const columns = ["id", "name", "age", "price", "created_at"];
 const operators = ["=", "!=", ">", "<", ">=", "<="];
@@ -14,8 +22,14 @@ type Props = {
 export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
     const [selectedTable] = useAtom(selectedTableAtom);
     const [dbSchema] = useAtom(dbSchemaAtom);
+    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
 
-    const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+    //const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+
+    const columnsToUse = selectedColumns.includes("*")
+        ? selectableColumns
+        : selectedColumns;
 
     return (
         <Stack
@@ -26,7 +40,12 @@ export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
             sx={{width: "100%"}}
         >
             <Box sx={{flex: 1}}>
-                <TextField
+                <ColumnSelect
+                    tables={columnsToUse}
+                    value={node.column}
+                    onChange={updateNode}
+                />
+               {/* <TextField
                     label="Spalte"
                     select
                     fullWidth
@@ -36,7 +55,7 @@ export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
                     {columns.map((col) => (
                         <MenuItem key={col} value={col}>{col}</MenuItem>
                     ))}
-                </TextField>
+                </TextField>*/}
             </Box>
             <Box sx={{flex: 1}}>
                 <TextField

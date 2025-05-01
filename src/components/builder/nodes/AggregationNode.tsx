@@ -1,7 +1,14 @@
 import React from "react";
 import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
-import {dbSchemaAtom, QueryNode, selectedTableAtom} from "../../../atoms/queryAtoms";
+import {
+    dbSchemaAtom,
+    QueryNode,
+    selectableColumnsAtom,
+    selectedColumnAtom,
+    selectedTableAtom
+} from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
+import {ColumnSelect} from "../../shared/ColumnSelect";
 
 const aggregations = ["COUNT", "MIN", "MAX", "AVG"];
 
@@ -14,6 +21,14 @@ export const AggregationNode: React.FC<Props> = ({node, updateNode}) => {
     const [dbSchema] = useAtom(dbSchemaAtom);
     const [selectedTable] = useAtom(selectedTableAtom);
     const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+
+    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
+
+    const columnsToUse = selectedColumns.includes("*")
+        ? selectableColumns
+        : selectedColumns;
+
 
     return (
         <Stack
@@ -36,16 +51,11 @@ export const AggregationNode: React.FC<Props> = ({node, updateNode}) => {
                 </TextField>
             </Box>
             <Box sx={{flex: 1}}>
-                <TextField
-                    label="Spalte"
-                    select
-                    fullWidth
+                <ColumnSelect
+                    tables={columnsToUse}
                     value={node.column}
-                    onChange={(e) => updateNode({column: e.target.value})}>
-                    {columns.map((col) => (
-                        <MenuItem key={col} value={col}>{col}</MenuItem>
-                    ))}
-                </TextField>
+                    onChange={updateNode}
+                />
             </Box>
         </Stack>
     );

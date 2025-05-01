@@ -1,7 +1,14 @@
 import React from "react";
 import {MenuItem, Select, Stack, Box, TextField} from "@mui/material";
-import {dbSchemaAtom, selectedTableAtom, QueryNode} from "../../../atoms/queryAtoms";
+import {
+    dbSchemaAtom,
+    selectedTableAtom,
+    QueryNode,
+    selectedColumnAtom,
+    selectableColumnsAtom
+} from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
+import {ColumnSelect} from "../../shared/ColumnSelect";
 
 type Props = {
     node: QueryNode & { type: "orderBy" };
@@ -14,22 +21,21 @@ export const SortNode: React.FC<Props> = ({node, updateNode}) => {
     const [selectedTable] = useAtom(selectedTableAtom);
     const [dbSchema] = useAtom(dbSchemaAtom);
 
-    const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
+
+    const columnsToUse = selectedColumns.includes("*")
+        ? selectableColumns
+        : selectedColumns;
 
     return (
         <Stack direction={{xs: "column", sm: "row"}} spacing={1} mt={1} sx={{width: "100%"}}>
             <Box sx={{flex: 1}}>
-                <TextField
-                    label="Spalte"
-                    select
-                    fullWidth
+                <ColumnSelect
+                    tables={columnsToUse}
                     value={node.column}
-                    onChange={(e) => updateNode({column: e.target.value})}
-                >
-                    {columns.map((col) => (
-                        <MenuItem key={col} value={col}>{col}</MenuItem>
-                    ))}
-                </TextField>
+                    onChange={updateNode}
+                />
             </Box>
             <Box sx={{flex: 1}}>
                 <TextField

@@ -7,11 +7,11 @@ import {
     queryChainAtom,
     dbSchemaAtom,
     selectedColumnAtom,
-    queryResultsAtom,
+    queryResultsAtom, selectableColumnsAtom,
 } from "../../atoms/queryAtoms";
 
 import { TableSelect } from "../shared/TableSelect";
-import { ColumnSelect } from "../shared/ColumnSelect";
+import { ColumnMultiSelect } from "../shared/ColumnMultiSelect";
 import { QueryControls } from "./QueryControls";
 import { QueryNodeComponent } from "./nodes/QueryNode";
 import { QueryPreview } from "./QueryPreview";
@@ -29,6 +29,7 @@ export const QueryBuilder = () => {
     const [chain, setChain] = useAtom(queryChainAtom);
     const [dbSchema, setDbSchema] = useAtom(dbSchemaAtom);
     const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
     const setQueryResults = useSetAtom(queryResultsAtom);
 
     const sampleTables = dbSchema ? Object.keys(dbSchema) : [];
@@ -41,6 +42,25 @@ export const QueryBuilder = () => {
         };
         loadSchema();
     }, [setDbSchema]);
+
+    useEffect(() => {
+        if (!dbSchema || !selectedTable) return;
+
+        // Start mit den Spalten der Haupttabelle
+        let updatedColumns = [...(dbSchema[selectedTable] || [])];
+
+        // Füge Spalten aller Join-Tabellen hinzu
+        chain.forEach((node) => {
+            if (node.type === "join" && node.table && dbSchema[node.table]) {
+                updatedColumns.push(...dbSchema[node.table]);
+            }
+        });
+
+        // Optional: Duplikate entfernen
+        const uniqueColumns = Array.from(new Set(updatedColumns));
+
+        setSelectableColumns(uniqueColumns);
+    }, [dbSchema, selectedTable, chain, setSelectableColumns]);
 
     const addFilter = () => {
         const node = addFilterNode(columns);
@@ -82,7 +102,7 @@ export const QueryBuilder = () => {
                     />
                 </Box>
                 <Box flex={1}>
-                    <ColumnSelect
+                    <ColumnMultiSelect
                         columns={columns}
                         selected={selectedColumns}
                         onChange={setSelectedColumns}
