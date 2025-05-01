@@ -32,3 +32,79 @@ export function generateSql(table: string, chain: QueryNode[]): string {
 
     return `${select} ${from} ${joinStr} ${whereStr} ${groupByStr} ${orderByStr}`.trim();
 }
+
+export interface StructuredQuery {
+    table: string;
+    select: string[]; // z. B. ["*"] oder ["COUNT(id)"]
+    joins?: {
+        table: string;
+        on: { sourceColumn: string; targetColumn: string };
+    }[];
+    filters?: {
+        column: string;
+        operator: string;
+        value: string;
+    }[];
+    aggregations?: {
+        column: string;
+        agg: string;
+        having?: { operator: string; value: string };
+    }[];
+    orderBy?: {
+        column: string;
+        direction: "ASC" | "DESC";
+    }[];
+}
+
+export function buildStructuredQuery(table: string, chain: QueryNode[], selectedColumn: []): StructuredQuery {
+    const query: StructuredQuery = {
+        table,
+        select: selectedColumn ?? ["*"],
+    };
+
+    for (const node of chain) {
+        switch (node.type) {
+            case "filter":
+                query.filters ??= [];
+                query.filters.push({
+                    column: node.column,
+                    operator: node.operator,
+                    value: node.value,
+                });
+                break;
+
+            case "aggregation":
+                query.select = [`${node.agg}(${node.column})`];
+                query.aggregations ??= [];
+                query.aggregations.push({
+                    column: node.column,
+                    agg: node.agg,
+                    having: node.operator && node.value
+                        ? { operator: node.operator, value: node.value }
+                        : undefined,
+                });
+                break;
+
+            case "join":
+                query.joins ??= [];
+                query.joins.push({
+                    table: node.table,
+                    on: {
+                        sourceColumn: node.sourceColumn,
+                        targetColumn: node.targetColumn,
+                    },
+                });
+                break;
+
+            case "orderBy":
+                query.orderBy ??= [];
+                query.orderBy.push({
+                    column: node.column,
+                    direction: node.direction as "ASC" | "DESC",
+                });
+                break;
+        }
+    }
+
+    return query;
+}

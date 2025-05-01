@@ -3,9 +3,6 @@ import {MenuItem, Select, Grid, Stack, Box} from "@mui/material";
 import {dbSchemaAtom, QueryNode, selectedTableAtom} from "./queryAtoms";
 import {useAtom} from "jotai";
 
-const columns = ["id", "name", "age", "price", "created_at"];
-const sampleTables = ["users", "orders", "products"];
-
 type Props = {
     node: QueryNode & { type: "join" };
     updateNode: (updates: Partial<QueryNode>) => void;

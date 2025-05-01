@@ -8,19 +8,10 @@ import {
     Typography,
     Stack,
 } from "@mui/material";
-import {selectedTableAtom, queryChainAtom, QueryNode, dbSchemaAtom} from "./queryAtoms";
+import {selectedTableAtom, queryChainAtom, QueryNode, dbSchemaAtom, selectedColumnAtom} from "./queryAtoms";
 import {QueryNodeComponent} from "./QueryNodeComponent";
 import {QueryPreview} from "./QueryPreview";
 
-const sampleTables = ["users", "orders", "products"];
-
-const tableColumns: Record<string, string[]> = {
-    users: ["id", "name", "age", "created_at"],
-    orders: ["id", "user_id", "product_id", "price", "created_at"],
-    products: ["id", "name", "price", "stock", "created_at"],
-};
-
-const columns = ["id", "name", "age", "price", "created_at"];
 const operators = ["=", "!=", ">", "<", ">=", "<="];
 const aggregations = ["COUNT", "MIN", "MAX", "AVG"];
 const directions = ["ASC", "DESC"];
@@ -29,11 +20,11 @@ export const QueryBuilder3 = () => {
     const [selectedTable, setSelectedTable] = useAtom(selectedTableAtom);
     const [chain, setChain] = useAtom(queryChainAtom);
     const [dbSchema] = useAtom(dbSchemaAtom);
+    const [selectedColumn, setSelectedColumn] = useAtom(selectedColumnAtom);
 
     // Tabellen & Spalten dynamisch aus Atom
     const sampleTables = dbSchema ? Object.keys(dbSchema) : [];
     const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
-    const [selectedColumn, setSelectedColumn] = React.useState("*");
 
     const addFilter = () => {
         if (!columns.length) return; // <-- geändert
@@ -108,10 +99,25 @@ export const QueryBuilder3 = () => {
                         ))}
                     </Select>
                     <Select
-                        label="Spalte auswählen"
-                        value={selectedColumn || "*"}
-                        onChange={(e) => setSelectedColumn(e.target.value)}
-                        sx={{flex: 1}}
+                        multiple
+                        value={selectedColumn}
+                        onChange={(e) => {
+                            let value = typeof e.target.value === "string"
+                                ? e.target.value.split(",")
+                                : e.target.value;
+
+                            // Wenn "*" ausgewählt wurde, ignoriere alle anderen
+                            if (value.includes("*")) {
+                                value = ["*"];
+                            } else {
+                                // Entferne "*" falls bereits gewählt und jetzt andere dazu kommen
+                                value = value.filter(v => v !== "*");
+                            }
+
+                            setSelectedColumn(value);
+                        }}
+                        renderValue={(selected) => selected.join(", ")}
+                        sx={{ flex: 1 }}
                     >
                         <MenuItem value="*">Alle</MenuItem>
                         {columns.map((col) => (
@@ -120,6 +126,7 @@ export const QueryBuilder3 = () => {
                             </MenuItem>
                         ))}
                     </Select>
+
                 </Stack>
             </Box>
 

@@ -7,6 +7,7 @@ export type QueryNode =
     | { type: "orderBy"; column: string; direction: string };
 
 export const selectedTableAtom = atom<string | null>(null);
+export const selectedColumnAtom = atom<string[]>(["*"]);
 export const queryChainAtom = atom<QueryNode[]>([]);
 
 /*export const dbSchemaAtom = atom<DatabaseSchema | null>(null);
