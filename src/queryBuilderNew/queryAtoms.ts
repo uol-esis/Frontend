@@ -9,14 +9,8 @@ export type QueryNode =
 export const selectedTableAtom = atom<string | null>(null);
 export const selectedColumnAtom = atom<string[]>(["*"]);
 export const queryChainAtom = atom<QueryNode[]>([]);
+export const queryResultsAtom = atom<any[]>([]);
 
-/*export const dbSchemaAtom = atom<DatabaseSchema | null>(null);
-
-export type DatabaseSchema = {
-    [tableName: string]: string[]; // z. B. { users: ["id", "name"], orders: ["id", "amount"] }
-};*/
-
-// 🆕 Default-Schema für Testzwecke
 export type DatabaseSchema = {
     [tableName: string]: string[];
 };

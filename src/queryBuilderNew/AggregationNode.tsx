@@ -17,25 +17,35 @@ export const AggregationNode: React.FC<Props> = ({node, updateNode}) => {
 
     return (
         <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
+            direction={{xs: "column", sm: "row"}}
+            spacing={1}
+            mt={1}
+            alignItems="stretch"
             sx={{width: "100%"}}
         >
-            <Box sx={{flex: 1, maxWidth: 400}}>
-                <Select fullWidth value={node.agg} onChange={(e) => updateNode({agg: e.target.value})}>
+            <Box sx={{flex: 1}}>
+                <TextField
+                    label="Aggregation"
+                    select
+                    fullWidth
+                    value={node.agg}
+                    onChange={(e) => updateNode({agg: e.target.value})}>
                     {aggregations.map((agg) => (
                         <MenuItem key={agg} value={agg}>{agg}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
-            <Box sx={{flex: 1, maxWidth: 400}}>
-                <Select fullWidth value={node.column} onChange={(e) => updateNode({column: e.target.value})}>
+            <Box sx={{flex: 1}}>
+                <TextField
+                    label="Spalte"
+                    select
+                    fullWidth
+                    value={node.column}
+                    onChange={(e) => updateNode({column: e.target.value})}>
                     {columns.map((col) => (
                         <MenuItem key={col} value={col}>{col}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
         </Stack>
     );

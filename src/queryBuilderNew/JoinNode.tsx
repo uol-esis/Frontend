@@ -1,5 +1,5 @@
 import React from "react";
-import {MenuItem, Select, Grid, Stack, Box} from "@mui/material";
+import {MenuItem, Select, Grid, Stack, Box, TextField} from "@mui/material";
 import {dbSchemaAtom, QueryNode, selectedTableAtom} from "./queryAtoms";
 import {useAtom} from "jotai";
 
@@ -25,42 +25,45 @@ export const JoinNode: React.FC<Props> = ({node, updateNode}) => {
             sx={{width: "100%"}}
         >
             <Box sx={{flex: 2}}>
-                <Select
+                <TextField
+                    label="Tabelle Join"
+                    select
                     fullWidth
                     value={node.table}
                     onChange={(e) => updateNode({table: e.target.value})}
-                    displayEmpty
                 >
                     {sampleTables.map((tbl) => (
                         <MenuItem key={tbl} value={tbl}>{tbl}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
             <Box sx={{flex: 1}}>
-                <Select
+                <TextField
+                    label="Spalte Join"
+                    select
                     fullWidth
                     value={node.targetColumn}
                     onChange={(e) => updateNode({targetColumn: e.target.value})}
-                    displayEmpty
                     disabled={targetColumns.length === 0}
                 >
                     {targetColumns.map((col) => (
                         <MenuItem key={col} value={col}>{col}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
             <Box sx={{flex: 1}}>
-                <Select
+                <TextField
+                    label="Spalte"
+                    select
                     fullWidth
                     value={node.sourceColumn}
                     onChange={(e) => updateNode({sourceColumn: e.target.value})}
-                    displayEmpty
                     disabled={sourceColumns.length === 0}
                 >
                     {sourceColumns.map((col) => (
                         <MenuItem key={col} value={col}>{col}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
         </Stack>
     );

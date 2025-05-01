@@ -1,14 +1,15 @@
 // src/components/QueryPreview.tsx
 import React from "react";
 import { useAtom } from "jotai";
-import {selectedTableAtom, queryChainAtom, selectedColumnAtom} from "./queryAtoms";
-import { buildStructuredQuery } from "./generateSqlFromQuery"; // <--- neue JSON-Funktion
-import { Card, CardContent, Typography, Button } from "@mui/material";
+import {selectedTableAtom, queryChainAtom, selectedColumnAtom, queryResultsAtom} from "./queryAtoms";
+import { buildStructuredQuery } from "./generateSqlFromQuery";
+import {TableDisplay} from "./Table";
 
 export const QueryPreview = () => {
     const [table] = useAtom(selectedTableAtom);
     const [chain] = useAtom(queryChainAtom);
     const [selectedColumn] = useAtom(selectedColumnAtom);
+    const [queryResults] = useAtom(queryResultsAtom);
 
     if (!table) return null;
 
@@ -20,14 +21,9 @@ export const QueryPreview = () => {
     };
 
     return (
-        <Card sx={{ mt: 2 }}>
-            <CardContent>
-                <Typography variant="subtitle1">Query JSON Vorschau</Typography>
-                <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>{json}</pre>
-                <Button onClick={handleCopyToClipboard} variant="contained" sx={{ mt: 2 }}>
-                    JSON kopieren
-                </Button>
-            </CardContent>
-        </Card>
+        <div>
+            <h2>Antwort vom Backend</h2>
+            <TableDisplay data={queryResults} />
+        </div>
     );
 };

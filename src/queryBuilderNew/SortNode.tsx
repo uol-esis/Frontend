@@ -1,5 +1,5 @@
 import React from "react";
-import {MenuItem, Select, Stack, Box} from "@mui/material";
+import {MenuItem, Select, Stack, Box, TextField} from "@mui/material";
 import {dbSchemaAtom, selectedTableAtom, QueryNode} from "./queryAtoms";
 import {useAtom} from "jotai";
 
@@ -19,7 +19,9 @@ export const SortNode: React.FC<Props> = ({node, updateNode}) => {
     return (
         <Stack direction={{xs: "column", sm: "row"}} spacing={1} mt={1} sx={{width: "100%"}}>
             <Box sx={{flex: 1}}>
-                <Select
+                <TextField
+                    label="Spalte"
+                    select
                     fullWidth
                     value={node.column}
                     onChange={(e) => updateNode({column: e.target.value})}
@@ -27,10 +29,12 @@ export const SortNode: React.FC<Props> = ({node, updateNode}) => {
                     {columns.map((col) => (
                         <MenuItem key={col} value={col}>{col}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
             <Box sx={{flex: 1}}>
-                <Select
+                <TextField
+                    label="Sortierreihenfolge"
+                    select
                     fullWidth
                     value={node.direction}
                     onChange={(e) => updateNode({direction: e.target.value})}
@@ -38,7 +42,7 @@ export const SortNode: React.FC<Props> = ({node, updateNode}) => {
                     {directions.map((dir) => (
                         <MenuItem key={dir} value={dir}>{dir}</MenuItem>
                     ))}
-                </Select>
+                </TextField>
             </Box>
         </Stack>
     );
