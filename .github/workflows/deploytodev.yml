@@ -16,7 +16,7 @@ jobs:
           env=$(echo $current | jq '.Env')
           wrapped=$(jq -n --argjson env "$env" '{env:$env,RepositoryAuthentication: false}')
 
-          curl -X PUT -s ${{ secrets.API_HOST }}/api/stacks/${{ secrets.STACK_ID }}/git/redeploy?endpointId=${{ secrets.ENDPOINT_ID }} \
+          curl -X PUT -s -o /dev/null ${{ secrets.API_HOST }}/api/stacks/${{ secrets.STACK_ID }}/git/redeploy?endpointId=${{ secrets.ENDPOINT_ID }} \
             -H "Content-Type: application/json" \
             -H "X-API-KEY: ${{ secrets.API_KEY }}" \
             -d "$wrapped"
