@@ -5,7 +5,7 @@ import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
 import './css/App.css'
-import {QueryBuilder} from "./queryBuilderNew/QueryBuilder.js";
+import {QueryBuilder} from "./components/builder/QueryBuilder.js";
 
 function App() {
   const [count, setCount] = useState(0)

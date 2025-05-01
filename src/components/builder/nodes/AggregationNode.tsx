@@ -1,6 +1,6 @@
 import React from "react";
 import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
-import {dbSchemaAtom, QueryNode, selectedTableAtom} from "./queryAtoms";
+import {dbSchemaAtom, QueryNode, selectedTableAtom} from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
 
 const aggregations = ["COUNT", "MIN", "MAX", "AVG"];

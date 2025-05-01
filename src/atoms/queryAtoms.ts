@@ -9,7 +9,7 @@ export type QueryNode =
 export const selectedTableAtom = atom<string | null>(null);
 export const selectedColumnAtom = atom<string[]>(["*"]);
 export const queryChainAtom = atom<QueryNode[]>([]);
-export const queryResultsAtom = atom<any[]>([]);
+export const queryResultsAtom = atom<Record<string, any>[]>([]);
 
 export type DatabaseSchema = {
     [tableName: string]: string[];

@@ -1,6 +1,6 @@
 import React from "react";
 import { useAtom } from "jotai";
-import { queryChainAtom, QueryNode } from "./queryAtoms";
+import { queryChainAtom, QueryNode } from "../../../atoms/queryAtoms";
 import { Card, CardContent, IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { FilterNode } from "./FilterNode";
@@ -13,6 +13,7 @@ export const QueryNodeComponent = ({ node, index }: { node: QueryNode; index: nu
 
     const updateNode = (updates: Partial<QueryNode>) => {
         const updated = [...chain];
+        // @ts-ignore
         updated[index] = { ...updated[index], ...updates };
         setChain(updated);
     };

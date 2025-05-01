@@ -1,6 +1,6 @@
 import React from "react";
 import {MenuItem, Select, Stack, Box, TextField} from "@mui/material";
-import {dbSchemaAtom, selectedTableAtom, QueryNode} from "./queryAtoms";
+import {dbSchemaAtom, selectedTableAtom, QueryNode} from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
 
 type Props = {
