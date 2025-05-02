@@ -1,5 +1,5 @@
 // components/builder/QueryControls.tsx
-import {Button, Stack} from "@mui/material";
+import {Button, Grid, Stack} from "@mui/material";
 import React from "react";
 
 type Props = {
@@ -20,24 +20,36 @@ export const QueryControls: React.FC<Props> = (
         onAddJoin,
         onRunQuery,
     }) => (
-    <Stack direction="row" spacing={1.5} mb={2}>
-        <Button variant="outlined" onClick={onAddFilter} sx={{flex: 1}}>
-            Filter
-        </Button>
-        <Button variant="outlined" onClick={onAddSort} sx={{flex: 1}}>
-            Sort
-        </Button>
-        <Button variant="outlined" onClick={onAddAggregation} sx={{flex: 1}}>
-            Aggregation
-        </Button>
-        <Button variant="outlined" onClick={onAddGroupBy} sx={{flex: 1}}>
-            Group By
-        </Button>
-        <Button variant="outlined" onClick={onAddJoin} sx={{flex: 1}}>
-            Join
-        </Button>
-        <Button variant="contained" onClick={onRunQuery} sx={{flex: 2}}>
-            Ausführen
-        </Button>
-    </Stack>
+    <Grid container spacing={1.5} mb={2}>
+        <Grid item sx={{ flexGrow: 1 }}>
+            <Button variant="outlined" onClick={onAddFilter} fullWidth>
+                Filter
+            </Button>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }}>
+            <Button variant="outlined" onClick={onAddSort} fullWidth>
+                Sort
+            </Button>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }}>
+            <Button variant="outlined" onClick={onAddAggregation} fullWidth>
+                Aggregation
+            </Button>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }}>
+            <Button variant="outlined" onClick={onAddGroupBy} fullWidth>
+                Group By
+            </Button>
+        </Grid>
+        <Grid item sx={{ flexGrow: 1 }}>
+            <Button variant="outlined" onClick={onAddJoin} fullWidth>
+                Join
+            </Button>
+        </Grid>
+        <Grid item sx={{ flexGrow: 2 }}>
+            <Button variant="contained" onClick={onRunQuery} fullWidth>
+                Ausführen
+            </Button>
+        </Grid>
+    </Grid>
 );
