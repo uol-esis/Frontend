@@ -1,8 +1,6 @@
 import React from "react";
-import {MenuItem, Select, Stack, Box, TextField} from "@mui/material";
+import {MenuItem, Stack, Box, TextField} from "@mui/material";
 import {
-    dbSchemaAtom,
-    selectedTableAtom,
     QueryNode,
     selectedColumnAtom,
     selectableColumnsAtom
@@ -18,11 +16,8 @@ type Props = {
 const directions = ["ASC", "DESC"];
 
 export const SortNode: React.FC<Props> = ({node, updateNode}) => {
-    const [selectedTable] = useAtom(selectedTableAtom);
-    const [dbSchema] = useAtom(dbSchemaAtom);
-
-    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
-    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
+    const [selectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns] = useAtom(selectableColumnsAtom);
 
     const columnsToUse = selectedColumns.includes("*")
         ? selectableColumns

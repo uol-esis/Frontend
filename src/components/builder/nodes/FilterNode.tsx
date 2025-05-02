@@ -1,17 +1,13 @@
 import React from "react";
-import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
+import {MenuItem, TextField, Stack, Box} from "@mui/material";
 import {
-    dbSchemaAtom,
     QueryNode,
     selectableColumnsAtom,
     selectedColumnAtom,
-    selectedTableAtom
 } from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
-import {TableSelect} from "@/components/shared/TableSelect";
 import {ColumnSelect} from "../../shared/ColumnSelect";
 
-const columns = ["id", "name", "age", "price", "created_at"];
 const operators = ["=", "!=", ">", "<", ">=", "<="];
 
 type Props = {
@@ -20,12 +16,8 @@ type Props = {
 };
 
 export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
-    const [selectedTable] = useAtom(selectedTableAtom);
-    const [dbSchema] = useAtom(dbSchemaAtom);
-    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
-    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
-
-    //const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
+    const [selectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns] = useAtom(selectableColumnsAtom);
 
     const columnsToUse = selectedColumns.includes("*")
         ? selectableColumns
@@ -45,17 +37,6 @@ export const FilterNode: React.FC<Props> = ({node, updateNode}) => {
                     value={node.column}
                     onChange={updateNode}
                 />
-               {/* <TextField
-                    label="Spalte"
-                    select
-                    fullWidth
-                    value={node.column}
-                    onChange={(e) => updateNode({column: e.target.value})}
-                >
-                    {columns.map((col) => (
-                        <MenuItem key={col} value={col}>{col}</MenuItem>
-                    ))}
-                </TextField>*/}
             </Box>
             <Box sx={{flex: 1}}>
                 <TextField

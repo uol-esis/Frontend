@@ -1,5 +1,4 @@
-// components/builder/QueryControls.tsx
-import {Button, Grid, Stack} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import React from "react";
 
 type Props = {

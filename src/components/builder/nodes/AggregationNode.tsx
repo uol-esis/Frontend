@@ -1,11 +1,9 @@
 import React from "react";
-import {MenuItem, Select, TextField, Grid, Stack, Box} from "@mui/material";
+import {MenuItem, TextField, Stack, Box} from "@mui/material";
 import {
-    dbSchemaAtom,
     QueryNode,
     selectableColumnsAtom,
     selectedColumnAtom,
-    selectedTableAtom
 } from "../../../atoms/queryAtoms";
 import {useAtom} from "jotai";
 import {ColumnSelect} from "../../shared/ColumnSelect";
@@ -18,17 +16,12 @@ type Props = {
 };
 
 export const AggregationNode: React.FC<Props> = ({node, updateNode}) => {
-    const [dbSchema] = useAtom(dbSchemaAtom);
-    const [selectedTable] = useAtom(selectedTableAtom);
-    const columns = selectedTable && dbSchema ? dbSchema[selectedTable] || [] : [];
-
-    const [selectedColumns, setSelectedColumns] = useAtom(selectedColumnAtom);
-    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
+    const [selectedColumns] = useAtom(selectedColumnAtom);
+    const [selectableColumns] = useAtom(selectableColumnsAtom);
 
     const columnsToUse = selectedColumns.includes("*")
         ? selectableColumns
         : selectedColumns;
-
 
     return (
         <Stack

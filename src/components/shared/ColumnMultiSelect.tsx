@@ -1,6 +1,5 @@
 import {MenuItem, Select} from "@mui/material";
 import React from "react";
-import {addFilterNode} from "@/utils/queryBuilderHelpers";
 import {useAtom} from "jotai/index";
 import {selectableColumnsAtom, selectedColumnAtom} from "../../atoms/queryAtoms";
 
@@ -12,7 +11,7 @@ type Props = {
 
 export const ColumnMultiSelect: React.FC<Props> = ({columns, selected, onChange}) => {
     const [, setSelectedColumns] = useAtom(selectedColumnAtom);
-    const [selectableColumns, setSelectableColumns] = useAtom(selectableColumnsAtom);
+    const [selectableColumns] = useAtom(selectableColumnsAtom);
 
     return (
         <Select

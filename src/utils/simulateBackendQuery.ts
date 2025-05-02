@@ -58,6 +58,7 @@ export const simulateBackendQuery = (query: StructuredQuery): Record<string, any
 
     // Apply joins
     if (query.joins && query.joins.length > 0) {
+        // @ts-ignore
         query.joins.forEach(({ table, sourceColumn, targetColumn }) => {
             const joinTable = mockDb[table];
 
@@ -154,6 +155,7 @@ export const simulateBackendQuery = (query: StructuredQuery): Record<string, any
     // Apply sorting (only if no aggregation was returned)
     if (query.orderBy && query.orderBy.length > 0) {
         result.sort((a, b) => {
+            // @ts-ignore
             for (const {column, direction} of query.orderBy) {
                 const valA = a[column];
                 const valB = b[column];
