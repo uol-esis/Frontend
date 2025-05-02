@@ -5,6 +5,7 @@ import React from "react";
 type Props = {
     onAddFilter: () => void;
     onAddAggregation: () => void;
+    onAddGroupBy: () => void;
     onAddSort: () => void;
     onAddJoin: () => void;
     onRunQuery: () => void;
@@ -14,6 +15,7 @@ export const QueryControls: React.FC<Props> = (
     {
         onAddFilter,
         onAddAggregation,
+        onAddGroupBy,
         onAddSort,
         onAddJoin,
         onRunQuery,
@@ -27,6 +29,9 @@ export const QueryControls: React.FC<Props> = (
         </Button>
         <Button variant="outlined" onClick={onAddAggregation} sx={{flex: 1}}>
             Aggregation
+        </Button>
+        <Button variant="outlined" onClick={onAddGroupBy} sx={{flex: 1}}>
+            Group By
         </Button>
         <Button variant="outlined" onClick={onAddJoin} sx={{flex: 1}}>
             Join

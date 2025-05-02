@@ -7,6 +7,7 @@ import { FilterNode } from "./FilterNode";
 import { AggregationNode } from "./AggregationNode";
 import { JoinNode } from "./JoinNode";
 import {SortNode} from "./SortNode";
+import {GroupByNode} from "../../builder/nodes/GroupBy";
 
 export const QueryNodeComponent = ({ node, index }: { node: QueryNode; index: number }) => {
     const [chain, setChain] = useAtom(queryChainAtom);
@@ -34,6 +35,8 @@ export const QueryNodeComponent = ({ node, index }: { node: QueryNode; index: nu
                 return <JoinNode node={node} updateNode={updateNode} />;
             case "orderBy":
                 return <SortNode node={node} updateNode={updateNode} />;
+            case "groupBy":
+                return <GroupByNode node={node} updateNode={updateNode} />;
         }
     };
 

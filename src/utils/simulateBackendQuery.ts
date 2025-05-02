@@ -76,59 +76,80 @@ export const simulateBackendQuery = (query: StructuredQuery): Record<string, any
         });
     }
 
+    // Apply groupBy
+    if (query.groupBy && query.groupBy.length > 0) {
+        const groupedMap = new Map<string, any[]>();
+
+        result.forEach((row) => {
+            const key = query.groupBy!.map((col) => row[col]).join("||");
+            if (!groupedMap.has(key)) {
+                groupedMap.set(key, []);
+            }
+            groupedMap.get(key)!.push(row);
+        });
+
+        result = Array.from(groupedMap.entries()).map(([key, rows]) => {
+            const groupedRow: Record<string, any> = {};
+            query.groupBy!.forEach((col) => {
+                groupedRow[col] = rows[0][col]; // alle Gruppenwerte sind gleich
+            });
+            groupedRow.__group = rows;
+            return groupedRow;
+        });
+    }
+
     // Apply aggregations
     if (query.aggregations && query.aggregations.length > 0) {
-        const aggregatedResults = query.aggregations.map(({ column, agg, having }) => {
-            const values = result.map(r => Number(r[column])).filter(v => !isNaN(v));
+        const rowsToAggregate = result[0]?.__group ? result : [ { __group: result } ];
 
-            const aggregatedValue = (() => {
-                switch (agg) {
-                    case "COUNT":
-                        return values.length;
-                    case "SUM":
-                        return values.reduce((a, b) => a + b, 0);
-                    case "AVG":
-                        return values.reduce((a, b) => a + b, 0) / values.length || 0;
-                    case "MIN":
-                        return Math.min(...values);
-                    case "MAX":
-                        return Math.max(...values);
-                    default:
-                        return null;
-                }
-            })();
+        const aggregatedResults: Record<string, any>[] = rowsToAggregate.map((row) => {
+            const groupRows = row.__group;
+            const resultRow: Record<string, any> = {};
 
-            // HAVING clause simulation
-            if (having) {
-                const pass = (() => {
-                    switch (having.operator) {
-                        case "=":
-                            return aggregatedValue == Number(having.value);
-                        case "!=":
-                            return aggregatedValue != Number(having.value);
-                        case ">":
-                            return aggregatedValue > Number(having.value);
-                        case "<":
-                            return aggregatedValue < Number(having.value);
-                        case ">=":
-                            return aggregatedValue >= Number(having.value);
-                        case "<=":
-                            return aggregatedValue <= Number(having.value);
-                        default:
-                            return true;
-                    }
-                })();
-
-                if (!pass) return null;
+            if (query.groupBy) {
+                query.groupBy.forEach((col) => {
+                    resultRow[col] = row[col];
+                });
             }
 
-            return {
-                [`${agg}(${column})`]: aggregatedValue
-            };
-        }).filter((r): r is Record<string, any> => r !== null);
+            query.aggregations!.forEach(({ column, agg }) => {
+                let values: any[];
+                if (agg === "COUNT") {
+                    values = groupRows.map((r: any) => r[column]).filter((v: any) => v !== undefined && v !== null);
+                } else {
+                    values = groupRows.map((r: any) => Number(r[column])).filter((v: number) => !isNaN(v));
+                }
+                let value: any;
+
+                switch (agg) {
+                    case "COUNT":
+                        value = values.length;
+                        break;
+                    case "SUM":
+                        value = values.reduce((a, b) => a + b, 0);
+                        break;
+                    case "AVG":
+                        value = values.reduce((a, b) => a + b, 0) / values.length || 0;
+                        break;
+                    case "MIN":
+                        value = Math.min(...values);
+                        break;
+                    case "MAX":
+                        value = Math.max(...values);
+                        break;
+                    default:
+                        value = null;
+                }
+
+                resultRow[`${agg}(${column})`] = value;
+            });
+
+            return resultRow;
+        });
 
         return aggregatedResults;
     }
+
 
     // Apply sorting (only if no aggregation was returned)
     if (query.orderBy && query.orderBy.length > 0) {

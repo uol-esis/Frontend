@@ -7,7 +7,7 @@ import {
     queryChainAtom,
     dbSchemaAtom,
     selectedColumnAtom,
-    queryResultsAtom, selectableColumnsAtom,
+    queryResultsAtom, selectableColumnsAtom, QueryNode,
 } from "../../atoms/queryAtoms";
 
 import { TableSelect } from "../shared/TableSelect";
@@ -82,13 +82,19 @@ export const QueryBuilder = () => {
         if (node) setChain((prev) => [...prev, node]);
     };
 
+    const addGroupBy = () => {
+        const column = columns[0];
+        const node: QueryNode = { type: "groupBy", column };
+        setChain((prev) => [...prev, node]);
+    };
+
     const handleRunQuery = () => {
         if (!selectedTable) return;
         runQuery(selectedTable, chain, selectedColumns, setQueryResults);
     };
 
     return (
-        <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
+        <Box sx={{ maxWidth: 850, mx: "auto", p: 2 }}>
             <Typography variant="h4" gutterBottom>
                 Query Builder
             </Typography>
@@ -113,6 +119,7 @@ export const QueryBuilder = () => {
             <QueryControls
                 onAddFilter={addFilter}
                 onAddAggregation={addAggregation}
+                onAddGroupBy={addGroupBy}
                 onAddJoin={addJoin}
                 onAddSort={addSort}
                 onRunQuery={handleRunQuery}

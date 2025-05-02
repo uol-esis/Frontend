@@ -2,6 +2,7 @@ import {atom} from "jotai";
 
 export type QueryNode =
     | { type: "aggregation"; column: string; agg: string; operator: string; value: string }
+    | { type: "groupBy"; column: string }
     | { type: "filter"; column: string; operator: string; value: string }
     | { type: "join"; table: string; sourceColumn: string; targetColumn: string }
     | { type: "orderBy"; column: string; direction: string };

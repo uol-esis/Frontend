@@ -54,6 +54,7 @@ export interface StructuredQuery {
         column: string;
         direction: "ASC" | "DESC";
     }[];
+    groupBy?: string[];
 }
 
 export function buildStructuredQuery(table: string, chain: QueryNode[], selectedColumn: string[]): StructuredQuery {
@@ -102,6 +103,11 @@ export function buildStructuredQuery(table: string, chain: QueryNode[], selected
                     column: node.column,
                     direction: node.direction as "ASC" | "DESC",
                 });
+                break;
+
+            case "groupBy":
+                query.groupBy ??= [];
+                query.groupBy.push(node.column);
                 break;
         }
     }
