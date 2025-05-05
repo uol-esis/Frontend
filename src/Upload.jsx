@@ -90,7 +90,16 @@ function Upload() {
     fileInputRef.current.click();
   };
 
-  
+  //noch ausfüllen
+  const handleAddSchema = () => {
+    console.log("Add new schema clicked");
+  };
+  const handleEditSchema = () => {
+    console.log("Edit schema clicked"); 
+  };
+  const handleDeleteSchema = () => {
+    console.log("Delete schema clicked");   
+  };
 
   useEffect(() => {
     if (selectedFile) {
@@ -202,7 +211,7 @@ function Upload() {
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
         {/*Left Upload */}
         <div
-          className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px]"
+          className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px] min-h-[75vh]"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
@@ -315,6 +324,9 @@ function Upload() {
                 </svg>
                 {/* KOmmt neuer Plus Button noch rein? */}
               </label>
+              <button type="button" onClick={handleAddSchema} className="ml-2 inline-flex items-center p-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-900 shadow-sm hover:bg-gray-400">
+                <span className="text-lg font-bold">+</span>
+              </button>
             </div>
             {/* list existing scheme */}
             <div className="p-1 w-full h-auto max-h-[60%] bg-white rounded-[10px] overflow-auto">
@@ -322,11 +334,23 @@ function Upload() {
                 {filteredSchemaList.map((schema, index) => (
                   <li
                     key={index}
-                    className={`cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
+                    className={`flex justify-between items-center cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
                     onClick={() => setSelectedSchema(schema)}
                   >
                     {/* schema */}
                     {schema.name}
+                    <div className="flex gap-2">
+                      <button type ="button"
+                        onClick={(e) => {e.stopPropagation(); handleEditSchema();}}
+                        className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
+                           ✏️ 
+                        </button>
+                      <button type ="button"
+                        onClick={(e) => {e.stopPropagation(); handleDeleteSchema();}}
+                        className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
+                          🗑️
+                        </button>
+                    </div>
                     
                   </li>
                 ))}
