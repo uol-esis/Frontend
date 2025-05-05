@@ -4,21 +4,43 @@ import Home from "./Home";
 import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
+import { useEffect } from "react";
 import './css/App.css'
+import Apis from "./Apis"
+import keycloak from "./keycloak"
+import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/upload" element={<Upload />} />
-        <Route path="/preview" element={<Preview/>} />
-        <Route path="/wip" element={<WorkInProgress />} />
-      </Routes>
-    </Router>
+    <ReactKeycloakProvider authClient={keycloak}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/upload" element={<Upload />} />
+          <Route path="/preview" element={<Preview />} />
+          <Route path="/wip" element={<WorkInProgress />} />
+          <Route path="/secured" element={<SecuredContent />} />
+        </Routes>
+      </Router>
+    </ReactKeycloakProvider>
   );
 }
+
+const SecuredContent = () => {
+  const { keycloak } = useKeycloak();
+  const isLoggedIn = keycloak.authenticated;
+  useEffect(() => {
+    if (isLoggedIn === false) keycloak?.login();
+  }, [isLoggedIn, keycloak]);
+  if (!isLoggedIn) return <div>Not logged in</div>;
+  return (
+    <div>
+      <h2>Secured frontend content</h2>
+      <Apis />
+    </div>
+  );
+};
 
 export default App
