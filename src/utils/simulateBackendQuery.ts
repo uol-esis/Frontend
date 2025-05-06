@@ -36,25 +36,40 @@ export const simulateBackendQuery = (query: StructuredQuery): Record<string, any
         query.filters.forEach(({ column, operator, value }) => {
             result = result.filter((row) => {
                 const cell = row[column];
+                let cellValue = cell;
+                let compareValue:any = value;
+
+                // Versuche beide Werte als Zahlen zu parsen, wenn möglich
+                const cellAsNumber = parseFloat(cell);
+                const valueAsNumber = parseFloat(value);
+
+                const bothAreNumbers = !isNaN(cellAsNumber) && !isNaN(valueAsNumber);
+
+                if (bothAreNumbers) {
+                    cellValue = cellAsNumber;
+                    compareValue = valueAsNumber;
+                }
+
                 switch (operator) {
                     case "=":
-                        return cell == value;
+                        return cellValue == compareValue;
                     case "!=":
-                        return cell != value;
+                        return cellValue != compareValue;
                     case ">":
-                        return cell > value;
+                        return cellValue > compareValue;
                     case "<":
-                        return cell < value;
+                        return cellValue < compareValue;
                     case ">=":
-                        return cell >= value;
+                        return cellValue >= compareValue;
                     case "<=":
-                        return cell <= value;
+                        return cellValue <= compareValue;
                     default:
                         return true;
                 }
             });
         });
     }
+
 
     // Apply joins
     if (query.joins && query.joins.length > 0) {

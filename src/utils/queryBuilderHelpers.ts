@@ -55,6 +55,7 @@ export const runQuery = (
 ) => {
     const query = buildStructuredQuery(selectedTable, chain, selectedColumns);
     const result:Record<string, any>[] = simulateBackendQuery(query);
+    console.log(query);
     console.log(result);
     setQueryResults(result);
 };

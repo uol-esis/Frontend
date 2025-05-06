@@ -38,7 +38,8 @@ export interface StructuredQuery {
     select: string[]; // z. B. ["*"] oder ["COUNT(id)"]
     joins?: {
         table: string;
-        on: { sourceColumn: string; targetColumn: string };
+        sourceColumn: string
+        targetColumn: string
     }[];
     filters?: {
         column: string;
@@ -81,7 +82,7 @@ export function buildStructuredQuery(table: string, chain: QueryNode[], selected
                     column: node.column,
                     agg: node.agg,
                     having: node.operator && node.value
-                        ? { operator: node.operator, value: node.value }
+                        ? {operator: node.operator, value: node.value}
                         : undefined,
                 });
                 break;
@@ -90,10 +91,9 @@ export function buildStructuredQuery(table: string, chain: QueryNode[], selected
                 query.joins ??= [];
                 query.joins.push({
                     table: node.table,
-                    on: {
-                        sourceColumn: node.sourceColumn,
-                        targetColumn: node.targetColumn,
-                    },
+                    sourceColumn: node.sourceColumn,
+                    targetColumn: node.targetColumn,
+
                 });
                 break;
 

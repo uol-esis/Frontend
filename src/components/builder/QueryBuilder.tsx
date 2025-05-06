@@ -1,6 +1,6 @@
 // components/builder/QueryBuilder.tsx
 import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import {Box, Button, Typography} from "@mui/material";
 import {useAtom, useSetAtom} from "jotai";
 import {
     selectedTableAtom,
@@ -15,7 +15,7 @@ import { ColumnMultiSelect } from "../shared/ColumnMultiSelect";
 import { QueryControls } from "./QueryControls";
 import { QueryNodeComponent } from "./nodes/QueryNode";
 import { QueryPreview } from "./QueryPreview";
-import { buildStructuredQuery } from "../../utils/buildStructureQuery";
+import {buildStructuredQuery, StructuredQuery} from "../../utils/buildStructureQuery";
 import {
     addAggregationNode,
     addFilterNode,
@@ -23,6 +23,7 @@ import {
     addSortNode,
     fetchSimulatedSchema, runQuery
 } from "../../utils/queryBuilderHelpers";
+import {buildQueryChainFromStructuredQuery} from "../../utils/buildQueryChainFromStructuredQuery";
 
 export const QueryBuilder = () => {
     const [selectedTable, setSelectedTable] = useAtom(selectedTableAtom);
@@ -93,11 +94,39 @@ export const QueryBuilder = () => {
         runQuery(selectedTable, chain, selectedColumns, setQueryResults);
     };
 
+    const handleLoadSampleStructure = () => {
+        const sample: StructuredQuery = {
+            table: "users",
+            select: ["id", "name", "total", ],
+            orderBy: [
+                { column: "name", direction: "ASC" }
+            ],
+            joins: [
+                { table: "orders", sourceColumn: "id", targetColumn: "user_id" }
+            ],
+            groupBy: ["name"],
+            aggregations: [
+                { column: "total", agg: "MAX" }
+            ],
+        };
+
+        setSelectedTable(sample.table);
+        setSelectedColumns(sample.select);
+        const loadedChain = buildQueryChainFromStructuredQuery(sample);
+        setChain(loadedChain);
+    };
+
     return (
         <Box sx={{ maxWidth: 850, mx: "auto", p: 2 }}>
             <Typography variant="h4" gutterBottom>
                 Query Builder
             </Typography>
+
+            <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button variant="outlined" onClick={handleLoadSampleStructure}>
+                    Beispiel-Query laden
+                </Button>
+            </Box>
 
             <Box mb={2} display="flex" gap={2}>
                 <Box flex={2}>
