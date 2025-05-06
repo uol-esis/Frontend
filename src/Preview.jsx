@@ -132,6 +132,7 @@ export default function Preview() {
       console.log("schemaId " + schemaId);
       api.previewConvertTable(schemaId, selectedFile, (error, data, response) =>{
         if(error){
+          console.error(error);
           reject(error);
         } else {
           resolve(data);
@@ -208,6 +209,7 @@ export default function Preview() {
               await sendTableToServer(schemaId);
               uploadFinishedDialogRef.current?.showModal();
           } catch (error) {
+            console.log("checkbox error")
             setErrorText(""+error);
             errorDialogRef.current?.showModal();
           }
