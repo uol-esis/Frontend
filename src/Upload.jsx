@@ -205,7 +205,7 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className="bg-white h-screen p-2 space-y-6 mx-2 my-5 pb-24 overflow-y-auto">
+    <div className=" p-2 space-y-6 mx-2 my-5 ">
       
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
@@ -283,7 +283,7 @@ function Upload() {
         {/* Right Up, Down */}
         <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${schemaBlockClass}`}>
           {/* Right Up  */}
-          <div className="flex-1 p-2 bg-gray-100 rounded-[10px] ">
+          <div className="flex-1 p-4 bg-gray-100 rounded-[10px] flex flex-col h-full">
             <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
             <div className="flex flex-row justify-between mb-2">
               {/* Dropdown-Menü für Thema */}
@@ -329,7 +329,7 @@ function Upload() {
               </button>
             </div>
             {/* list existing scheme */}
-            <div className="p-1 w-full h-auto max-h-[60%] bg-white rounded-[10px] overflow-auto">
+            <div className="p-1 w-full bg-white rounded-[10px] overflow-auto flex-1">
               <ul>
                 {filteredSchemaList.map((schema, index) => (
                   <li
@@ -357,11 +357,11 @@ function Upload() {
               </ul>
             </div>
             {/* Weiter Button */}
-            <div className="mt-4">
+            <div className="mt-4 ">
               <button
                 type="button"
                 onClick={handleConfirm}
-                className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
+                className={`w-full rounded-md py-2 text-sm font-semibold text-white  ${
                   selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
                 }`}
                 disabled={!selectedFile || !selectedSchema}
