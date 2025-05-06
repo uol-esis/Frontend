@@ -113,7 +113,7 @@ export default function Preview() {
         console.log("Error during previewConvertTable:");
       }
     } catch (error) {
-      setErrorText(""+error);
+      setErrorText(error.message);
       console.error("Error during API call:", error);
     }
   };
@@ -130,7 +130,7 @@ export default function Preview() {
       }
 
       console.log("schemaId " + schemaId);
-      api.previewConvertTable(schemaId, selectedFile, (error, data, response) =>{
+      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
         if(error){
           console.error(error);
           reject(error);
@@ -210,7 +210,7 @@ export default function Preview() {
               uploadFinishedDialogRef.current?.showModal();
           } catch (error) {
             console.log("checkbox error")
-            setErrorText(""+error);
+            setErrorText(error.message);
             errorDialogRef.current?.showModal();
           }
         }}
@@ -220,7 +220,7 @@ export default function Preview() {
 
       <ErrorDialog
         text={"Upload fehlgeschlagen "}
-        errorMsg = {""+errorText}
+        errorMsg = {""}
         onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
         dialogRef={errorDialogRef}
       />
@@ -272,7 +272,7 @@ export default function Preview() {
                     <h3 className="text-sm font-semibold text-yellow-800">Tabelle konnte nicht geladen werden</h3>
                   </div>
                 </div>
-                <p className="text-sm">{errorText}</p>
+                {/*<p className="text-sm">{errorText}</p>*/}
               </div>
               ) : null
           }
