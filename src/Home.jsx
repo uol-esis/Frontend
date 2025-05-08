@@ -32,7 +32,7 @@ function Home() {
           <p className='flex-grow'>Daten aus der Datenbank zu Diagrammen und Statistiken aufbereiten.</p>
           <button
             type="button"
-            className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             onClick={() => window.location.href = import.meta.env.VITE_METABASE_ENDPOINT}
           >
             <div className="flex items-center justify-center g-3">

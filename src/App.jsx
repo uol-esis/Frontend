@@ -4,6 +4,7 @@ import Home from "./Home";
 import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
+import Edit from "./Edit";
 import { useEffect } from "react";
 import './css/App.css'
 import Apis from "./Apis"
@@ -22,6 +23,7 @@ function App() {
           <Route path="/preview" element={<Preview />} />
           <Route path="/wip" element={<WorkInProgress />} />
           <Route path="/secured" element={<SecuredContent />} />
+          <Route path="/edit" element={<Edit />} />
         </Routes>
       </Router>
     </ReactKeycloakProvider>
