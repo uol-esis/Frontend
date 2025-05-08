@@ -125,7 +125,7 @@ export default function Preview() {
           console.log("selectedFile: ", selectedFile);
           console.log("selectedFileType: ", selectedFile.type);
           //set amount of rows based on window height
-          const limit = computeTablelimit();
+          let limit = computeTablelimit();
           if(limit < 5) {limit = 5}
           const opts = {"limit" : limit};
           api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
@@ -242,6 +242,7 @@ export default function Preview() {
                 await sendTableToServer(schemaId);
               uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
+              console.log("catched");
               setErrorText(error.message);
               errorDialogRef.current?.showModal();
             }
@@ -250,6 +251,13 @@ export default function Preview() {
         />
   
         <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
+
+        <ErrorDialog
+        text={"Upload fehlgeschlagen "}
+        errorMsg = {""}
+        onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
+        dialogRef={errorDialogRef}
+      />
   
         <div className="flex justify-self-center ">
           {/* Information text */}
@@ -259,15 +267,6 @@ export default function Preview() {
           </p>
             <StackedList headerTextArray={previewText}/>
           </div>
-          <div className="flex flex-col items-start">
-            <p className="text-base font-semibold">Schema:</p>
-            <p className="text-base font-normal">{selectedSchema?.name || (generatedSchema ? "Generiertes Schema" : "kein Schema ausgewählt")}</p>
-          </div>
-          <div className="flex flex-col items-start">
-            <p className="text-base font-semibold">Datei:</p>
-            <p className="text-base font-normal max-w-[25vw]">{selectedFile?.name || "keine Datei ausgewählt"}</p>
-          </div>
-        </div>
         {/* Table with preview or error message */} 
         <div className="flex-1 overflow-auto">
           {
@@ -289,6 +288,7 @@ export default function Preview() {
               </div>
               ) : null
           }
+          </div>
           </div>
         </div>
       {/* Knöpfe */}
