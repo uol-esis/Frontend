@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+
 import Alert from "./Alert";
 
 function Upload() {
@@ -17,6 +19,8 @@ function Upload() {
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // State name-popup
+
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const navigate = useNavigate();
 
@@ -86,6 +90,17 @@ function Upload() {
     fileInputRef.current.click();
   };
 
+  //noch ausfüllen
+  const handleAddSchema = () => {
+    console.log("Add new schema clicked");
+  };
+  const handleEditSchema = () => {
+    console.log("Edit schema clicked"); 
+  };
+  const handleDeleteSchema = () => {
+    console.log("Delete schema clicked");   
+  };
+
   useEffect(() => {
     if (selectedFile) {
       if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
@@ -135,6 +150,9 @@ function Upload() {
   const filteredSchemaList = schemaList
     .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
 
+  const schemaBlockClass = isValidFile ? "" : "opacity-50 pointer-events-none";
+
+
 
   {/* Popups for WIP handling */ }
   const [isNewOpen, setIsNewOpen] = useState(false);
@@ -182,31 +200,30 @@ function Upload() {
     setIsDeleteOpen(false);
   }
 
-
+  const openConfirmModal = () => setIsConfirmModalOpen(true); //name-popup open
+  const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
   return (
-    <div className="flex flex-col justify-start bg-white h-[85vh]">
-      <Alert
-        text={help}
-        type={helpType} />
-      <div className="flex flex-row justify-start space-x-[5vw]">
-        {/* Upload Box */}
+    <div className=" p-2 space-y-6 mx-2 my-5 ">
+      
+      {/* Container: File Upload + Schema (left, right) */}
+      <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
+        {/*Left Upload */}
         <div
-          className="flex flex-col justify-end p-4 w-[30vw] h-[62vh] ml-[5vw] mt-[2vh] bg-gray-100 rounded-[10px]"
+          className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px] min-h-[75vh]"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
-          {/* Upload Drag and drop box */}
+        
           <button
             type="button"
             onClick={handleFileInputClick}
-            className="relative block h-full w-full rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="relative flex-1 rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             {selectedFile ? (
               <>
                 {isValidFile ? (
-                  // green for valid svg
                   <svg
                     fill="none"
                     stroke="currentColor"
@@ -214,15 +231,9 @@ function Upload() {
                     aria-hidden="true"
                     className="mx-auto h-12 w-12 text-green-500"
                   >
-                    <path
-                      d="M14 24l8 8 12-12"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M14 24l8 8 12-12" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ) : (
-                  // red for not valid svg
                   <svg
                     fill="none"
                     stroke="currentColor"
@@ -230,27 +241,13 @@ function Upload() {
                     aria-hidden="true"
                     className="mx-auto h-12 w-12 text-red-500"
                   >
-                    <line
-                      x1="12"
-                      y1="12"
-                      x2="36"
-                      y2="36"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="36"
-                      y1="12"
-                      x2="12"
-                      y2="36"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
+                    <line x1="12" y1="12" x2="36" y2="36" strokeWidth={2} strokeLinecap="round" />
+                    <line x1="36" y1="12" x2="12" y2="36" strokeWidth={2} strokeLinecap="round" />
                   </svg>
                 )}
                 <span className="mt-2 block text-sm font-semibold text-gray-900">{selectedFile.name}</span>
-              </> //filename in dragndrop box
-            ) : (   //normal svg
+              </>
+            ) : (
               <>
                 <svg
                   fill="none"
@@ -270,211 +267,155 @@ function Upload() {
               </>
             )}
           </button>
-
-
-
-          {/* Zweiter Button, der ebenfalls den Upload auslöst */}
           <button
             type="button"
-            onClick={handleFileInputClick} // Use the same function
-            className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={handleFileInputClick}
+            className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
           >
             Dateien durchsuchen
           </button>
-
-          {/* Input-Element verstecken mit "hidden" */}
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            className="hidden"
-          />
-
-          {selectedFile && <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>}
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+          {selectedFile && (
+            <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>
+          )}
         </div>
 
-        {/* Schema Box */}
-        <div className="flex flex-col justify-start p-4 w-[55vw] h-[62vh] mt-[2vh] bg-gray-100 rounded-[10px]">
-          <div className="flex flex-row justify-between">
-            {/* Dropdown Menu für Thema */}
-            <Menu as="div" className="relative inline-block text-left">
-              <div>
-                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-400">
-                  Thema
-                  <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
-                </MenuButton>
-              </div>
-              <MenuItems
-                transition
-                className="absolute left-0 z-10 w-56 h-[40vh] origin-top-left overflow-y-auto overflow-x-auto rounded-md bg-white shadow-lg ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-              >
-                <div className="py-1">
-                  {themaList.map((thema, index) => (
-                    <MenuItem key={index}>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-                      >
-                        {thema}
-                      </a>
-                    </MenuItem>
-                  ))}
+        {/* Right Up, Down */}
+        <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${schemaBlockClass}`}>
+          {/* Right Up  */}
+          <div className="flex-1 p-4 bg-gray-100 rounded-[10px] flex flex-col h-full">
+            <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
+            <div className="flex flex-row justify-between mb-2">
+              {/* Dropdown-Menü für Thema */}
+              <Menu as="div" className="relative inline-block text-left">
+                <div>
+                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400">
+                    Thema
+                    <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
+                  </MenuButton>
                 </div>
-              </MenuItems>
-            </Menu>
-
-            {/* Suchfeld */}
-            <label className="border-2 border-gray-200 w-full input input-bordered flex items-center gap-2 bg-white">
-              <input
-                type="text"
-                className="grow"
-                placeholder="Suche..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)} // Update search query
-              />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                className="h-4 w-4 opacity-70">
-                <path
-                  fillRule="evenodd"
-                  d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                  clipRule="evenodd" />
-              </svg>
-            </label>
+                <MenuItems className="absolute left-0 z-10 w-56 max-h-[200px] overflow-auto rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                  <div className="py-1">
+                    {themaList.map((thema, index) => (
+                      <MenuItem key={index}>
+                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                          {thema}
+                        </a>
+                      </MenuItem>
+                    ))}
+                  </div>
+                </MenuItems>
+              </Menu>
+              {/* Search */}
+              <label className="flex w-full items-center gap-2 border border-gray-200 bg-white px-2">
+                <input
+                  type="text"
+                  className="grow p-1"
+                  placeholder="Suche..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4 opacity-70">
+                  <path
+                    fillRule="evenodd"
+                    d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {/* KOmmt neuer Plus Button noch rein? */}
+              </label>
+              <button type="button" onClick={handleAddSchema} className="ml-2 inline-flex items-center p-2 rounded-md bg-gray-300 hover:bg-gray-400 text-gray-900 shadow-sm hover:bg-gray-400">
+                <span className="text-lg font-bold">+</span>
+              </button>
+            </div>
+            {/* list existing scheme */}
+            <div className="p-1 w-full bg-white rounded-[10px] overflow-auto flex-1">
+              <ul>
+                {filteredSchemaList.map((schema, index) => (
+                  <li
+                    key={index}
+                    className={`flex justify-between items-center cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
+                    onClick={() => setSelectedSchema(schema)}
+                  >
+                    {/* schema */}
+                    {schema.name}
+                    <div className="flex gap-2">
+                    
+                      <button type ="button"
+                        onClick={(e) => {e.stopPropagation(); handleDeleteSchema();}}
+                        className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
+                          🗑️
+                        </button>
+                    </div>
+                    
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Weiter Button */}
+            <div className="mt-4 ">
+              <button
+                type="button"
+                onClick={handleConfirm}
+                className={`w-full rounded-md py-2 text-sm font-semibold text-white  ${
+                  selectedFile && selectedSchema ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
+                }`}
+                disabled={!selectedFile || !selectedSchema}
+              >
+                Weiter
+              </button>
+            </div>
           </div>
 
-          {/* Auswahlliste für Schema */}
-          <div className="flex flex-col justify-start p-1 w-full h-full bg-white rounded-[10px] overflow-y-auto overflow-x-auto">
-            <ul>
-              {filteredSchemaList.map((schema, index) => (
-                <li
-                  key={index}
-                  className={`cursor-pointer text-left text-sm text-gray-700 hover:bg-gray-200 p-1 rounded whitespace-nowrap ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
-                  onClick={() => setSelectedSchema(schema)}
-                >
-                  {schema.name}
-                </li>
-              ))}
-            </ul>
+          {/* Down new scheme */}
+          <div className="p-2 bg-gray-100 rounded-[10px]">
+            <h2 className="text-xl font-bold mb-2">Neue Tabellentransformation erstellen</h2>
+            <button
+              type="button"
+              onClick={openConfirmModal}
+              className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
+                selectedFile && isValidFile ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
+              }`}
+              disabled={!selectedFile || !isValidFile}
+            >
+              Generierung
+            </button>
           </div>
-
-          <div className="flex gap-4 justify-center w-full">
-            {/* Neues Schema Button */}
-            <button
-              type="button"
-              onClick={openNewPopup}
-              className="mt-4 flex-1 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Neues Schema
-            </button>
-            {isNewOpen && (
-              <div
-                ref={newPopupRef}
-                id="new-popup"
-                style={{ top: newPopupPos.top, left: newPopupPos.left }}
-                className="absolute bg-white shadow-lg rounded-lg p-4"
-              >
-                <h2>Weiterleitung, um neues Schema zu erstellen</h2>
-                <button onClick={closeNewPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
-                  Schließen
-                </button>
-              </div>
-            )}
-
-            {/* Schema bearbeiten Button */}
-            <button
-              type="button"
-              onClick={openEditPopup}
-              className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-              disabled={!selectedSchema}
-            >
-              Schema bearbeiten
-            </button>
-            {isEditOpen && (
-              <div
-                ref={editPopupRef}
-                id="edit-popup"
-                style={{ top: editPopupPos.top, left: editPopupPos.left }}
-                className="absolute bg-white shadow-lg rounded-lg p-4"
-              >
-                <h2>Weiterleitung, um Schema zu bearbeiten</h2>
-                <button onClick={closeEditPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
-                  Schließen
-                </button>
-              </div>
-            )}
-
-            {/* Schema löschen Button */}
-            <button
-              type="button"
-              onClick={openDeletePopup}
-              className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedSchema ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-              disabled={!selectedSchema}
-            >
-              Schema löschen
-            </button>
-            {isDeleteOpen && (
-              <div
-                ref={deletePopupRef}
-                id="delete-popup"
-                style={{ top: deletePopupPos.top, left: deletePopupPos.left }}
-                className="absolute bg-white shadow-lg rounded-lg p-4"
-              >
-                <h2>Schema löschen ist in der Demo deaktiviert</h2>
-                <button onClick={closeDeletePopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
-                  Schließen
-                </button>
-              </div>
-            )}
-          </div>
-
         </div>
       </div>
 
-      <div className="flex flex-row px-[5vw] w-full">
-        <div className="flex justify-start w-[35vw]">
-          {/* Zurück Button */}
-          <button
-            type="button"
-            onClick={() => navigate("/")}
-            className="mt-[2vh] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Zurück
-          </button>
+     
+      {/* name popup */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-xs flex items-center justify-center">
+          <div className="bg-gray-100 rounded-[10px] p-6 relative w-1/2 border border-gray-300">
+            <h3 className="mb-4 text-lg font-semibold">Funktionalität Ticket #27</h3>
+              
+              <button
+                type="button"
+                onClick={generateNewSchema}
+                className="absolute bottom-4 right-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+              >
+                Bestätigen
+              </button>
+          </div>
         </div>
+      )}
 
-        <div className="flex justify-between w-[55vw]">
-          {/* Schema generieren Button */}
-          <button
-            type="button"
-            onClick={generateNewSchema}
-            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && isValidFile ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-            disabled={!selectedFile || !isValidFile}
-          >
-            Schema generieren
-          </button>
-
-          {/* Weiter Button */}
-          <button
-            type="button"
-            onClick={() => {
-              console.log("Selected file:", selectedFile);
-              console.log("Selected schema:", selectedSchema);
-              navigate("/preview", { state: { selectedFile, selectedSchema } }); // Pass data to preview page
-            }}
-            className={`mt-[2vh] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${selectedFile && selectedSchema && helpType === "check" ? 'bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed'}`}
-            disabled={!selectedFile || !selectedSchema || helpType !== "check"}
-          >
-            Weiter
-          </button>
-        </div>
+      
+      {/* Navigationsbereich unten */}
+      <div className="flex justify-start mt-6">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="fixed bottom-[5vh] flex items-center gap-2 rounded-lg bg-gray-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
+        >
+          Zurück
+          
+        </button>
       </div>
-
     </div>
   );
 }
 
 export default Upload;
-
