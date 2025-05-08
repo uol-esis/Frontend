@@ -340,11 +340,7 @@ function Upload() {
                     {/* schema */}
                     {schema.name}
                     <div className="flex gap-2">
-                      <button type ="button"
-                        onClick={(e) => {e.stopPropagation(); handleEditSchema();}}
-                        className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
-                           ✏️ 
-                        </button>
+                    
                       <button type ="button"
                         onClick={(e) => {e.stopPropagation(); handleDeleteSchema();}}
                         className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
