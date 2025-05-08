@@ -12,6 +12,7 @@ import { HeartIcon } from "@heroicons/react/24/solid";
 import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import ErrorDialog from "./Popups/ErrorDialog";
+import { StackedList } from "./StackedList";
 
 
 export default function Preview() {
@@ -24,12 +25,38 @@ export default function Preview() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showError, setShowError] = useState(false);
   const[errorText, setErrorText] = useState("");
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
 
   const helpDialogRef = useRef();
   const uploadDialogRef = useRef();
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
+
+  const previewText = [
+    {
+      header: "Thema (Work in Progress)",
+      text: "Wohnräume"
+    },
+    {
+      header: "Tabellentransformation",
+      text: selectedSchema?.name || (generatedSchema ? "Generiertes Schema" : "kein Schema ausgewählt")
+    },
+    {
+     header: "Datei",
+     text: selectedFile?.name || "keine Datei ausgewählt"
+    },
+  ]
+
+  const computeTablelimit = () => {
+    let limit = windowSize.height;
+    limit = limit * 0.75 - 36; // 75% of screen - header row
+    limit = limit / 32.4 - 2 ; // / row height - puffer
+    return parseInt(limit);
+  }
 
   const createDataObject = () => {
     if (!selectedFile) {
@@ -97,7 +124,11 @@ export default function Preview() {
         await new Promise((resolve, reject) => {
           console.log("selectedFile: ", selectedFile);
           console.log("selectedFileType: ", selectedFile.type);
-          api.previewConvertTable(selectedFile, actualSchema, undefined, (error, data, response) => {
+          //set amount of rows based on window height
+          const limit = computeTablelimit();
+          if(limit < 5) {limit = 5}
+          const opts = {"limit" : limit};
+          api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
             if (error) {
               console.error("error" + error)
               reject(error);
@@ -109,8 +140,8 @@ export default function Preview() {
             }
           });
         });
-      } catch {
-        console.log("Error during previewConvertTable:");
+      } catch(error) {
+        console.error("Error during previewConvertTable:", error);
       }
     } catch (error) {
       setErrorText(error.message);
@@ -163,7 +194,7 @@ export default function Preview() {
   }
 
 
-  {/* lädt JSON aus Dateipfad und überprüft ob Popup angezeigt werden soll */}
+  {/* Load json and check if hidePopup is set */}
   useEffect(() => {
     getPreview();
     const hidePopup = localStorage.getItem("hidePopup");
@@ -182,69 +213,51 @@ export default function Preview() {
   }, []);
 
   return (
-    <div className="flex flex-col h-[85vh]">
-      
-      {/* Popups */}
-      <HelpDialog dialogRef={helpDialogRef}/>
-
-      <UploadDialog
-        dialogRef={uploadDialogRef}
-        dontShowAgain={dontShowAgain}
-        setDontShowAgain={setDontShowAgain}
-        nextDialogRef={checkboxDialogRef}
-      />
-
-      <CheckboxDialog
-        dialogRef={checkboxDialogRef}
-        allCheck={allCheck}
-        setAllCheck={setAllCheck}
-        onConfirm={async () => {
-          checkboxDialogRef.current?.close(); 
-          try {
-            let schemaId = null;
-            if (generatedSchema) {
-                schemaId = await sendGeneratedSchemaToServer(); 
-              }
-              console.log(schemaId + "hallo")
-              await sendTableToServer(schemaId);
-              uploadFinishedDialogRef.current?.showModal();
-          } catch (error) {
-            console.log("checkbox error")
-            setErrorText(error.message);
-            errorDialogRef.current?.showModal();
-          }
-        }}
-      />
-
-      <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
-
-      <ErrorDialog
-        text={"Upload fehlgeschlagen "}
-        errorMsg = {""}
-        onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
-        dialogRef={errorDialogRef}
-      />
-      
-      <div className="flex-shrink-0">
-        <Alert
-          text={
-            <>
-              Ist die Tabelle korrekt umgewandelt? Wenn ja, klicken Sie auf fertigstellen, andernfalls gehen Sie zurück und passen Sie das Schema an!<br />
-              - Alle Kategorien dürfen nur in der ersten Zeile auftauchen<br />
-              - Es gibt keine komplett leeren Zeilen oder Spalten<br />
-              - Korrekte Benennung der Spalten und inhaltlich korrekte Werte
-            </>
-          }
-          type="info"
+<div>
+      {/*Text and table */}
+      <div className="flex flex-col h-[75vh]">
+  
+        {/* Popups */}
+        <HelpDialog dialogRef={helpDialogRef}/>
+  
+        <UploadDialog
+          dialogRef={uploadDialogRef}
+          dontShowAgain={dontShowAgain}
+          setDontShowAgain={setDontShowAgain}
+          nextDialogRef={checkboxDialogRef}
         />
-      </div>
-      <div className="flex flex-1 overflow-hidden gap-[2vw]">
-        {/* Überschrift und Informationen zum Schema */}
-        <div className="flex flex-col p-4 gap-4 text-left flex-shrink-0">
-          <div className="flex justify-content-left text-lg font-semibold">Vorschau</div>
-          <div className="flex flex-col items-start">
-            <p className="text-base font-semibold">Thema (Work in Progress):</p>
-            <p className="text-base font-normal">Wohnräume</p>
+  
+        <CheckboxDialog
+          dialogRef={checkboxDialogRef}
+          allCheck={allCheck}
+          setAllCheck={setAllCheck}
+          onConfirm={async () => {
+            checkboxDialogRef.current?.close();
+            try {
+              let schemaId = null;
+              if (generatedSchema) {
+                  schemaId = await sendGeneratedSchemaToServer();
+                }
+                console.log(schemaId + "hallo")
+                await sendTableToServer(schemaId);
+              uploadFinishedDialogRef.current?.showModal();
+            } catch (error) {
+              setErrorText(error.message);
+              errorDialogRef.current?.showModal();
+            }
+  
+          }}
+        />
+  
+        <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
+  
+        <div className="flex justify-self-center ">
+          {/* Information text */}
+          <div className="flex flex-col mt-7 text-left flex-shrink-0">
+          <p className="p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md">
+            Vorschau
+          </p>
+            <StackedList headerTextArray={previewText}/>
           </div>
           <div className="flex flex-col items-start">
             <p className="text-base font-semibold">Schema:</p>
@@ -299,26 +312,26 @@ export default function Preview() {
           </button>
         </div>
 
-        <div className="flex justify-between w-[55vw]">
-          <button
-            type="button"
-            className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed"
-          >
-            Schema anpassen
-          </button>
-          <button
-            type="button"
-            className="mr-[5vw] p-5 rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={ () => {
-              if (!dontShowAgain) {
-                uploadDialogRef.current?.showModal();
-              } else checkboxDialogRef.current?.showModal();
-            }}
-          >
-            Hochladen
-          </button>
-        </div>
+      <div className="flex justify-between w-[55vw]">
+        <button
+          type="button"
+          className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed"
+        >
+          Schema anpassen
+        </button>
+        <button
+          type="button"
+          className="mr-[5vw] p-5 rounded-md bg-gray-600 w-[25vw] py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          onClick={ () => {
+            if (!dontShowAgain) {
+              uploadDialogRef.current?.showModal();
+            } else checkboxDialogRef.current?.showModal();
+          }}
+        >
+          Hochladen
+        </button>
       </div>
     </div>
+</div>
   );
 }

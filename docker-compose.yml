@@ -1,5 +1,15 @@
+name: th1-frontend
 services:
-  react-app:
-    build: .
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      args:
+        OAUTH_URL: ${OAUTH_URL}
+        OAUTH_REALM: ${OAUTH_REALM}
+        OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
     ports:
-      - "5173:80"
+      - "127.0.0.1:5173:80"
+    environment:
+      - API_HOST=${API_HOST}
+      - METABASE_HOST=${METABASE_HOST}
