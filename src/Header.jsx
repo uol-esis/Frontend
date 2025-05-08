@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useState, useRef } from 'react';
+import { href } from 'react-router-dom';
 
 // Navigation items for the left section
 const leftNavigation = [
   { name: 'Wiki', href: '/wiki' },
+  { name: 'Edit', href: '/edit' },
   { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
 ];
 
