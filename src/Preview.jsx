@@ -10,6 +10,8 @@ import UploadDialog from "./Popups/UploadDialog";
 import CheckboxDialog from "./Popups/CheckBoxDialog";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 
 
@@ -21,6 +23,8 @@ export default function Preview() {
   const [files, setFiles] = useState([]);
   const [allCheck, setAllCheck] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const[errorText, setErrorText] = useState("");
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
@@ -30,7 +34,7 @@ export default function Preview() {
   const uploadDialogRef = useRef();
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
-
+  const errorDialogRef = useRef();
 
   const previewText = [
     {
@@ -121,7 +125,7 @@ export default function Preview() {
           console.log("selectedFile: ", selectedFile);
           console.log("selectedFileType: ", selectedFile.type);
           //set amount of rows based on window height
-          const limit = computeTablelimit();
+          let limit = computeTablelimit();
           if(limit < 5) {limit = 5}
           const opts = {"limit" : limit};
           api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
@@ -140,27 +144,32 @@ export default function Preview() {
         console.error("Error during previewConvertTable:", error);
       }
     } catch (error) {
+      setErrorText(error.message);
       console.error("Error during API call:", error);
     }
   };
 
-
+  
   {/* Send the converted table to the server, when the preview is good */ }
   const sendTableToServer = (schemaId) => {
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const api = new DefaultApi(client);
-    const callback = function (error, data, response) {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('API called successfully.');
+    return new Promise((resolve, reject) => {
+      const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+      const api = new DefaultApi(client);
+
+      if (schemaId === null) {
+        schemaId = selectedSchema.id;
       }
-    };
-    if (schemaId === null) {
-      schemaId = selectedSchema.id
-    }
-    console.log(schemaId)
-    api.convertTable(schemaId, selectedFile, callback);
+
+      console.log("schemaId " + schemaId);
+      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
+        if(error){
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
   }
 
   {/* Send the generated schema to the server (if a generated schema was used) */ }
@@ -174,7 +183,6 @@ export default function Preview() {
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
-          console.error(error);
           reject(error);
         } else {
           console.log('API called successfully. data: ', data);
@@ -193,6 +201,15 @@ export default function Preview() {
     if (hidePopup) {
       setDontShowAgain(true);
     }
+  }, []);
+
+  {/* Show error message after a short timeout */}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowError(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -222,10 +239,11 @@ export default function Preview() {
                   schemaId = await sendGeneratedSchemaToServer();
                 }
                 console.log(schemaId + "hallo")
-                sendTableToServer(schemaId);
-                uploadFinishedDialogRef.current?.showModal();
+                await sendTableToServer(schemaId);
+              uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
-              console.log("error");
+              console.log("catched");
+              setErrorText(error.message);
               errorDialogRef.current?.showModal();
             }
   
@@ -233,6 +251,13 @@ export default function Preview() {
         />
   
         <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
+
+        <ErrorDialog
+        text={"Upload fehlgeschlagen "}
+        errorMsg = {""}
+        onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
+        dialogRef={errorDialogRef}
+      />
   
         <div className="flex justify-self-center ">
           {/* Information text */}
@@ -242,36 +267,50 @@ export default function Preview() {
           </p>
             <StackedList headerTextArray={previewText}/>
           </div>
-          {/* Table */}
-          <div className="flex-1">
-            {data.length ? (
+        {/* Table with preview or error message */} 
+        <div className="flex-1 overflow-auto">
+          {
+            data.length ? (
               <TableFromJSON
-                data={data}
+                data= {data}
               />
-            ) : null}
+            ) : showError ? (
+              <div>
+                <div className="flex justify-center mt-[20vh]">
+                  <div className="shrink-0">
+                    <ExclamationTriangleIcon aria-hidden="true" className="size-6 text-yellow-400" />
+                  </div>
+                <div className="ml-3">
+                    <h3 className="text-sm font-semibold text-yellow-800">Tabelle konnte nicht geladen werden</h3>
+                  </div>
+                </div>
+                {/*<p className="text-sm">{errorText}</p>*/}
+              </div>
+              ) : null
+          }
+          </div>
           </div>
         </div>
+      {/* Knöpfe */}
+      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
+        <div className="flex justify-start w-[35vw]">
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => navigate("/upload")}
+          >
+            Zurück
+          </button>
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => {
+              helpDialogRef.current?.showModal();      
+            }}
+          >
+            Hilfe
+          </button>
         </div>
-      {/* Buttons */}
-      <div className="flex flex-row h-[10-vh]  px-[5vw] w-full py-[2vh] flex-shrink-0">
-      <div className="flex justify-start w-[35vw]">
-        <button
-          type="button"
-          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => navigate("/upload")}
-        >
-          Zurück
-        </button>
-        <button
-          type="button"
-          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => {
-            helpDialogRef.current?.showModal();
-          }}
-        >
-          Hilfe
-        </button>
-      </div>
 
       <div className="flex justify-between w-[55vw]">
         <button
