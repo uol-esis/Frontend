@@ -3,7 +3,14 @@ import ConverterCard from "./components/ConverterCard";
 
 export default function Edit() {
   // Liste aller Cards (mit initialer Start-Card)
-  const [cards, setCards] = useState([['Start']]);
+  const [cards, setCards] = useState([{id: 0, parameters: ['Start']}]);
+  const [cardIdCounter, setCardIdCounter] = useState(1); //ID State
+
+  const handleConverterClick = (params) => {
+    const newCard = {id: cardIdCounter, parameters: params}; //Neue Card mit ID und Parametern
+    setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
+    setCardIdCounter(cardIdCounter + 1); //ID wird um eins erhöht
+  }
 
   // Definiere Converter-Buttons und ihre Parameter
   const converters = [
@@ -21,10 +28,10 @@ export default function Edit() {
     // weitere Converter hier hinzufügen
   ];
 
-  // Handler für Button-Klick: fügt direkt neue Card hinzu
+  /* Handler für Button-Klick: fügt direkt neue Card hinzu
   const handleConverterClick = (params) => {
     setCards([params, ...cards]);
-  };
+  };*/
 
   return (
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. HINTERGRUNDFARBE bei Designticket hier anpassen */}
@@ -49,8 +56,8 @@ export default function Edit() {
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4">
-          {cards.map((params, idx) => (
-            <ConverterCard key={idx} parameters={params} />
+          {cards.map((card) => (
+            <ConverterCard key={card.id} id={card.id} parameters={card.parameters} />
           ))}
         </div>
       </div>
