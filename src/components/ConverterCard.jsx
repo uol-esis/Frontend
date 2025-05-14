@@ -69,7 +69,7 @@ export default function ConverterCard({id, parameters}) {
                 </div>
                 {isEditing ? ( //wenn editing false, dann kein Speichern
                     <button
-                        className="absolute bottom-2 right-2 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2"
+                        className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={handleSave}
                     >
                         Speichern

@@ -60,6 +60,9 @@ export default function Edit() {
             <ConverterCard key={card.id} id={card.id} parameters={card.parameters} />
           ))}
         </div>
+
+        
+        <button className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow ">Anwenden</button> 
       </div>
     </div>
   );
