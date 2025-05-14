@@ -3,7 +3,7 @@ import ConverterCard from "./components/ConverterCard";
 
 export default function Edit() {
   // Liste aller Cards (mit initialer Start-Card)
-  const [cards, setCards] = useState([{id: 0, parameters: ['Start']}]);
+  const [cards, setCards] = useState([{id: 0, parameters: [{name:'Start'}]}]);
   const [cardIdCounter, setCardIdCounter] = useState(1); //ID State
 
   const handleConverterClick = (params) => {
@@ -14,16 +14,16 @@ export default function Edit() {
 
   // Definiere Converter-Buttons und ihre Parameter
   const converters = [
-    { label: 'Gruppenüberschriften entfernen 🧹', params: ['Zeilennummer', 'Spaltennummer', 'Startzeile', 'Startspalte'] }, //RemoveGroupedHeader
-    { label: 'Leere Zeilen ausfüllen ➕', params: ['Zeilennummer'] }, //FillEmptyRows
-    {label: 'Spalte entfernen (nach Index) ❌', params: ['Spaltennummer']},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen 🏷️', params: ['Überschriftenliste (Kommagetrennt)']}, //AddHeaderNames
-    {label: 'Fußzeile entfernen 📥 ', params: ['Treshold', 'Blacklist']}, //RemoveFooter
-    {label: 'Kopfzeile entfernen 📋 ', params: ['Treshold', 'Blacklist']}, //RemoveHeader
-    {label: 'Einträge ersetzen 🔄', params: ['Spaltennummer', 'Suchbegriff', 'Ersetzen durch','Startzeile', 'Startspalte', 'Endzeile', 'Endspalte' ]}, //ReplaceEntries
-    {label: 'Zeile aufteilen ✂️ ', params: ['Spaltennummer', 'Trennzeichen', 'Startzeile', 'Endzeile']}, //SplitRow
-    {label: 'Ungültige Zeilen entfernen 🚫', params: ['Treshold', 'Blacklist']}, //RemoveInvalidRows
-    {label: 'Nachträgliche Spalten entfernen 🧽', params: ['Treshold', 'Blacklist']}, //RemoveTrailingColumns
+    { label: 'Gruppenüberschriften entfernen 🧹', params: [ {name: 'Zeilennummer', type: 'number', required: true}, {name: 'Spaltennummer', type: 'number', required: true}, {name:'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}] }, //RemoveGroupedHeader
+    { label: 'Leere Zeilen ausfüllen ➕', params: [{name: 'Zeilennummer'}] }, //FillEmptyRows
+    {label: 'Spalte entfernen (nach Index) ❌', params: [{name: 'Spaltennummer'}]},//RemoveColumnByIndex
+    {label: 'Spaltenüberschriften hinzufügen 🏷️', params: [{name: 'Überschriftenliste (Kommagetrennt)'}]}, //AddHeaderNames
+    {label: 'Fußzeile entfernen 📥 ', params: [{name:'Treshold'}, {name:'Blacklist'}]}, //RemoveFooter
+    {label: 'Kopfzeile entfernen 📋 ', params: [{name: 'Treshold'}, {name: 'Blacklist'}]}, //RemoveHeader
+    {label: 'Einträge ersetzen 🔄', params: [{name: 'Spaltennummer'}, {name: 'Suchbegriff'}, {name: 'Ersetzen durch'},{name: 'Startzeile'}, {name: 'Startspalte'}, {name:'Endzeile'}, {name: 'Endspalte'} ]}, //ReplaceEntries
+    {label: 'Zeile aufteilen ✂️ ', params: [{name:'Spaltennummer'}, {name: 'Trennzeichen'}, {name:'Startzeile'}, {name:'Endzeile'}]}, //SplitRow
+    {label: 'Ungültige Zeilen entfernen 🚫', params: [{name:'Treshold'}, {name: 'Blacklist'}]}, //RemoveInvalidRows
+    {label: 'Nachträgliche Spalten entfernen 🧽', params: [{name:'Treshold'}, {name:'Blacklist'}]}, //RemoveTrailingColumns
 
     // weitere Converter hier hinzufügen
   ];
