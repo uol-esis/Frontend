@@ -3,16 +3,16 @@ import ConverterCard from "./components/ConverterCard";
 
 export default function Edit() {
   // Liste aller Cards (mit initialer Start-Card)
-  const [cards, setCards] = useState([{id: 0, parameters: [{name:'Start'}]}]);
-  const [cardIdCounter, setCardIdCounter] = useState(1); //ID State
+  const [cards, setCards] = useState([{id: 0, parameters: [{name:'Start'}]}]); //Wir beginnen immer mit der Startcard
+
+  const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
 
   const handleConverterClick = (params) => {
     const newCard = {id: cardIdCounter, parameters: params}; //Neue Card mit ID und Parametern
     setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
-    setCardIdCounter(cardIdCounter + 1); //ID wird um eins erhöht
+    setCardIdCounter(cardIdCounter + 1); 
   }
 
-  // Definiere Converter-Buttons und ihre Parameter
   const converters = [
     { label: 'Gruppenüberschriften entfernen 🧹', params: [ {name: 'Zeilennummer', type: 'number', required: true}, {name: 'Spaltennummer', type: 'number', required: true}, {name:'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}] }, //RemoveGroupedHeader
     { label: 'Leere Zeilen ausfüllen ➕', params: [{name: 'Zeilennummer', type:'number', required: true}] }, //FillEmptyRows
@@ -28,13 +28,9 @@ export default function Edit() {
     // weitere Converter hier hinzufügen
   ];
 
-  /* Handler für Button-Klick: fügt direkt neue Card hinzu
-  const handleConverterClick = (params) => {
-    setCards([params, ...cards]);
-  };*/
 
   return (
-    <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. HINTERGRUNDFARBE bei Designticket hier anpassen */}
+    <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
       {/* Seitenüberschrift */}
       <h1 className="text-3xl font-bold mb-3 text-left p-4">Hier wird der Name des Schemas als Überschrift übergeben</h1>
@@ -61,8 +57,9 @@ export default function Edit() {
           ))}
         </div>
 
-        
+
         <button className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow ">Anwenden</button> 
+        {/* apiapiapiapiapi */}
       </div>
     </div>
   );

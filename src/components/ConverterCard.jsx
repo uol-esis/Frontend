@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 export default function ConverterCard({id, parameters}) {
-    const [openStates, setOpenStates] = useState({}); //hier ist der State, welcher 
+    const [openStates, setOpenStates] = useState({}); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     
     const [formData, setFormData] = useState({});
     
@@ -10,8 +10,7 @@ export default function ConverterCard({id, parameters}) {
     const [isEditing, setIsEditing] = useState(true); //State dient dafür dass man wenn man auf Speichern klickt, die Felder nicht mehr editierbar sind (hier müsste User ja auf Bearbeiten, Löschen oder so klicken, damit du die Chain korrekt speichern kannst)
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
-        let error = "";
-        
+        let error = "";   
 
         setFormData((prevData) => ({
             ...prevData,
@@ -38,14 +37,14 @@ export default function ConverterCard({id, parameters}) {
         setIsEditing(false); //Editing State wird auf false gesetzt
 
 
-        // API MAGIC!!!!!!!!!!!!!! 
+        // API MAGIC!!! (darauf achten dass es nicht absenden darf, wenn Errors da sind)
         console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
     }
 
     return(
         <div className="p-4 bg-white rounded-lg shadow  space-y-2 relative">
-          {/*  <p>{id}</p> */} {/* ID funktioniert, kann man sich hier anzeigen lassen, später Zeile entfernen */}
-          {id === 0 ? ( //Startkomponente hat ja keine Parameter, nur Überschrift (und später dann)
+          {/*  <p>{id}</p> */} {/* ID funktioniert, kann du dir hier anzeigen lassen, später Zeile entfernen */}
+          {id === 0 ? ( //Startkomponente hat ja keine Parameter, nur Überschrift (und später dann Dropdown)
             <h2 className="text-xl font-semibold text-gray-700">Start</h2>
             ) : (
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
