@@ -45,6 +45,9 @@ export default function ConverterCard({id, parameters}) {
     return(
         <div className="p-4 bg-white rounded-lg shadow  space-y-2 relative">
           {/*  <p>{id}</p> */} {/* ID funktioniert, kann man sich hier anzeigen lassen, später Zeile entfernen */}
+          {id === 0 ? ( //Startkomponente hat ja keine Parameter, nur Überschrift (und später dann)
+            <h2 className="text-xl font-semibold text-gray-700">Start</h2>
+            ) : (
              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                 {parameters.map((param) => (
                     <div key={param.name} className="flex flex-col">
@@ -67,21 +70,25 @@ export default function ConverterCard({id, parameters}) {
                     </div>
                 ))}
                 </div>
+            )}
                 {isEditing ? ( //wenn editing false, dann kein Speichern
+                id !==0 ? ( 
                     <button
                         className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={handleSave}
                     >
                         Speichern
-                    </button>
+                    </button> 
+                ) : null //Startkomponente keinen Speichern Button
                     ) : (
                     <button
                         className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={() => setIsEditing(true)}
                     >
                         Bearbeiten
-                    </button>
-                    )}
+                    </button> 
+                    )};
+                    
                
         </div>
     );
