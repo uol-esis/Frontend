@@ -15,13 +15,13 @@ export default function Edit() {
   // Definiere Converter-Buttons und ihre Parameter
   const converters = [
     { label: 'Gruppenüberschriften entfernen 🧹', params: [ {name: 'Zeilennummer', type: 'number', required: true}, {name: 'Spaltennummer', type: 'number', required: true}, {name:'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}] }, //RemoveGroupedHeader
-    { label: 'Leere Zeilen ausfüllen ➕', params: [{name: 'Zeilennummer'}] }, //FillEmptyRows
-    {label: 'Spalte entfernen (nach Index) ❌', params: [{name: 'Spaltennummer'}]},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen 🏷️', params: [{name: 'Überschriftenliste (Kommagetrennt)'}]}, //AddHeaderNames
-    {label: 'Fußzeile entfernen 📥 ', params: [{name:'Treshold'}, {name:'Blacklist'}]}, //RemoveFooter
-    {label: 'Kopfzeile entfernen 📋 ', params: [{name: 'Treshold'}, {name: 'Blacklist'}]}, //RemoveHeader
-    {label: 'Einträge ersetzen 🔄', params: [{name: 'Spaltennummer'}, {name: 'Suchbegriff'}, {name: 'Ersetzen durch'},{name: 'Startzeile'}, {name: 'Startspalte'}, {name:'Endzeile'}, {name: 'Endspalte'} ]}, //ReplaceEntries
-    {label: 'Zeile aufteilen ✂️ ', params: [{name:'Spaltennummer'}, {name: 'Trennzeichen'}, {name:'Startzeile'}, {name:'Endzeile'}]}, //SplitRow
+    { label: 'Leere Zeilen ausfüllen ➕', params: [{name: 'Zeilennummer', type:'number', required: true}] }, //FillEmptyRows
+    {label: 'Spalte entfernen (nach Index) ❌', params: [{name: 'Spaltennummer', type: 'numer', required: true}]},//RemoveColumnByIndex
+    {label: 'Spaltenüberschriften hinzufügen 🏷️', params: [{name: 'Überschriftenliste (Kommagetrennt)', required: true}]}, //AddHeaderNames
+    {label: 'Fußzeile entfernen 📥 ', params: [{name:'Treshold', type: 'number', required: false}, {name:'Blacklist', required: false}]}, //RemoveFooter
+    {label: 'Kopfzeile entfernen 📋 ', params: [{name: 'Treshold', type: 'number', required: false}, {name: 'Blacklist', required: false}]}, //RemoveHeader
+    {label: 'Einträge ersetzen 🔄', params: [ {name: 'Suchbegriff', required: false}, {name: 'Regex', required: false}, {name: 'Ersetzen durch: ', required: true},{name: 'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}, {name:'Endzeile', type: 'number', required: false}, {name: 'Endspalte', type: 'number', required: false} ]}, //ReplaceEntries
+    {label: 'Zeile aufteilen ✂️ ', params: [{name:'Spaltenindex', type: 'number', required: true}, {name: 'Trennzeichen', required: false}, {name:'Startzeile', type: 'number', required: false}, {name:'Endzeile', type: 'number', required: false}]}, //SplitRow
     {label: 'Ungültige Zeilen entfernen 🚫', params: [{name:'Treshold'}, {name: 'Blacklist'}]}, //RemoveInvalidRows
     {label: 'Nachträgliche Spalten entfernen 🧽', params: [{name:'Treshold'}, {name:'Blacklist'}]}, //RemoveTrailingColumns
 
@@ -55,7 +55,7 @@ export default function Edit() {
         </div>
 
         {/* Rechte Spalte: Cards */}
-        <div className="w-3/4 space-y-4">
+        <div className="w-3/4 space-y-4 px-20">
           {cards.map((card) => (
             <ConverterCard key={card.id} id={card.id} parameters={card.parameters} />
           ))}

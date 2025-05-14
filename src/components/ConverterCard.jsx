@@ -32,7 +32,7 @@ export default function ConverterCard({id, parameters}) {
                         required={!!param.required}
                         value={formData[param.name] || ''}
                         onChange={e => handleInputChange(param.name, e.target.value)}
-                        className="border rounded px-2 py-1 text-sm"
+                        className="border border-gray-300 shadow rounded px-2 py-1 text-sm"
                     />
                     </div>
                 ))}
