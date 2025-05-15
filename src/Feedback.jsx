@@ -1,10 +1,12 @@
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Feedback(){
 
     const [inputText, setInpuText] = useState("");
-    const [category, setCategory] = useState("upload");
+    const [category, setCategory] = useState("landingpage");
+    const navigate = useNavigate();
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -29,7 +31,7 @@ export default function Feedback(){
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
                 <p>Hier gibt es die Möglichkeit uns zu den jewiligen Features des Tools Feedback zu geben oder Fehler zu melden</p>
-                {/* choose category */}
+                {/* Choose category */}
                 <div className='p-4 self-start'>
                     <label htmlFor="location" className="text-left block text-sm/6 font-medium text-gray-900">
                         Kategorie
@@ -38,15 +40,14 @@ export default function Feedback(){
                         <select
                             id="location"
                             name="location"
-                            defaultValue="upload"
                             onChange={(choice) => {setCategory(choice.target.value)}}
                             className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         >
+                            <option value={"landingpage"}>Startseite</option>
                             <option value={"upload"}>Uploadseite</option>
                             <option value={"preview"}>Previewseite</option>
-                            <option value={"generate schema"}>Schema generieren</option>
                             <option value={"edit schema"}>Schema bearbeiten</option>
-                            <option value={"bugs"}>Bugs</option>
+                            <option value={"bugs"}>Fehler</option>
                             <option value={"other"}>Sonstiges</option>
                         </select>
                         <ChevronDownIcon
@@ -73,12 +74,21 @@ export default function Feedback(){
                 </div>
                 
                 {/* Buttons */}
-                 <button
-                    type="submit"
-                    className="self-end p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                >
-                    Senden
-                </button>
+                <div className='flex justify-between'>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                    >
+                        Zurück
+                    </button>
+                     <button
+                        type="submit"
+                        className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                    >
+                        Senden
+                    </button>
+                </div>
                 </form>
             </div>
         </div>
