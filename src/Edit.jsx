@@ -1,11 +1,40 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
+import React, { useState } from "react";
+import ConverterCard from "./components/ConverterCard";
 
 
 function Edit() {
   const navigate = useNavigate();
   const { selectedFile } = location.state || {}; // Destructure the state
+
+  // Liste aller Cards (mit initialer Start-Card)
+  const [cards, setCards] = useState([{id: 0, parameters: [{name:'Start'}]}]); //Wir beginnen immer mit der Startcard
+
+  const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
+
+  const handleConverterClick = (params) => {
+    const newCard = {id: cardIdCounter, parameters: params}; //Neue Card mit ID und Parametern
+    setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
+    setCardIdCounter(cardIdCounter + 1); 
+  }
+
+  const converters = [
+    { label: 'Gruppenüberschriften entfernen 🧹', params: [ {name: 'Zeilennummer', type: 'number', required: true}, {name: 'Spaltennummer', type: 'number', required: true}, {name:'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}] }, //RemoveGroupedHeader
+    { label: 'Leere Zeilen ausfüllen ➕', params: [{name: 'Zeilennummer', type:'number', required: true}] }, //FillEmptyRows
+    {label: 'Spalte entfernen (nach Index) ❌', params: [{name: 'Spaltennummer', type: 'numer', required: true}]},//RemoveColumnByIndex
+    {label: 'Spaltenüberschriften hinzufügen 🏷️', params: [{name: 'Überschriftenliste (Kommagetrennt)', required: true}]}, //AddHeaderNames
+    {label: 'Fußzeile entfernen 📥 ', params: [{name:'Treshold', type: 'number', required: false}, {name:'Blacklist', required: false}]}, //RemoveFooter
+    {label: 'Kopfzeile entfernen 📋 ', params: [{name: 'Treshold', type: 'number', required: false}, {name: 'Blacklist', required: false}]}, //RemoveHeader
+    {label: 'Einträge ersetzen 🔄', params: [ {name: 'Suchbegriff', required: false}, {name: 'Regex', required: false}, {name: 'Ersetzen durch: ', required: true},{name: 'Startzeile', type: 'number', required: false}, {name: 'Startspalte', type: 'number', required: false}, {name:'Endzeile', type: 'number', required: false}, {name: 'Endspalte', type: 'number', required: false} ]}, //ReplaceEntries
+    {label: 'Zeile aufteilen ✂️ ', params: [{name:'Spaltenindex', type: 'number', required: true}, {name: 'Trennzeichen', required: false}, {name:'Startzeile', type: 'number', required: false}, {name:'Endzeile', type: 'number', required: false}]}, //SplitRow
+    {label: 'Ungültige Zeilen entfernen 🚫', params: [{name:'Treshold'}, {name: 'Blacklist'}]}, //RemoveInvalidRows
+    {label: 'Nachträgliche Spalten entfernen 🧽', params: [{name:'Treshold'}, {name:'Blacklist'}]}, //RemoveTrailingColumns
+
+    // weitere Converter hier hinzufügen
+  ];
+
 
 
   // Create refs for the boxes
@@ -14,7 +43,7 @@ function Edit() {
   const thirdBoxRef = useRef(null);
 
   {/* When the JSON is created, sends it and the file to the server to get a preview*/ }
-  const getPreview = async () => {
+  {/*const getPreview = async () => {
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
@@ -92,7 +121,7 @@ function Edit() {
       console.error("Error during API call:", error);
     }
   };
-  
+  */}
 
   // Generic function to handle inputs dynamically
   const getCurrentTable = function (boxElement) {
@@ -128,114 +157,40 @@ function Edit() {
 
     console.log("Generated JSON:", JSON.stringify(jsonData, null, 2));
   };
+  
 
   return (
-    <div className="flex flex-col justify-between h-[85vh] bg-gray-100 p-6">
-      {/* Title */}
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Edit Page</h1>
-      </div>
+    <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
-      {/* White Boxes */}
-      <div className="flex flex-col gap-4 flex-grow justify-center">
-        {/* First Box */}
-        <div id="1" className="bg-white p-4 rounded-lg shadow" ref={firstBoxRef}>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            First Box Title
-          </h2>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            data-name="name"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <button
-            type="button"
-            onClick={() => getCurrentTable(firstBoxRef.current)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-          >
-            Submit First Box
-          </button>
+      {/* Seitenüberschrift */}
+      <h1 className="text-3xl font-bold mb-3 text-left p-4">Hier wird der Name des Schemas als Überschrift übergeben</h1>
+
+      <div className="flex gap-8">
+        
+        {/* Linke Spalte: Converter-Buttons */}
+        <div className="w-1/5 space-y-2 pl-4">
+          {converters.map((conv) => (
+            <button
+              key={conv.label}
+              onClick={() => handleConverterClick(conv.params)}
+              className="w-full text-left px-4 py-2 bg-gray-600 hover:bg-indigo-500 text-white rounded-lg shadow"
+            >
+              {conv.label}
+            </button>
+          ))}
         </div>
 
-        {/* Second Box */}
-        <div id="2" className="bg-white p-4 rounded-lg shadow" ref={secondBoxRef}>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Second Box Title
-          </h2>
-          <input
-            type="text"
-            placeholder="Enter your age"
-            data-name="age"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Enter your city"
-            data-name="city"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <button
-            type="button"
-            onClick={() => getCurrentTable(secondBoxRef.current)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-          >
-            Submit Second Box
-          </button>
+        {/* Rechte Spalte: Cards */}
+        <div className="w-3/4 space-y-4 px-20">
+          {cards.map((card) => (
+            <ConverterCard key={card.id} id={card.id} parameters={card.parameters} />
+          ))}
         </div>
 
-        {/* Third Box */}
-        <div id="3" className="bg-white p-4 rounded-lg shadow" ref={thirdBoxRef}>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Third Box Title
-          </h2>
-          <input
-            type="text"
-            placeholder="Enter your email"
-            data-name="email"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Enter your phone number"
-            data-name="phone"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Enter your address"
-            data-name="address"
-            className="w-full p-2 mb-2 border border-gray-300 rounded"
-          />
-          <button
-            type="button"
-            onClick={() => getCurrentTable(thirdBoxRef.current)}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-          >
-            Submit Third Box
-          </button>
-        </div>
-      </div>
 
-      {/* Buttons */}
-      <div className="flex justify-between">
-        <button
-          type="button"
-          className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => navigate("/previous")}
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => navigate("/next")}
-        >
-          Next
-        </button>
+        <button className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow ">Anwenden</button> 
+        {/* apiapiapiapiapi */}
       </div>
     </div>
   );
 }
-
-export default Edit;
