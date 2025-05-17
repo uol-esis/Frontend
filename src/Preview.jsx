@@ -43,7 +43,7 @@ export default function Preview() {
     },
     {
       header: "Tabellentransformation",
-      text: selectedSchema?.name || (generatedSchema ? "Generiertes Schema" : "kein Schema ausgewählt")
+      text: selectedSchema?.name || generatedSchema?.name 
     },
     {
      header: "Datei",
@@ -238,7 +238,6 @@ export default function Preview() {
               if (generatedSchema) {
                   schemaId = await sendGeneratedSchemaToServer();
                 }
-                console.log(schemaId + "hallo")
                 await sendTableToServer(schemaId);
               uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
@@ -258,9 +257,10 @@ export default function Preview() {
         onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
         dialogRef={errorDialogRef}
       />
-  
+
+        {/* Information text */}
         <div className="flex justify-self-center ">
-          {/* Information text */}
+          
           <div className="flex flex-col mt-7 text-left flex-shrink-0">
           <p className="p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md">
             Vorschau
@@ -291,7 +291,7 @@ export default function Preview() {
           </div>
           </div>
         </div>
-      {/* Knöpfe */}
+      {/* Buttons */}
       <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
         <div className="flex justify-start w-[35vw]">
           <button
