@@ -20,11 +20,12 @@ function Upload() {
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
-  const [schemaName, setSchemaName] = useState("undefined");
+  const [schemaName, setSchemaName] = useState("");
   const [jasonData, setJsonData] = useState(null);
 
   const fileInputRef = useRef(null); // Reference for the hidden input element
-  const confirmNameRef = useRef();
+  const confirmNameToPreviewRef = useRef();
+  const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
 
   {/* Load the Th1 module and get the Schema List from the api*/ }
@@ -78,7 +79,7 @@ function Upload() {
         //show ConfirmNameModal
         setJsonData(data);
         setSchemaName(data.name);
-        confirmNameRef.current?.showModal();
+        confirmNameToPreviewRef.current?.showModal();
       }
     };
     api.generateTableStructure(selectedFile, callback);
@@ -104,7 +105,8 @@ function Upload() {
 
   //noch ausfüllen
   const handleAddSchema = () => {
-    console.log("Add new schema clicked");
+    setSchemaName(selectedFile.name);
+    confirmNameToEditRef.current?.showModal();
   };
   const handleEditSchema = () => {
     console.log("Edit schema clicked"); 
@@ -171,7 +173,9 @@ function Upload() {
     <div className=" p-2 space-y-6 mx-2 my-5 ">
 
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
+      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
+
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
 
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
