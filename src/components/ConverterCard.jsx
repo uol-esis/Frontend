@@ -111,7 +111,7 @@ export default function ConverterCard({id, parameters}) {
         </div>
         </div>
 
-        {/* 2) Dropdown als Geschwister: erscheint *unter* dem Card-Wrapper */}
+        {/*Dropdown erscheint unter dem Card Wrapper */}
         <AnimatePresence initial={false}>
         {expanded && (
             <motion.div
@@ -127,7 +127,7 @@ export default function ConverterCard({id, parameters}) {
                 alt="TestDropdown"
                 className=""
             />
-            {/* hier dein echter Content */}
+            {/* hier statt des images echte Tabelle */}
             </motion.div>
         )}
         </AnimatePresence>
