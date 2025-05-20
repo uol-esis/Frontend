@@ -76,7 +76,7 @@ export default function ConverterCard({id, parameters}) {
                 {isEditing ? ( //wenn editing false, dann kein Speichern
                 id !==0 ? ( //Startkomponente?
                     <button
-                        className="absolute bottom-2 right-10 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
+                        className="absolute  right-10 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={handleSave}
                     >
                         Speichern
