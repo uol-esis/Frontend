@@ -69,7 +69,7 @@ export default function Feedback(){
                             <option value={"landingpage"}>Startseite</option>
                             <option value={"upload"}>Uploadseite</option>
                             <option value={"preview"}>Previewseite</option>
-                            <option value={"edit schema"}>Schema bearbeiten</option>
+                            <option value={"edit schema"}>Tabellentransformation bearbeiten</option>
                             <option value={"bugs"}>Fehler</option>
                             <option value={"other"}>Sonstiges</option>
                         </select>
