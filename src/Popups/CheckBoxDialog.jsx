@@ -7,6 +7,13 @@ export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onCon
           <CheckBox setAllCheck={setAllCheck} />
           <button
             type="button"
+            className="p-5 m-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+            onClick={() => dialogRef.current?.close()}
+          >
+            Zurück
+          </button>
+          <button
+            type="button"
             className={`mt-4 flex-1 rounded-md px-4 py-2 text-sm font-semibold text-white shadow-sm ${
               allCheck ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
             }`}
@@ -14,13 +21,6 @@ export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onCon
             onClick={onConfirm}
           >
             Hochladen
-          </button>
-          <button
-            type="button"
-            className="p-5 m-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-            onClick={() => dialogRef.current?.close()}
-          >
-            Zurück
           </button>
         </div>
       </dialog>
