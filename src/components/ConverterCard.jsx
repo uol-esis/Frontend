@@ -1,8 +1,10 @@
 import React, {useState} from "react";
+import { motion, AnimatePresence } from "framer-motion"; 
 
 export default function ConverterCard({id, parameters}) {
-    const [openStates, setOpenStates] = useState({}); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
+    const [expaned, setExpanded] = useState(false); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     
+
     const [formData, setFormData] = useState({});
     
     const [errors, setErrors] = useState({}); //Fehlerstate
@@ -71,7 +73,7 @@ export default function ConverterCard({id, parameters}) {
                 </div>
             )}
                 {isEditing ? ( //wenn editing false, dann kein Speichern
-                id !==0 ? ( 
+                id !==0 ? ( //Startkomponente?
                     <button
                         className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={handleSave}
@@ -86,9 +88,9 @@ export default function ConverterCard({id, parameters}) {
                     >
                         Bearbeiten
                     </button> 
-                    )};
+                    )}
                     
-               
+        <p> testtest</p>     
         </div>
     );
 }
