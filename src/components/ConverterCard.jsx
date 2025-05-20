@@ -103,8 +103,15 @@ export default function ConverterCard({id, parameters}) {
                 </button>
             ))}
             <button
+            disabled={isEditing && id !== 0} 
             onClick={() => setExpanded(!expanded)}
-            className="text-gray-600 hover:text-indigo-500 text-xs"
+            className={`text-xs ${
+                isEditing && id !== 0 ? "text-gray-300 cursor-not-allowed text-xs"
+            : "text-gray-600 hover:text-indigo-500 text-xs"
+                
+            }`}
+            
+            
             >
             {expanded ? "▲" : "▼"}
             </button>
@@ -125,7 +132,7 @@ export default function ConverterCard({id, parameters}) {
             <img
                 src="/tabelle.png"
                 alt="TestDropdown"
-                className=""
+                
             />
             {/* hier statt des images echte Tabelle */}
             </motion.div>
