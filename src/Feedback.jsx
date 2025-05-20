@@ -1,12 +1,20 @@
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Feedback(){
 
-    const [inputText, setInpuText] = useState("");
     const [category, setCategory] = useState("landingpage");
+    const [Th1, setTh1] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        import('th1').then(module => {
+          setTh1(module);
+        }).catch(error => {
+          console.error("Error loading th1 module:", error);
+        });
+      }, []);
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -16,14 +24,29 @@ export default function Feedback(){
         const form = e.target;
         const formData = new FormData(form);
 
-        // You can pass formData as a fetch body directly:
-        //fetch('/some-api', { method: form.method, body: formData });
-
         // Or you can work with it as a plain object:
         const formJson = Object.fromEntries(formData.entries());
         formJson.category = category;
+        const jsonString = JSON.stringify(formJson);
+        sendToServer(jsonString);
+    }
 
-        console.log(formJson);
+    function sendToServer(feedbackString){
+        if (!Th1) {
+            console.error("Th1 module is not loaded yet.");
+            return;
+        }
+        const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
+        const api = new Th1.DefaultApi(client);
+        let feedback = new Th1.Feedback();
+        feedback.content = feedbackString;
+        api.submitFeedback(feedback, (error, data, response) => {
+            if (error) {
+                console.error(error);
+            } else {
+                console.log('API called successfully. Returned data: ' + data);
+            }
+        });
     }
 
     return(
@@ -56,10 +79,9 @@ export default function Feedback(){
                         />
                     </div>
                 </div>
-                
-                <form className="w-full p-4" method="post" onSubmit={handleSubmit}>
+
                 {/* Text input */}
-                
+                <form className="w-full p-4" method="post" onSubmit={handleSubmit}>
                 <label htmlFor="comment" className="text-left block text-sm/6 font-medium text-gray-900">
                     Feedback
                 </label>
@@ -92,7 +114,5 @@ export default function Feedback(){
                 </form>
             </div>
         </div>
-        
-
     );
 }
