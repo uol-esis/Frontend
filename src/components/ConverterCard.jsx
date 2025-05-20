@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 
 export default function ConverterCard({id, parameters}) {
-    const [expaned, setExpanded] = useState(false); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
+    const [expanded, setExpanded] = useState(false); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     
 
     const [formData, setFormData] = useState({});
@@ -72,10 +72,11 @@ export default function ConverterCard({id, parameters}) {
                 ))}
                 </div>
             )}
+            
                 {isEditing ? ( //wenn editing false, dann kein Speichern
                 id !==0 ? ( //Startkomponente?
                     <button
-                        className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
+                        className="absolute bottom-2 right-10 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={handleSave}
                     >
                         Speichern
@@ -83,14 +84,36 @@ export default function ConverterCard({id, parameters}) {
                 ) : null //Startkomponente keinen Speichern Button
                     ) : (
                     <button
-                        className="absolute bottom-2 right-2 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
+                        className="absolute bottom-2 right-10 text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                         onClick={() => setIsEditing(true)}
                     >
                         Bearbeiten
                     </button> 
                     )}
                     
-        <p> testtest</p>     
+        {/* Ab hier Dropdown */}   
+        
+         <AnimatePresence initial={false}> 
+            {expanded && (
+                <motion.div kex="dropdown" initial={{ height:0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.1 }} >
+                    <img 
+                    src="/testbild.png"
+                    alt="TestDropdown"
+                    className="mt-4 rounded-md" />
+                </motion.div>
+            )}
+         </AnimatePresence>
+         <button
+            onClick={() => setExpanded(!expanded)}
+            className="absolute bottom-2 right-2 text-gray-600 hover:text-indigo-500"
+            >{expanded ? "▲" : "▼"}
+         </button>
         </div>
     );
 }
+
+
+
