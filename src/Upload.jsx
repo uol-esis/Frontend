@@ -91,9 +91,8 @@ function Upload() {
   };
 
   //noch ausfüllen
-  const handleAddSchema = () => {
-    console.log("Add new schema clicked");
-  };
+  const handleAddSchema = () => navigate("/edit", { state: { selectedFile } }); 
+
   const handleEditSchema = () => {
     console.log("Edit schema clicked"); 
   };

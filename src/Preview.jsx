@@ -121,9 +121,9 @@ export default function Preview() {
           console.log("selectedFile: ", selectedFile);
           console.log("selectedFileType: ", selectedFile.type);
           //set amount of rows based on window height
-          const limit = computeTablelimit();
+          let limit = computeTablelimit();
           if(limit < 5) {limit = 5}
-          const opts = {"limit" : limit};
+          let opts = {"limit" : limit};
           api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
             if (error) {
               console.error("error" + error)
@@ -194,6 +194,15 @@ export default function Preview() {
       setDontShowAgain(true);
     }
   }, []);
+
+  const handleEditSchema = () => {
+    navigate("/edit", {
+      state: {
+        selectedFile: selectedFile,
+        schemaToEdit: selectedSchema || generatedSchema,
+      },
+    });
+  }
 
   return (
 <div>
@@ -276,7 +285,8 @@ export default function Preview() {
       <div className="flex justify-between w-[55vw]">
         <button
           type="button"
-          className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed"
+          className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
+          onClick={handleEditSchema}
         >
           Schema anpassen
         </button>

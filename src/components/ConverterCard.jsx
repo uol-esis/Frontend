@@ -1,13 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
-export default function ConverterCard({id, parameters}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, onSave}) {
     const [openStates, setOpenStates] = useState({}); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
-    
-    const [formData, setFormData] = useState({});
-    
+    const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
-
     const [isEditing, setIsEditing] = useState(true); //State dient dafür dass man wenn man auf Speichern klickt, die Felder nicht mehr editierbar sind (hier müsste User ja auf Bearbeiten, Löschen oder so klicken, damit du die Chain korrekt speichern kannst)
+
+    // formData updaten, wenn initialFormData sich ändert
+    useEffect(() => {
+      setFormData(initialFormData || {});
+    }, [initialFormData]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
         let error = "";   
@@ -34,12 +36,18 @@ export default function ConverterCard({id, parameters}) {
         });
 
         setErrors(newErrors);
-        setIsEditing(false); //Editing State wird auf false gesetzt
-
-
-        // API MAGIC!!! (darauf achten dass es nicht absenden darf, wenn Errors da sind)
-        console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
+        console.log("Errors:", Object.keys(newErrors).length);
+        if (Object.keys(newErrors).length === 0) {
+            setIsEditing(false); //Editing State wird auf false gesetzt
+            console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
+        
+            //call function in edit.jsx
+            if (onSave) {
+              onSave(id, formData); // Pass the card ID and form data to the parent function
+            }
+        }
     }
+
 
     return(
         <div className="p-4 bg-white rounded-lg shadow  space-y-2 relative">
@@ -57,8 +65,8 @@ export default function ConverterCard({id, parameters}) {
                     <input
                         type={param.type === 'number' ? 'number' : 'text'}
                         required={!!param.required}
-                        value={formData[param.name] || ''}
-                        onChange={e => handleInputChange(param.name, e.target.value, param.type)}
+                        value={formData[param.apiName] || ''}
+                        onChange={e => handleInputChange(param.apiName, e.target.value, param.type)}
                         readOnly={!isEditing} //man kann nur bearbeiten wenn Editing State true
                         className={`border border-gray-300 shadow rounded px-2 py-1 text-sm 
                             ${!isEditing ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'bg-white'}`}
