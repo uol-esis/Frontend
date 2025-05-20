@@ -8,6 +8,7 @@ const leftNavigation = [
   { name: 'Wiki', href: '/wiki' },
   { name: 'Edit', href: '/edit' },
   { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
+  { name: 'Feedback' , href: '/feedback'},
 ];
 
 // Navigation items for the right section
