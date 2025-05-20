@@ -21,7 +21,7 @@ function Upload() {
   const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
   const [schemaName, setSchemaName] = useState("");
-  const [jasonData, setJsonData] = useState(null);
+  const [jsonData, setJsonData] = useState(null);
 
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const confirmNameToPreviewRef = useRef();
@@ -88,9 +88,9 @@ function Upload() {
 
   {/* Confirm name and navigate to preview page*/ }
   const confirmGeneratedName = function (newName) {
-    jasonData.name = newName;
-    console.log("Going to preview page")
-    navigate("/preview", { state: { selectedFile, generatedSchema: jasonData } }) // or data // Pass data to preview page
+    jsonData.name = newName;
+    const cleaned = JSON.parse(JSON.stringify(jsonData));
+    navigate("/preview", { state: { selectedFile, generatedSchema: cleaned } }) // or data // Pass data to preview page
   };
 
 
