@@ -85,7 +85,7 @@ export default function ConverterCard({id, parameters}) {
         )}
 
         {/* Buttons: absolut am unteren Rand der ersten Karte*/}
-        <div className="absolute bottom-2 right-2 flex gap-2">
+        <div className="absolute bottom-2 right-2 flex gap-4">
             {id !== 0 &&
             (isEditing ? (
                 <button
