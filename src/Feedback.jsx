@@ -53,7 +53,7 @@ export default function Feedback(){
         <div className='flex items-center justify-center mt-4'>
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
-                <p>Hier gibt es die Möglichkeit uns zu den jewiligen Features des Tools Feedback zu geben oder Fehler zu melden</p>
+                <p>Hier gibt es die Möglichkeit uns zu den jeweiligen Features des Tools Feedback zu geben oder Fehler zu melden</p>
                 {/* Choose category */}
                 <div className='p-4 self-start'>
                     <label htmlFor="location" className="text-left block text-sm/6 font-medium text-gray-900">
