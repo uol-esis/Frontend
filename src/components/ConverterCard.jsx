@@ -85,6 +85,16 @@ export default function ConverterCard({ label, id, parameters}) {
             </div>
         )}
 
+        {/* Löschen Button */}
+        {id !== 0 ? (
+         <button type ="button"
+            //onClick={} hier muss noch die Funktion rein, die die Card löscht --> APIIIIIIIIIIIIIIIIIIIIIPIPIPIPIPIPI
+            className="absolute p-1 rounded hover:bg-gray-200 top-2 right-2">
+                🗑️
+        </button>
+        ) : null }
+    
+
         {/* Buttons: absolut am unteren Rand der ersten Karte*/}
         <div className="absolute bottom-2 right-2 flex gap-4">
             {id !== 0 &&
