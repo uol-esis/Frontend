@@ -1,5 +1,5 @@
 # Stage 1: Build the React application
-FROM node:18.17.1-alpine AS builder
+FROM node:lts-alpine AS builder
 
 
 # Define build arguments for environment variables
