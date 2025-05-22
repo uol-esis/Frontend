@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 
-export default function ConverterCard({id, parameters}) {
+export default function ConverterCard({ label, id, parameters}) {
     const [expanded, setExpanded] = useState(false); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     
 
@@ -48,6 +48,7 @@ export default function ConverterCard({id, parameters}) {
         {/* Parameter Bereich mit Buttons */}
         <div className="relative bg-white">
             {/*  <p>{id}</p> */} {/* ID funktioniert, kann du dir hier anzeigen lassen, später Zeile entfernen */}
+            <h2 className="text-lg font-semibold text-gray-700 mb-2">{label}</h2>
             
             {id === 0 ? ( //Startkomponente hat ja keine Parameter, nur Überschrift (und später dann Dropdown)
                 <h2 className="text-xl font-semibold text-gray-700">Start</h2>

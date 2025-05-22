@@ -7,8 +7,8 @@ export default function Edit() {
 
   const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
 
-  const handleConverterClick = (params) => {
-    const newCard = {id: cardIdCounter, parameters: params}; //Neue Card mit ID und Parametern
+  const handleConverterClick = (params, label) => {
+    const newCard = {id: cardIdCounter, parameters: params, label}; //Neue Card mit ID und Parametern
     setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
     setCardIdCounter(cardIdCounter + 1); 
   }
@@ -42,7 +42,7 @@ export default function Edit() {
           {converters.map((conv) => (
             <button
               key={conv.label}
-              onClick={() => handleConverterClick(conv.params)}
+              onClick={() => handleConverterClick(conv.params, conv.label)}
               className="w-full text-left px-4 py-2 bg-gray-600 hover:bg-indigo-500 text-white rounded-lg shadow"
             >
               {conv.label}
@@ -53,7 +53,7 @@ export default function Edit() {
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20">
           {cards.map((card) => (
-            <ConverterCard key={card.id} id={card.id} parameters={card.parameters} />
+            <ConverterCard key={card.id} id={card.id} parameters={card.parameters} label={card.label} />
           ))}
         </div>
 
