@@ -48,7 +48,7 @@ export default function UploadComponent({setFile, setValid}){
 
     return(
         <div
-          className="flex flex-col p-4 w-full lg:w-1/3 bg-gray-100 rounded-[10px] min-h-[75vh]"
+          className="flex flex-col p-4 w-full bg-gray-100 rounded-[10px] min-h-[75vh]"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >

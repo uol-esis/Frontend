@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import ConfirmNameDialog from "./Popups/ConfirmNameDialog";
 import UploadComponent from "./UploadComponent";
 import SchemaList from "./SchemaList";
 import GenerateSchemaComponent from "./GenerateSchemaComponent";
+import Tooltip from "./ToolTip";
 
 import Alert from "./Alert";
 
@@ -23,9 +23,37 @@ function Upload() {
   const [schemaName, setSchemaName] = useState("");
   const [jsonData, setJsonData] = useState(null);
 
+  const[tipDate, setTipData] = useState(false);
+  const[tipSchema, setTipSchema] = useState(false);
+  const[tipGenerate, setTipGenerate] = useState(false);
+
   const confirmNameToPreviewRef = useRef();
   const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
+
+  
+ const ExplainerUpload = (
+    <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
+  )
+
+  const ExplainerSchemalist = (
+    <span> Nach dem eine Datei ausgewählt wurde kann diese in eine bestehende Tabellentransformation geladen werden oder ein neues erstellt werden, falls es sich um neuer oder veränderte Daten handelt.</span>
+  )
+
+  const ExplainerGenerate = (
+    <span>Hier kann eine Tabellentransformation automatisch erstellt werden. </span>
+  )
+
+
+  const TipDataToSchema = function () {
+    setTipData(false);
+    setTipSchema(true);
+  }
+
+  const TipSchemaToGenerate = function () {
+    setTipSchema(false);
+    setTipGenerate(true);
+  }
 
   {/* Load the Th1 module and get the Schema List from the api*/ }
   useEffect(() => {
@@ -103,38 +131,66 @@ function Upload() {
 
   {/* Actual page */ }
   return (
-    <div className="flex p-2 space-y-6 mx-2 my-5 ">
-
+    <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
+        <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
+        <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
+      {/* Go back and Tutorial */}
+      <div className="flex justify-between">
+          <button
+            type="button"
+            className=""
+            onClick={() => navigate("/")}
+          >
+            <ArrowLeftCircleIcon className="h-7 w-7 text-gray-600  hover:text-indigo-500"/>
+          </button>
 
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
+          <button
+            type="button"
+            className=""
+            onClick={() => setTipData(true)}
+          >
+            <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
+          </button>
+      </div>
 
-      {/* Container: File Upload + Schema (left, right) */}
-      <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
-        {/*Left Upload */}
-        <UploadComponent setFile={setSelectedFile} setValid={setValidFile} />
-
-        {/* Right Up, Down */}
-        <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${schemaBlockClass}`}>
-          <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
-
-          {/* Down new scheme */}
-          <GenerateSchemaComponent fileIsValid={validFile} onGenerate={generateNewSchema}/>
+      {/* Upload, Schemalist and Generate */}
+      <div className="flex w-full h-full gap-4 ">
+        
+        {/* Upload */}
+        <div className="reflex flex-col w-1/3 relative">
+            <UploadComponent setFile={setSelectedFile} setValid={setValidFile} />
+            <div className="absolute bottom-0 left-0">
+              <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipDate} direction={"top"} onClick={TipDataToSchema}/>
+            </div>
         </div>
+
+          {/* Schemalist and Generate */}
+          <div className={`flex flex-col space-y-6 w-full h-full`}>
+            {/* Schemalist*/}
+            <div className="relative h-full">
+              <div className={`h-full ${schemaBlockClass}`}>
+                <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
+              </div>
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full w-[15vw]">
+                <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
+              </div>
+            </div>
+
+            {/* Generate */}
+            <div className="relative">
+              <div className={`${schemaBlockClass}`}>
+                <GenerateSchemaComponent fileIsValid={validFile} onGenerate={generateNewSchema}/>
+              </div>
+                <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2">
+                    <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
+                </div>
+              </div>
+  
+          </div>
+
       </div>
 
-      {/* Navigationsbereich unten */}
-      <div className="flex justify-start mt-6">
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="fixed bottom-[5vh] flex items-center gap-2 rounded-lg bg-gray-600 px-2 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 transition"
-        >
-          Zurück
-          
-        </button>
-      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Tooltip from './ToolTip';
 
 export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus}){
 
@@ -39,18 +40,16 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
       };
 
     return(
-        <div className="flex-1 p-4 bg-gray-100 rounded-[10px] flex flex-col h-full">
+        <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
             <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
             <div className="flex flex-row justify-between mb-2">
               {/* Dropdown-Menü für Thema */}
               <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400">
-                    Thema
-                    <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
-                  </MenuButton>
-                </div>
-                <MenuItems className="absolute left-0 z-10 w-56 max-h-[200px] overflow-auto rounded-md bg-white shadow-lg ring-1 ring-black/5">
+                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400">
+                  Thema
+                  <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
+                </MenuButton>
+                <MenuItems className="absolute left-0 z-10 w-56 max-h-[200px] rounded-md bg-white overflow-auto shadow-lg ring-1 ring-black/5">
                   <div className="py-1">
                     {themaList.map((thema, index) => (
                       <MenuItem key={index}>
@@ -85,7 +84,7 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
               </button>
             </div>
             {/* list existing scheme */}
-            <div className="p-1 w-full bg-white rounded-[10px] overflow-auto flex-1">
+            <div className="p-1 w-full border-3 border-gray-100 rounded-[10px] overflow-auto flex-1">
               <ul>
                 {filteredSchemaList.map((schema, index) => (
                   <li
