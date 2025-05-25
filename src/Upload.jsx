@@ -37,11 +37,11 @@ function Upload() {
   )
 
   const ExplainerSchemalist = (
-    <span> Nach dem eine Datei ausgewählt wurde kann diese in eine bestehende Tabellentransformation geladen werden oder ein neues erstellt werden, falls es sich um neuer oder veränderte Daten handelt.</span>
+    <span> Nach dem eine Datei ausgewählt wurde kann diese in eine bestehende Tabellentransformation geladen werden oder eine Neue erstellt werden.</span>
   )
 
   const ExplainerGenerate = (
-    <span>Hier kann eine Tabellentransformation automatisch erstellt werden. </span>
+    <span>Alternativ kann hier eine Tabellentransformation automatisch erstellt werden. </span>
   )
 
 
@@ -168,14 +168,15 @@ function Upload() {
           {/* Schemalist and Generate */}
           <div className={`flex flex-col space-y-6 w-full h-full`}>
             {/* Schemalist*/}
-            <div className="relative h-full">
-              <div className={`h-full ${schemaBlockClass}`}>
+            <div className="relative h-full min-h-0">
+              <div className="h-full">
                 <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
               </div>
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full w-[15vw]">
+
+              <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw]">
                 <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
               </div>
-            </div>
+           </div> 
 
             {/* Generate */}
             <div className="relative">
