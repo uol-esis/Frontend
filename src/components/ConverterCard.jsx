@@ -25,14 +25,14 @@ export default function ConverterCard({id, label, parameters, converterType, for
             [param]: error,
         }));
     };
-
+    
     const handleSave = () => {
         let newErrors = {};
 
         parameters.forEach(param => {
-            const value = formData[param.name];
+            const value = formData[param.apiName];
             if (param.required && (!value || value.toString().trim() === '')) {
-            newErrors[param.name] = 'Dieses Feld ist erforderlich.';
+            newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
             } 
         });
 
@@ -61,7 +61,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
             ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {parameters.map((param) => (
-                <div key={param.name} className="flex flex-col">
+                <div key={param.apiName} className="flex flex-col">
                 <label className="text-sm font-medium mb-1">
                     {param.name}
                     {param.required && <span className="text-red-500"> *</span>}
@@ -81,9 +81,9 @@ export default function ConverterCard({id, label, parameters, converterType, for
                         : "bg-white"
                     }`}
                 />
-                {errors[param.name] && (
+                {errors[param.apiName] && (
                     <p className="text-red-500 text-xs mt-1">
-                    {errors[param.name]}
+                    {errors[param.apiName]}
                     </p>
                 )}
                 </div>
