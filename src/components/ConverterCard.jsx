@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 
 export default function ConverterCard({ label, id, parameters}) {
-    const [expanded, setExpanded] = useState(false); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
+    const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
+   
     
 
     const [formData, setFormData] = useState({});
@@ -124,7 +125,8 @@ export default function ConverterCard({ label, id, parameters}) {
             
             
             >
-            {expanded ? "▲" : "▼"}
+             
+            {expanded ? "Ergebnis einklappen ▲" : "Ergebnis ausklappen ▼"}
             </button>
         </div>
         </div>
