@@ -7,7 +7,6 @@ export default function UploadDialog({ dialogRef, dontShowAgain, setDontShowAgai
 
     useEffect(() => {
         if(dontShowAgain){
-          console.log("Hidepop true");
           localStorage.setItem("hidePopup", true);
         }
       }, [dontShowAgain]);

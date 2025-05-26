@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import ConfirmNameDialog from "./Popups/ConfirmNameDialog";
 
 import Alert from "./Alert";
 
@@ -19,9 +20,12 @@ function Upload() {
   const [searchQuery, setSearchQuery] = useState(""); // State for the search query
   const [help, setHelp] = useState("Bitten laden Sie eine Excel- oder csv-Datei hoch und wählen das passende Schema dazu aus! Anschließend, klicken Sie auf weiter!")
   const [helpType, setHelpType] = useState("info");
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false); // State name-popup
+  const [schemaName, setSchemaName] = useState("");
+  const [jsonData, setJsonData] = useState(null);
 
   const fileInputRef = useRef(null); // Reference for the hidden input element
+  const confirmNameToPreviewRef = useRef();
+  const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
 
   {/* Load the Th1 module and get the Schema List from the api*/ }
@@ -54,9 +58,9 @@ function Upload() {
         setSchemaList(response);
       }
     });
-  };
+  }
 
-  {/* Generate a new Schema for the selected File*/ }
+  {/* Generate a new Schema for the selected File */}
   const generateNewSchema = function () {
     if (!Th1) {
       console.error("Th1 module is not loaded yet.");
@@ -64,6 +68,7 @@ function Upload() {
     }
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new Th1.DefaultApi(client);
+    const settings = new Th1.TableStructureGenerationSettings();
     // 
     const callback = function (error, data, response) {
       if (error) {
@@ -72,12 +77,22 @@ function Upload() {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
         console.log("Generated schema:", data); // or data
-        // Go to preview page
-        console.log("Going to preview page")
-        navigate("/preview", { state: { selectedFile, generatedSchema: data } }) // or data // Pass data to preview page
+        
+        //show ConfirmNameModal
+        setJsonData(data.tableStructure);
+        setSchemaName(selectedFile.name);
+        confirmNameToPreviewRef.current?.showModal();
       }
     };
-    api.generateTableStructure(selectedFile, callback);
+    api.generateTableStructure(selectedFile, settings, callback);
+  }
+
+
+  {/* Confirm name and navigate to preview page*/ }
+  const confirmGeneratedName = function (newName) {
+    jsonData.name = newName;
+    const cleaned = JSON.parse(JSON.stringify(jsonData));
+    navigate("/preview", { state: { selectedFile, generatedSchema: cleaned } }) // or data // Pass data to preview page
   };
 
 
@@ -91,8 +106,10 @@ function Upload() {
   };
 
   //noch ausfüllen
-  const handleAddSchema = () => navigate("/edit", { state: { selectedFile } }); 
-
+  const handleAddSchema = () => {
+    setSchemaName(selectedFile.name);
+    confirmNameToEditRef.current?.showModal();
+  };
   const handleEditSchema = () => {
     console.log("Edit schema clicked"); 
   };
@@ -151,61 +168,17 @@ function Upload() {
 
   const schemaBlockClass = isValidFile ? "" : "opacity-50 pointer-events-none";
 
-
-
-  {/* Popups for WIP handling */ }
-  const [isNewOpen, setIsNewOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  const [newPopupPos, setNewPopupPos] = useState({ top: 0, right: 0 });
-  const [editPopupPos, setEditPopupPos] = useState({ top: 0, right: 0 });
-  const [deletePopupPos, setDeletePopupPos] = useState({ top: 0, right: 0 });
-
-  const newPopupRef = useRef(null);
-  const editPopupRef = useRef(null);
-  const deletePopupRef = useRef(null);
-
-  function openNewPopup(event) {
-    event.preventDefault();
-    const rect = event.target.getBoundingClientRect();
-    setNewPopupPos({ top: rect.top - rect.height * 3.2, left: rect.left });
-    setIsNewOpen(true);
-  }
-
-  function openEditPopup(event) {
-    event.preventDefault();
-    const rect = event.target.getBoundingClientRect();
-    setEditPopupPos({ top: rect.top - rect.height * 3.2, left: rect.left });
-    setIsEditOpen(true);
-  }
-
-  function openDeletePopup(event) {
-    event.preventDefault();
-    const rect = event.target.getBoundingClientRect();
-    setDeletePopupPos({ top: rect.top - rect.height * 3.2, left: rect.left - 50 });
-    setIsDeleteOpen(true);
-  }
-
-  function closeNewPopup() {
-    setIsNewOpen(false);
-  }
-
-  function closeEditPopup() {
-    setIsEditOpen(false);
-  }
-
-  function closeDeletePopup() {
-    setIsDeleteOpen(false);
-  }
-
-  const openConfirmModal = () => setIsConfirmModalOpen(true); //name-popup open
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
   return (
     <div className=" p-2 space-y-6 mx-2 my-5 ">
-      
+
+      {/* Popup */}
+      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
+
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
+
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
         {/*Left Upload */}
@@ -371,7 +344,7 @@ function Upload() {
             <h2 className="text-xl font-bold mb-2">Neue Tabellentransformation erstellen</h2>
             <button
               type="button"
-              onClick={openConfirmModal}
+              onClick={generateNewSchema}
               className={`w-full rounded-md py-2 text-sm font-semibold text-white ${
                 selectedFile && isValidFile ? 'bg-gray-600 hover:bg-indigo-500' : 'bg-gray-400 cursor-not-allowed'
               }`}
@@ -383,25 +356,6 @@ function Upload() {
         </div>
       </div>
 
-     
-      {/* name popup */}
-      {isConfirmModalOpen && (
-        <div className="fixed inset-0 bg-opacity-30 backdrop-blur-xs flex items-center justify-center">
-          <div className="bg-gray-100 rounded-[10px] p-6 relative w-1/2 border border-gray-300">
-            <h3 className="mb-4 text-lg font-semibold">Funktionalität Ticket #27</h3>
-              
-              <button
-                type="button"
-                onClick={generateNewSchema}
-                className="absolute bottom-4 right-4 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-              >
-                Bestätigen
-              </button>
-          </div>
-        </div>
-      )}
-
-      
       {/* Navigationsbereich unten */}
       <div className="flex justify-start mt-6">
         <button
