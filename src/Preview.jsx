@@ -18,6 +18,7 @@ export default function Preview() {
   const location = useLocation();
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
+  const actualSchemaRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [allCheck, setAllCheck] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
@@ -64,6 +65,41 @@ export default function Preview() {
     return formData;
   };
 
+  {/* Function to set the actual schema */}
+  const setActualSchema = async () => {
+    console.log("Setting actual schema...");
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const api = new DefaultApi(client);
+
+    try {
+      if (generatedSchema) {
+        actualSchemaRef.current = generatedSchema;
+      } else if (selectedSchema) {
+        actualSchemaRef.current = await new Promise((resolve, reject) => {
+          console.log("Requested to get table structure from server");
+          api.getTableStructure(selectedSchema.id, (error, data, response) => {
+            if (error) {
+              reject(error);
+            } else {
+              console.log("API called to get tableStructure successfully. Returned data: ", data);
+              resolve(data);
+            }
+          });
+        });
+
+        if (!actualSchemaRef.current) {
+          console.error("Failed to get actual schema");
+          return;
+        }
+      }
+
+      console.log("Actual schema set: ", actualSchemaRef.current);
+    } catch (error) {
+      console.error("Error during setActualSchema:", error);
+    }
+  };
+
+
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
     console.log("Attempting to get a preview from the server");
@@ -71,76 +107,36 @@ export default function Preview() {
       console.error("No file selected");
       return;
     }
-    if (!selectedSchema && !generatedSchema) {
-      console.error("No schema selected");
+    if (!actualSchemaRef.current) {
+      console.error("No actual schema set");
       return;
     }
 
     const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const api = new DefaultApi(client);
-    const fileToServer = createDataObject();
-    if (!selectedFile) {
-      console.error("Failed to create FormData object");
-      return;
-    }
-    console.log("fileToServer: ", selectedFile);
-    if (selectedSchema) {
-      console.log("selectedSchema id: ", selectedSchema.id);
-    } else if (generatedSchema) {
-      console.log("generatedSchema id: ", generatedSchema.id);
-    }
-
-    let actualSchema;
-
+    const api = new DefaultApi(client);   
+    
     try {
-      if (generatedSchema) {
-        actualSchema = generatedSchema;
-      } else if (selectedSchema) {
-        actualSchema = await new Promise((resolve, reject) => {
-          console.log('requested to get tablestructure from server')
-          api.getTableStructure(selectedSchema.id, (error, data, response) => {
-            if (error) {
-              reject(error);
-            } else {
-              console.log('API called to get tableStructure successfully. Returned data: ' + data);
-              console.log('API response: ' + response);
-              resolve(data);
-            }
-          });
+      await new Promise((resolve, reject) => {
+        console.log("selectedFile: ", selectedFile);
+        console.log("selectedFileType: ", selectedFile.type);
+        //set amount of rows based on window height
+        let limit = computeTablelimit();
+        if(limit < 5) {limit = 5}
+        let opts = {"limit" : limit};
+        api.previewConvertTable(selectedFile, actualSchemaRef.current, opts, (error, data, response) => {
+          if (error) {
+            console.error("error" + error)
+            reject(error);
+          } else {
+            console.log('API called to get preview successfully to get preview. Returned data: ' + data);
+            console.log('API response: ' + response);
+            setData(data);
+            resolve(data);
+          }
         });
-
-        if (!actualSchema) {
-          console.error("Failed to get actual schema");
-          return;
-        }
-      }
-
-      console.log("actualSchema: ", actualSchema);
-      try {
-        await new Promise((resolve, reject) => {
-          console.log("selectedFile: ", selectedFile);
-          console.log("selectedFileType: ", selectedFile.type);
-          //set amount of rows based on window height
-          let limit = computeTablelimit();
-          if(limit < 5) {limit = 5}
-          let opts = {"limit" : limit};
-          api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
-            if (error) {
-              console.error("error" + error)
-              reject(error);
-            } else {
-              console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-              console.log('API response: ' + response);
-              setData(data);
-              resolve(data);
-            }
-          });
-        });
-      } catch(error) {
-        console.error("Error during previewConvertTable:", error);
-      }
-    } catch (error) {
-      console.error("Error during API call:", error);
+      });
+    } catch(error) {
+      console.error("Error during previewConvertTable:", error);
     }
   };
 
@@ -186,9 +182,17 @@ export default function Preview() {
   }
 
 
-  {/* Load json and check if hidePopup is set */}
+  {/* Load the schema and check if hidePopup is set */}
   useEffect(() => {
-    getPreview();
+    const initialize = async () => {
+      await setActualSchema(); // Set the actual schema first
+      if (actualSchemaRef.current) {
+        await getPreview(); // Call getPreview only if the schema is set
+      }
+    };
+  
+    initialize();
+  
     const hidePopup = localStorage.getItem("hidePopup");
     if (hidePopup) {
       setDontShowAgain(true);
@@ -196,10 +200,12 @@ export default function Preview() {
   }, []);
 
   const handleEditSchema = () => {
+    const serializableSchema = JSON.parse(JSON.stringify(actualSchemaRef.current));
+
     navigate("/edit", {
       state: {
         selectedFile: selectedFile,
-        schemaToEdit: selectedSchema || generatedSchema,
+        schemaToEdit: serializableSchema,
       },
     });
   }

@@ -33,6 +33,8 @@ export default function Edit() {
 
   useEffect(() => {
     if (schemaToEdit) {
+      console.log("selectedfile:", selectedFile);
+      console.log("Schema to edit:", schemaToEdit);
       initializeCardsFromSchema(schemaToEdit);
     }
   }, [schemaToEdit]);
