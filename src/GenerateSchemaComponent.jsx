@@ -9,7 +9,7 @@ export default function GenerateSchemaComponent({onGenerate , fileIsValid}){
 
     return(
         <div className="p-2 bg-white shadow rounded-[10px]">
-            <h2 className="text-xl font-bold mb-2">Neue Tabellentransformation erstellen</h2>
+            <h2 className="text-xl font-bold mb-2">Automatisch neue Tabellentransformation erstellen</h2>
             <button
               type="button"
               onClick={onGenerate}

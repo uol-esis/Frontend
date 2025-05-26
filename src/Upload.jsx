@@ -37,11 +37,11 @@ function Upload() {
   )
 
   const ExplainerSchemalist = (
-    <span> Nach dem eine Datei ausgewählt wurde kann diese in eine bestehende Tabellentransformation geladen werden oder eine Neue erstellt werden.</span>
+    <span> Nach dem eine Datei ausgewählt wurde, kann diese in eine bestehende Tabellentransformation geladen werden oder eine Neue erstellt werden.</span>
   )
 
   const ExplainerGenerate = (
-    <span>Alternativ kann hier eine Tabellentransformation automatisch erstellt werden. </span>
+    <span>Alternativ kann hier eine neue Tabellentransformation automatisch generiert werden. </span>
   )
 
 
@@ -69,6 +69,15 @@ function Upload() {
       getSchemaList();
     }
   }, [Th1]);
+
+  useEffect(() => {
+    const dontShowAgain = localStorage.getItem("hideUploadTutorial");
+    if(dontShowAgain){
+      return;
+    }
+    setTipData(true);
+    localStorage.setItem("hideUploadTutorial", true);
+  });
 
   const getSchemaList = function () {
     if (!Th1) {
@@ -184,7 +193,7 @@ function Upload() {
                 <GenerateSchemaComponent fileIsValid={validFile} onGenerate={generateNewSchema}/>
               </div>
                 <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2">
-                    <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
+                    <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
                 </div>
               </div>
   
