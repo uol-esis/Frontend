@@ -54,11 +54,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
         {/* Parameter Bereich mit Buttons */}
         <div className="relative bg-white">
             {/*  <p>{id}</p> */} {/* ID funktioniert, kann du dir hier anzeigen lassen, später Zeile entfernen */}
-            <h2 className="text-lg font-semibold text-gray-700 mb-2">{label}</h2>
-            
+             
             {id === 0 ? ( //Startkomponente hat ja keine Parameter, nur Überschrift (und später dann Dropdown)
                 <h2 className="text-xl font-semibold text-gray-700">Start</h2>
             ) : (
+            <>
+            <h2 className="text-lg font-semibold text-gray-700 mb-2">{label}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
             {parameters.map((param) => (
                 <div key={param.apiName} className="flex flex-col">
@@ -89,6 +90,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                 </div>
             ))}
             </div>
+            </>
         )}
 
         {/* Löschen Button */}
