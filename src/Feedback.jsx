@@ -1,12 +1,14 @@
 import { ChevronDownIcon } from '@heroicons/react/16/solid'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckCircleIcon } from '@heroicons/react/20/solid'
 
 export default function Feedback(){
 
     const [category, setCategory] = useState("landingpage");
     const [Th1, setTh1] = useState(null);
     const navigate = useNavigate();
+    const [isFeedbackSend, setFeedbackSend] = useState(false);
 
     useEffect(() => {
         import('th1').then(module => {
@@ -42,8 +44,10 @@ export default function Feedback(){
         feedback.content = feedbackString;
         api.submitFeedback(feedback, (error, data, response) => {
             if (error) {
+                setFeedbackSend(false);
                 console.error(error);
             } else {
+                setFeedbackSend(true);
                 console.log('API called successfully. Returned data: ' + data);
             }
         });
@@ -53,8 +57,23 @@ export default function Feedback(){
         <div className='flex items-center justify-center mt-4'>
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
-                <p>Hier gibt es die Möglichkeit uns zu den jeweiligen Features des Tools Feedback zu geben oder Fehler zu melden</p>
-                {/* Choose category */}
+                <p>
+                    Hier gibt es die Möglichkeit uns zu den jeweiligen Features des Tools Feedback zu geben oder Fehler zu melden <br/>
+                    Außerdem würden wir uns auch über Input zu unserem Forschungszweck freuen, also Feedback hinsichtlich Grund- und Fachkompotenzen bezüglich der Arbeit mit Daten.
+                </p>
+                {/* Feedback successful sent */}
+                {isFeedbackSend &&
+                    <div className="rounded-md bg-green-50 p-4">
+                        <div className="flex">
+                            <CheckCircleIcon aria-hidden="true" className="size-5 text-green-400" />
+                            <div className="ml-3">
+                                <h3 className="text-sm font-medium text-green-800">Feedback wurde gesendet:</h3>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+            {/* Choose category */}
                 <div className='p-4 self-start'>
                     <label htmlFor="location" className="text-left block text-sm/6 font-medium text-gray-900">
                         Kategorie
@@ -112,6 +131,7 @@ export default function Feedback(){
                     </button>
                 </div>
                 </form>
+
             </div>
         </div>
     );
