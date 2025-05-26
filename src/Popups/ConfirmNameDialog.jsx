@@ -14,7 +14,7 @@ export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
                 {/* Text input */} 
                 <div className="flex flex-col">
                     <label htmlFor="username" className=" text-left block text-sm/6 font-medium text-gray-900">
-                        Generierter Tabellentarnsformationsname
+                        Generierter Tabellentarnsformationsname:
                     </label>
                         <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                         <input
@@ -22,7 +22,6 @@ export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
                             name="dataName"
                             type="text"
                             value={text}
-                            //TODO on confirm wie in feedback
                             onChange={(evt) => { setText(evt.target.value); }}
                             className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
                         />

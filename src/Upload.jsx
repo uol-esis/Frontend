@@ -68,6 +68,7 @@ function Upload() {
     }
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const api = new Th1.DefaultApi(client);
+    const settings = new Th1.TableStructureGenerationSettings();
     // 
     const callback = function (error, data, response) {
       if (error) {
@@ -76,13 +77,14 @@ function Upload() {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
         console.log("Generated schema:", data); // or data
+        
         //show ConfirmNameModal
-        setJsonData(data);
-        setSchemaName(data.name);
+        setJsonData(data.tableStructure);
+        setSchemaName(selectedFile.name);
         confirmNameToPreviewRef.current?.showModal();
       }
     };
-    api.generateTableStructure(selectedFile, callback);
+    api.generateTableStructure(selectedFile, settings, callback);
   }
 
 
