@@ -10,6 +10,8 @@ import UploadDialog from "./Popups/UploadDialog";
 import CheckboxDialog from "./Popups/CheckBoxDialog";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
+import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 
 
@@ -18,9 +20,12 @@ export default function Preview() {
   const location = useLocation();
   const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
+  const actualSchemaRef = useRef(null);
   const [files, setFiles] = useState([]);
   const [allCheck, setAllCheck] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const[errorText, setErrorText] = useState("");
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
@@ -30,7 +35,7 @@ export default function Preview() {
   const uploadDialogRef = useRef();
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
-
+  const errorDialogRef = useRef();
 
   const previewText = [
     {
@@ -39,7 +44,7 @@ export default function Preview() {
     },
     {
       header: "Tabellentransformation",
-      text: selectedSchema?.name || (generatedSchema ? "Generiertes Schema" : "kein Schema ausgewählt")
+      text: selectedSchema?.name || generatedSchema?.name 
     },
     {
      header: "Datei",
@@ -64,6 +69,41 @@ export default function Preview() {
     return formData;
   };
 
+  {/* Function to set the actual schema */}
+  const setActualSchema = async () => {
+    console.log("Setting actual schema...");
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const api = new DefaultApi(client);
+
+    try {
+      if (generatedSchema) {
+        actualSchemaRef.current = generatedSchema;
+      } else if (selectedSchema) {
+        actualSchemaRef.current = await new Promise((resolve, reject) => {
+          console.log("Requested to get table structure from server");
+          api.getTableStructure(selectedSchema.id, (error, data, response) => {
+            if (error) {
+              reject(error);
+            } else {
+              console.log("API called to get tableStructure successfully. Returned data: ", data);
+              resolve(data);
+            }
+          });
+        });
+
+        if (!actualSchemaRef.current) {
+          console.error("Failed to get actual schema");
+          return;
+        }
+      }
+
+      console.log("Actual schema set: ", actualSchemaRef.current);
+    } catch (error) {
+      console.error("Error during setActualSchema:", error);
+    }
+  };
+
+
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
     console.log("Attempting to get a preview from the server");
@@ -71,96 +111,60 @@ export default function Preview() {
       console.error("No file selected");
       return;
     }
-    if (!selectedSchema && !generatedSchema) {
-      console.error("No schema selected");
+    if (!actualSchemaRef.current) {
+      console.error("No actual schema set");
       return;
     }
 
     const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const api = new DefaultApi(client);
-    const fileToServer = createDataObject();
-    if (!selectedFile) {
-      console.error("Failed to create FormData object");
-      return;
-    }
-    console.log("fileToServer: ", selectedFile);
-    if (selectedSchema) {
-      console.log("selectedSchema id: ", selectedSchema.id);
-    } else if (generatedSchema) {
-      console.log("generatedSchema id: ", generatedSchema.id);
-    }
-
-    let actualSchema;
-
+    const api = new DefaultApi(client);   
+    
     try {
-      if (generatedSchema) {
-        actualSchema = generatedSchema;
-      } else if (selectedSchema) {
-        actualSchema = await new Promise((resolve, reject) => {
-          console.log('requested to get tablestructure from server')
-          api.getTableStructure(selectedSchema.id, (error, data, response) => {
-            if (error) {
-              reject(error);
-            } else {
-              console.log('API called to get tableStructure successfully. Returned data: ' + data);
-              console.log('API response: ' + response);
-              resolve(data);
-            }
-          });
+      await new Promise((resolve, reject) => {
+        console.log("selectedFile: ", selectedFile);
+        console.log("selectedFileType: ", selectedFile.type);
+        //set amount of rows based on window height
+        let limit = computeTablelimit();
+        if(limit < 5) {limit = 5}
+        let opts = {"limit" : limit};
+        api.previewConvertTable(selectedFile, actualSchemaRef.current, opts, (error, data, response) => {
+          if (error) {
+            console.error("error" + error)
+            reject(error);
+          } else {
+            console.log('API called to get preview successfully to get preview. Returned data: ' + data);
+            console.log('API response: ' + response);
+            setData(data);
+            resolve(data);
+          }
         });
-
-        if (!actualSchema) {
-          console.error("Failed to get actual schema");
-          return;
-        }
-      }
-
-      console.log("actualSchema: ", actualSchema);
-      try {
-        await new Promise((resolve, reject) => {
-          console.log("selectedFile: ", selectedFile);
-          console.log("selectedFileType: ", selectedFile.type);
-          //set amount of rows based on window height
-          const limit = computeTablelimit();
-          if(limit < 5) {limit = 5}
-          const opts = {"limit" : limit};
-          api.previewConvertTable(selectedFile, actualSchema, opts, (error, data, response) => {
-            if (error) {
-              console.error("error" + error)
-              reject(error);
-            } else {
-              console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-              console.log('API response: ' + response);
-              setData(data);
-              resolve(data);
-            }
-          });
-        });
-      } catch(error) {
-        console.error("Error during previewConvertTable:", error);
-      }
-    } catch (error) {
-      console.error("Error during API call:", error);
+      });
+    } catch(error) {
+      console.error("Error during previewConvertTable:", error);
     }
   };
 
-
+  
   {/* Send the converted table to the server, when the preview is good */ }
   const sendTableToServer = (schemaId) => {
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const api = new DefaultApi(client);
-    const callback = function (error, data, response) {
-      if (error) {
-        console.error(error);
-      } else {
-        console.log('API called successfully.');
+    return new Promise((resolve, reject) => {
+      const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+      const api = new DefaultApi(client);
+
+      if (schemaId === null) {
+        schemaId = selectedSchema.id;
       }
-    };
-    if (schemaId === null) {
-      schemaId = selectedSchema.id
-    }
-    console.log(schemaId)
-    api.convertTable(schemaId, selectedFile, callback);
+
+      console.log("schemaId " + schemaId);
+      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
+        if(error){
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(data);
+        }
+      });
+    });
   }
 
   {/* Send the generated schema to the server (if a generated schema was used) */ }
@@ -174,7 +178,6 @@ export default function Preview() {
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
-          console.error(error);
           reject(error);
         } else {
           console.log('API called successfully. data: ', data);
@@ -186,13 +189,41 @@ export default function Preview() {
   }
 
 
-  {/* Load json and check if hidePopup is set */}
+  {/* Load the schema and check if hidePopup is set */}
   useEffect(() => {
-    getPreview();
+    const initialize = async () => {
+      await setActualSchema(); // Set the actual schema first
+      if (actualSchemaRef.current) {
+        await getPreview(); // Call getPreview only if the schema is set
+      }
+    };
+  
+    initialize();
+  
     const hidePopup = localStorage.getItem("hidePopup");
     if (hidePopup) {
       setDontShowAgain(true);
     }
+  }, []);
+
+  const handleEditSchema = () => {
+    const serializableSchema = JSON.parse(JSON.stringify(actualSchemaRef.current));
+
+    navigate("/edit", {
+      state: {
+        selectedFile: selectedFile,
+        schemaToEdit: serializableSchema,
+      },
+    });
+  }
+
+  {/* Show error message after a short timeout */}
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowError(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -221,11 +252,11 @@ export default function Preview() {
               if (generatedSchema) {
                   schemaId = await sendGeneratedSchemaToServer();
                 }
-                console.log(schemaId + "hallo")
-                sendTableToServer(schemaId);
-                uploadFinishedDialogRef.current?.showModal();
+                await sendTableToServer(schemaId);
+              uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
-              console.log("error");
+              console.log("catched");
+              setErrorText(error.message);
               errorDialogRef.current?.showModal();
             }
   
@@ -233,50 +264,73 @@ export default function Preview() {
         />
   
         <UploadFinishedPopup  dialogRef={uploadFinishedDialogRef}/>
-  
+
+        <ErrorDialog
+        text={"Upload fehlgeschlagen "}
+        errorMsg = {""}
+        onConfirm={() => {errorDialogRef.current?.close(); navigate("/");}}
+        dialogRef={errorDialogRef}
+      />
+
+        {/* Information text */}
         <div className="flex justify-self-center ">
-          {/* Information text */}
+          
           <div className="flex flex-col mt-7 text-left flex-shrink-0">
           <p className="p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md">
             Vorschau
           </p>
             <StackedList headerTextArray={previewText}/>
           </div>
-          {/* Table */}
-          <div className="flex-1">
-            {data.length ? (
+        {/* Table with preview or error message */} 
+        <div className="flex-1 overflow-auto">
+          {
+            data.length ? (
               <TableFromJSON
-                data={data}
+                data= {data}
               />
-            ) : null}
+            ) : showError ? (
+              <div>
+                <div className="flex justify-center mt-[20vh]">
+                  <div className="shrink-0">
+                    <ExclamationTriangleIcon aria-hidden="true" className="size-6 text-yellow-400" />
+                  </div>
+                <div className="ml-3">
+                    <h3 className="text-sm font-semibold text-yellow-800">Tabelle konnte nicht geladen werden</h3>
+                  </div>
+                </div>
+                {/*<p className="text-sm">{errorText}</p>*/}
+              </div>
+              ) : null
+          }
+          </div>
           </div>
         </div>
-        </div>
       {/* Buttons */}
-      <div className="flex flex-row h-[10-vh]  px-[5vw] w-full py-[2vh] flex-shrink-0">
-      <div className="flex justify-start w-[35vw]">
-        <button
-          type="button"
-          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => navigate("/upload")}
-        >
-          Zurück
-        </button>
-        <button
-          type="button"
-          className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          onClick={() => {
-            helpDialogRef.current?.showModal();
-          }}
-        >
-          Hilfe
-        </button>
-      </div>
+      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
+        <div className="flex justify-start w-[35vw]">
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => navigate("/upload")}
+          >
+            Zurück
+          </button>
+          <button
+            type="button"
+            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={() => {
+              helpDialogRef.current?.showModal();      
+            }}
+          >
+            Hilfe
+          </button>
+        </div>
 
       <div className="flex justify-between w-[55vw]">
         <button
           type="button"
-          className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600' : 'bg-gray-400 cursor-not-allowed"
+          className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
+          onClick={handleEditSchema}
         >
           Schema anpassen
         </button>

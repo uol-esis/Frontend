@@ -1,16 +1,16 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 
-export default function ConverterCard({ label, id, parameters}) {
-    const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
-   
-    
-
-    const [formData, setFormData] = useState({});
-    
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, onSave}) {
+    const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
-
     const [isEditing, setIsEditing] = useState(true); //State dient dafür dass man wenn man auf Speichern klickt, die Felder nicht mehr editierbar sind (hier müsste User ja auf Bearbeiten, Löschen oder so klicken, damit du die Chain korrekt speichern kannst)
+    const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
+    
+    // formData updaten, wenn initialFormData sich ändert
+    useEffect(() => {
+      setFormData(initialFormData || {});
+    }, [initialFormData]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
         let error = "";   
@@ -37,15 +37,20 @@ export default function ConverterCard({ label, id, parameters}) {
         });
 
         setErrors(newErrors);
-        setIsEditing(false); //Editing State wird auf false gesetzt
-
-
-        // API MAGIC!!! (darauf achten dass es nicht absenden darf, wenn Errors da sind)
-        console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
+        console.log("Errors:", Object.keys(newErrors).length);
+        if (Object.keys(newErrors).length === 0) {
+            setIsEditing(false); //Editing State wird auf false gesetzt
+            console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
+        
+            //call function in edit.jsx
+            if (onSave) {
+              onSave(id, formData); // Pass the card ID and form data to the parent function
+            }
+        }
     }
 
     return (
-  <div className="bg-white shadow-md rounded-lg p-4 mb-4 "> {/* Übergeordneter Container der so tut als wären die beiden Cards eine Card */}
+    <div className="bg-white shadow-md rounded-lg p-4 mb-4 "> {/* Übergeordneter Container der so tut als wären die beiden Cards eine Card */}
         {/* Parameter Bereich mit Buttons */}
         <div className="relative bg-white">
             {/*  <p>{id}</p> */} {/* ID funktioniert, kann du dir hier anzeigen lassen, später Zeile entfernen */}
@@ -64,9 +69,9 @@ export default function ConverterCard({ label, id, parameters}) {
                 <input
                     type={param.type === "number" ? "number" : "text"}
                     required={!!param.required}
-                    value={formData[param.name] || ""}
+                    value={formData[param.apiName] || ""}
                     onChange={(e) =>
-                    handleInputChange(param.name, e.target.value, param.type)
+                    handleInputChange(param.apiName, e.target.value, param.type)
                     }
                     readOnly={!isEditing} //man kann nur bearbeiten wenn Editing State true
                     className={` shadow rounded px-2 py-1 text-sm 
