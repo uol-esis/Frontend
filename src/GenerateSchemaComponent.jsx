@@ -4,7 +4,6 @@ export default function GenerateSchemaComponent({onGenerate , fileIsValid}){
     const [validFile, setValidFile] = useState(fileIsValid);
 
     useEffect(() => {
-      console.log("validfile " + fileIsValid);
       setValidFile(fileIsValid);
     }, [fileIsValid])
 

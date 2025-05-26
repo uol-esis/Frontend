@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
-    //TODO das wird nur zum ANfang der Laufzeit gesetzt, wenn sich name dann nochmal ändert braucht man useEffect
+
     const [text, setText] = useState(name);
 
     useEffect(() => {
@@ -22,7 +22,6 @@ export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
                             name="dataName"
                             type="text"
                             value={text}
-                            //TODO on confirm wie in feedback
                             onChange={(evt) => { setText(evt.target.value); }}
                             className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
                         />

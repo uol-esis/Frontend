@@ -167,12 +167,12 @@ function Upload() {
 
           {/* Schemalist and Generate */}
           <div className={`flex flex-col space-y-6 w-full h-full`}>
+
             {/* Schemalist*/}
             <div className="relative h-full min-h-0">
-              <div className="h-full">
+              <div className={`h-full ${schemaBlockClass}`}>
                 <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
               </div>
-
               <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw]">
                 <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
               </div>
