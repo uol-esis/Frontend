@@ -24,7 +24,7 @@ export default function Table(props) {
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {rows.map((row, i) => (
                     <tr key={i}>
-                      <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{i}</td>
+                      <td className="whitespace-nowrap px-3 py-1.5 text-sm text-gray-500">{i+1}</td>
                       {row.map((cell, j) => (
                         <td key={j} className="whitespace-nowrap py-1.5 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{cell} </td>
                       ))}

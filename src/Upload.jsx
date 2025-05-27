@@ -31,7 +31,7 @@ function Upload() {
   const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
 
-  
+
  const ExplainerUpload = (
     <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
   )
@@ -133,10 +133,18 @@ function Upload() {
 
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
- const handleAddSchema = () => {
-        setSchemaName(selectedFile.name);
-        confirmNameToEditRef.current?.showModal();
-      };
+  //noch ausfüllen
+  const handleAddSchema = () => {
+    setSchemaName(selectedFile.name);
+    confirmNameToEditRef.current?.showModal();
+  };
+    const handleConfirmNewSchema = () => {
+        navigate("/edit", {
+            state: {
+                selectedFile: selectedFile,
+            },
+        });
+    };
 
   const schemaBlockClass = validFile ? "" : "opacity-50 pointer-events-none";
 
@@ -145,7 +153,7 @@ function Upload() {
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
         <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
-        <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
+        <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()}/>
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
           <button
@@ -167,7 +175,7 @@ function Upload() {
 
       {/* Upload, Schemalist and Generate */}
       <div className="flex w-full h-full gap-4 ">
-        
+
         {/* Upload */}
         <div className="reflex flex-col w-1/3 relative">
             <UploadComponent setFile={setSelectedFile} setValid={setValidFile} />
@@ -187,7 +195,7 @@ function Upload() {
               <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw]">
                 <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
               </div>
-           </div> 
+           </div>
 
             {/* Generate */}
             <div className="relative">
@@ -198,7 +206,7 @@ function Upload() {
                     <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
                 </div>
               </div>
-  
+
           </div>
 
       </div>
