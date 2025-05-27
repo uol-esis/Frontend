@@ -110,6 +110,13 @@ function Upload() {
     setSchemaName(selectedFile.name);
     confirmNameToEditRef.current?.showModal();
   };
+  const handleConfirmNewSchema = () => {
+    navigate("/edit", {
+      state: {
+        selectedFile: selectedFile,
+      },
+    });
+  };
   const handleEditSchema = () => {
     console.log("Edit schema clicked"); 
   };
@@ -177,7 +184,7 @@ function Upload() {
       {/* Popup */}
       <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
 
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => console.log("go to edit")}/>
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()}/>
 
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">

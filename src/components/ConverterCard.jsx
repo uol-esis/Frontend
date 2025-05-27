@@ -1,18 +1,23 @@
 import React, {useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
+import TableFromJSON from "./../TableFromJSON";
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, onSave}) {
+
+
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
-    const [isEditing, setIsEditing] = useState(true); //State dient dafür dass man wenn man auf Speichern klickt, die Felder nicht mehr editierbar sind (hier müsste User ja auf Bearbeiten, Löschen oder so klicken, damit du die Chain korrekt speichern kannst)
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
-    
+    const [validationError, setValidationError] = useState(""); // State for validation error message
+
+
     // formData updaten, wenn initialFormData sich ändert
     useEffect(() => {
       setFormData(initialFormData || {});
     }, [initialFormData]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
+   
         let error = "";   
 
         setFormData((prevData) => ({
@@ -27,6 +32,15 @@ export default function ConverterCard({id, label, parameters, converterType, for
     };
     
     const handleSave = () => {
+        // Check if any previous cards are still in editing mode
+        const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
+        if (unsavedCards.length > 0) {
+          setValidationError("Bitte speichern Sie zuerst alle vorherigen Karten."); // Set error message
+          return; // Prevent saving
+        }
+        // Clear validation error if all previous cards are saved
+        setValidationError("");
+
         let newErrors = {};
 
         parameters.forEach(param => {
@@ -37,10 +51,9 @@ export default function ConverterCard({id, label, parameters, converterType, for
         });
 
         setErrors(newErrors);
-        console.log("Errors:", Object.keys(newErrors).length);
+        //console.log("Errors:", Object.keys(newErrors).length);
         if (Object.keys(newErrors).length === 0) {
-            setIsEditing(false); //Editing State wird auf false gesetzt
-            console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
+            //console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
         
             //call function in edit.jsx
             if (onSave) {
@@ -48,6 +61,13 @@ export default function ConverterCard({id, label, parameters, converterType, for
             }
         }
     }
+
+    const handleExpandButton = () => {
+        setExpanded(!expanded); //Toggle den expanded State
+        if (expanded) {
+          
+        }
+    };
 
     return (
     <div className="bg-white shadow-md rounded-lg p-4 mb-4 "> {/* Übergeordneter Container der so tut als wären die beiden Cards eine Card */}
@@ -92,6 +112,9 @@ export default function ConverterCard({id, label, parameters, converterType, for
             </div>
             </>
         )}
+        {validationError && (
+          <p className="text-red-500 text-xs mt-2">{validationError}</p>
+        )}
 
         {/* Löschen Button */}
         {id !== 0 ? (
@@ -116,14 +139,14 @@ export default function ConverterCard({id, label, parameters, converterType, for
             ) : (
                 <button
                 className="text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
-                onClick={() => setIsEditing(true)}
+                onClick={() => onEditToggle(id, true)}
                 >
                 Bearbeiten
                 </button>
             ))}
             <button
             disabled={isEditing && id !== 0} 
-            onClick={() => setExpanded(!expanded)}
+            onClick={() => handleExpandButton()}
             className={`text-xs ${
                 isEditing && id !== 0 ? "text-gray-300 cursor-not-allowed text-xs"
             : "text-gray-600 hover:text-indigo-500 text-xs"
@@ -149,11 +172,16 @@ export default function ConverterCard({id, label, parameters, converterType, for
             transition={{ duration: 0.15 }}
             className=" object-cover bg-white p-4"
             >
-            <img
-                src="/tabelle.png"
-                alt="TestDropdown"
-                
-            />
+              {/* Table with preview or error message */} 
+                      <div className="flex-1 overflow-auto">
+                        {
+                          preview.length ? (
+                            <TableFromJSON
+                              data= {preview}
+                            />
+                          ) : null
+                        }
+                      </div>
             {/* hier statt des images echte Tabelle */}
             </motion.div>
         )}

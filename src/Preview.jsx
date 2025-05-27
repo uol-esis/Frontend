@@ -18,7 +18,7 @@ import { StackedList } from "./StackedList";
 export default function Preview() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema, editedSchema } = location.state || {}; // Destructure the state
   const [data, setData] = useState([]);
   const actualSchemaRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -77,7 +77,11 @@ export default function Preview() {
 
     try {
       if (generatedSchema) {
+        console.log("Using generated schema: ", generatedSchema);
         actualSchemaRef.current = generatedSchema;
+      } else if (editedSchema) {
+        console.log("Using edited schema: ", editedSchema);
+        actualSchemaRef.current = editedSchema;
       } else if (selectedSchema) {
         actualSchemaRef.current = await new Promise((resolve, reject) => {
           console.log("Requested to get table structure from server");
@@ -95,6 +99,7 @@ export default function Preview() {
           console.error("Failed to get actual schema");
           return;
         }
+        console.log("Using selected schema: ", actualSchemaRef.current);
       }
 
       console.log("Actual schema set: ", actualSchemaRef.current);
@@ -226,8 +231,8 @@ export default function Preview() {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-<div>
+return (
+  <div>
       {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
   
