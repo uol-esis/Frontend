@@ -161,7 +161,7 @@ export default function Preview() {
       }
 
       console.log("schemaId " + schemaId);
-      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
+      api.convertTable(schemaId, selectedFile, undefined, (error, data, response) =>{
         if(error){
           console.error(error);
           reject(error);
