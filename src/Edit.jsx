@@ -41,6 +41,7 @@ export default function Edit() {
     {label: 'Leere Zeilen ausfüllen ', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW' }, //FillEmptyRows
     {label: 'Leere Spalten ausfüllen ', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN' }, //FillEmptyColumns
     {label: 'Spalten entfernen (nach Index) ', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX'},//RemoveColumnByIndex
+    {label: 'Zeilen entfernen (nach Index) ', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX'},//RemoveColumnByIndex
     {label: 'Spaltenüberschriften hinzufügen ', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME'}, //AddHeaderNames
     {label: 'Fußzeile entfernen ', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER'}, //RemoveFooter
     {label: 'Kopfzeile entfernen ', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER'}, //RemoveHeader
