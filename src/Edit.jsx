@@ -125,6 +125,40 @@ export default function Edit() {
     setCardIdCounter(newCards.length + 1); // Update the card ID counter
   };
 
+  function getValueFromFormData(param, formData) {
+    const apiName = param.apiName;
+    const field = formData?.[apiName];
+    if (param.type === 'string') {
+      if (param.required && (!field || field.trim() === "")) {
+        return "";
+      } else if (!param.required && (!field || field.trim() === "")) {
+        return undefined;
+      }
+      return field;
+    }
+    if (param.type === 'number') {
+      if (typeof field === 'number') {
+        return field;
+      }
+      if (param.required && (!field || field.trim() === "")) {
+        return "invalid number";
+      } else if (!param.required && (!field || field.trim() === "")) {
+        return undefined;
+      }
+      return field;
+    }
+    if (param.type === 'array') {
+      if (Array.isArray(field)) {
+        return field;
+      }
+      if (param.required && (!field || field.trim() === "")) {
+        return [];
+      } else if (!param.required && (!field || field.trim() === "")) {
+        return undefined;
+      }
+      return field.split(',').map(item => item.trim());
+    }
+  }
 
   const handleSaveFromCard = async (cardId, formData) => {
     console.log(`Data saved from card ${cardId}:`, formData);
@@ -142,41 +176,6 @@ export default function Edit() {
 
       // Generate the JSON for the saved card and its predecessors
       const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse();
-
-      function getValueFromFormData(param, formData) {
-        const apiName = param.apiName;
-        const field = formData?.[apiName];
-        if (param.type === 'string') {
-          if (param.required && (!field || field.trim() === "")) {
-            return "";
-          } else if (!param.required && (!field || field.trim() === "")) {
-            return undefined;
-          }
-          return field;
-        }
-        if (param.type === 'number') {
-          if (typeof field === 'number') {
-            return field;
-          }
-          if (param.required && (!field || field.trim() === "")) {
-            return "invalid number";
-          } else if (!param.required && (!field || field.trim() === "")) {
-            return undefined;
-          }
-          return field;
-        }
-        if (param.type === 'array') {
-          if (Array.isArray(field)) {
-            return field;
-          }
-          if (param.required && (!field || field.trim() === "")) {
-            return [];
-          } else if (!param.required && (!field || field.trim() === "")) {
-            return undefined;
-          }
-          return field.split(',').map(item => item.trim());
-        }
-      }
 
       const structures = filteredCards.map((card) => {
         const inputs = card.parameters.reduce((acc, param) => {
@@ -282,7 +281,7 @@ export default function Edit() {
     // Generate the final JSON structure from all cards
     const structures = cards.reverse().filter(card => card.id !== 0).map(card => {
       const inputs = card.parameters.reduce((acc, param) => {
-        acc[param.apiName] = card.formData?.[param.apiName] || "";
+        acc[param.apiName] = getValueFromFormData(param, card.formData);
         return acc;
       }, {});
       return {
