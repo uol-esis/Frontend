@@ -133,10 +133,6 @@ function Upload() {
 
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
-  const handleFileInputClick = () => {
-    fileInputRef.current.click();
-  };
-
   //noch ausfüllen
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
@@ -149,42 +145,6 @@ function Upload() {
             },
         });
     };
-
-  useEffect(() => {
-    if (selectedFile) {
-      if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
-        setHelp("Die hochgeladene Datei ist kein Excel- oder CSV-File. Bitte laden Sie eine csv- oder Excel-Datei hoch!");
-        setHelpType("error");
-        return;
-      }
-      if (selectedFile && !selectedSchema) {
-        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie ein passendes Schema aus oder lassen ein neues Schema generieren!")
-        setHelpType("info");
-      }
-      else if (selectedFile && selectedSchema) {
-        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
-        setHelpType("check");
-      }
-    };
-  }, [selectedFile]);
-
-  const isValidFile = selectedFile && ( //to check if the file ist valid (for svg in dragndrop)
-    selectedFile.name.endsWith(".csv") ||
-    selectedFile.name.endsWith(".xlsx") ||
-    selectedFile.name.endsWith(".xls"));
-
-  useEffect(() => {
-    if (selectedSchema && helpType !== "error") {
-      if (!selectedFile && selectedSchema) {
-        setHelp("Schema ausgewählt. Bitte laden Sie eine passende Excel- oder CSV-Datei hoch und klicken anschließend auf weiter!");
-        setHelpType("info");
-      }
-      else if (selectedFile && selectedSchema) {
-        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
-        setHelpType("check");
-      }
-    };
-  }, [selectedSchema]);
 
   const schemaBlockClass = validFile ? "" : "opacity-50 pointer-events-none";
 
