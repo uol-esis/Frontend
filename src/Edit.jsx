@@ -16,6 +16,10 @@ export default function Edit() {
     setCardIdCounter(cardIdCounter + 1); 
   }
 
+  const handleDeleteCard = (idToDelete) => {
+  setCards(prevCards => prevCards.filter(card => card.id !== idToDelete));
+  };
+
   const converters = [
     {label: 'Gruppenüberschriften entfernen ', params: [ {name: 'Zeilennummer', type: 'number', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'number', required: true, apiName: 'columnIndex'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER' }, //RemoveGroupedHeader
     {label: 'Leere Zeilen ausfüllen ', params: [{name: 'Zeilennummer', type:'number', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW' }, //FillEmptyRows
@@ -23,7 +27,7 @@ export default function Edit() {
     {label: 'Spaltenüberschriften hinzufügen ', params: [{name: 'Überschriftenliste (Kommagetrennt)', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME'}, //AddHeaderNames
     {label: 'Fußzeile entfernen ', params: [{name:'Treshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blacklist', required: false, apiName: 'blacklist'}], converterType: 'REMOVE_FOOTER'}, //RemoveFooter
     {label: 'Kopfzeile entfernen ', params: [{name: 'Treshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blacklist', required: false, apiName: 'blacklist'}], converterType: 'REMOVE_HEADER'}, //RemoveHeader
-    {label: 'Einträge ersetzen ', params: [ {name: 'Suchbegriff', required: false, apiName: 'search'}, {name: 'Regex', required: false, apiName: 'regexSearch'}, {name: 'Ersetzen durch: ', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES'}, //ReplaceEntries
+    {label: 'Einträge ersetzen ', params: [ {name: 'Suchbegriff', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES'}, //ReplaceEntries
     {label: 'Zeile aufteilen ', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW'}, //SplitRow
     {label: 'Ungültige Zeilen entfernen ', params: [{name:'Treshold', apiName: 'threshold'}, {name: 'Blacklist', apiName: 'blacklist'}], converterType: 'REMOVE_INVALID_ROWS'}, //RemoveInvalidRows
     {label: 'Nachträgliche Spalten entfernen ', params: [{name:'Treshold', apiName: 'threshold'}, {name:'Blacklist', apiName: 'blacklist'}], converterType: 'REMOVE_TRAILING_COLUMNS'}, //RemoveTrailingColumns
@@ -144,7 +148,7 @@ export default function Edit() {
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20">
           {cards.map((card) => (
-            <ConverterCard key={card.id} id={card.id} label={card.label} parameters={card.parameters} converterType={card.converterType} formData={card.formData} onSave={handleSaveFromCard}/>
+            <ConverterCard key={card.id} id={card.id} label={card.label} parameters={card.parameters} converterType={card.converterType} formData={card.formData} onSave={handleSaveFromCard}  onDelete={handleDeleteCard}/>
           ))}
         </div>
 
