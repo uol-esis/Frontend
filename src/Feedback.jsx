@@ -9,6 +9,7 @@ export default function Feedback(){
     const [Th1, setTh1] = useState(null);
     const navigate = useNavigate();
     const [isFeedbackSend, setFeedbackSend] = useState(false);
+    const [comment, setComment] = useState('');
 
     useEffect(() => {
         import('th1').then(module => {
@@ -48,6 +49,7 @@ export default function Feedback(){
                 console.error(error);
             } else {
                 setFeedbackSend(true);
+                setComment('');
                 console.log('API called successfully. Returned data: ' + data);
             }
         });
@@ -58,8 +60,10 @@ export default function Feedback(){
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
                 <p>
-                    Hier gibt es die Möglichkeit uns zu den jeweiligen Features des Tools Feedback zu geben oder Fehler zu melden <br/>
-                    Außerdem würden wir uns auch über Input zu unserem Forschungszweck freuen, also Feedback hinsichtlich Grund- und Fachkompotenzen bezüglich der Arbeit mit Daten.
+                    Bitte fassen Sie hier zusammen, welche Funktionen Sie benutzt haben und wie Ihre Erfahrung damit war. <br/> 
+                    Beispiel: "Beim Erstellen eines neuen Schemas finde ich die Darstellung der Knöpfe unübersichtlich".  <br/> <br/>
+                    Bitte beschreiben Sie außerdem, wie Sie ihre Datenkompetenz bei der Nutzung des Tools wahrnehmen. <br/>
+                    Beispiel: Welche Entwicklung bei Ihren Kompetenzen gibt es? Welche genutzen Funktionen würden Sie einer Grund- oder Fachkompetenz bei der Arbeit mit Daten zuordnen? 
                 </p>
                 {/* Feedback successful sent */}
                 {isFeedbackSend &&
@@ -110,7 +114,8 @@ export default function Feedback(){
                         name="comment"
                         rows={4}
                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                        defaultValue={''}
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
                     />
                 </div>
                 
