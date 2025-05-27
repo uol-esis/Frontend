@@ -79,7 +79,13 @@ export default function ConverterCard({id, label, parameters, converterType, for
                   
                     {/* Linke Seite: Parameterbereich */}
                     <div className="flex-1">
-                        
+                      {/* Userbenachrichtigung wenn es keine required Parameter  */}
+                        {requiredParameters.length === 0 && (
+                          <p className="text-sm italic text-gray-500 mb-4 mr-6">
+                            Dieser Converter funktioniert automatisch – Sie müssen keine Pflichtfelder ausfüllen, haben aber die Möglichkeit optionale Parameter anzugeben.
+                          </p>
+                        )}
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {requiredParameters.map(param => (
                                 <div key={param.apiName} className="flex flex-col">
