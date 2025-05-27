@@ -25,7 +25,15 @@ export default function Edit() {
   }
 
   const handleDeleteCard = (idToDelete) => {
-  setCards(prevCards => prevCards.filter(card => card.id !== idToDelete));
+    setCards(prevCards => prevCards.filter(card => card.id !== idToDelete)
+        .map((card) => {
+          if (card.id === idToDelete) {
+            return { ...card, isEditing: false };
+          } else if (card.id > idToDelete) {
+            return { ...card, isEditing: true, preview: null };
+          }
+          return card;
+        }));
   };
 
   const converters = [
