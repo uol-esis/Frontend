@@ -44,7 +44,7 @@ export default function Preview() {
     },
     {
       header: "Tabellentransformation",
-      text: selectedSchema?.name || generatedSchema?.name 
+      text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
     },
     {
      header: "Datei",

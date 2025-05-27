@@ -291,7 +291,7 @@ export default function Edit() {
     });
 
     const jsonData = {
-      name: "Final Schema",
+      name: schemaToEdit.name,
       structures: structures,
       endRow: null,
       endColumn: null,
