@@ -81,7 +81,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                     <div className="flex-1">
                       {/* Userbenachrichtigung wenn es keine required Parameter  */}
                         {requiredParameters.length === 0 && (
-                          <p className="text-sm italic text-gray-500 mb-4 mr-6">
+                          <p className="text-sm italic text-gray-500 mb-4 pl-20">
                             Dieser Converter funktioniert automatisch – Sie müssen keine Pflichtfelder ausfüllen, haben aber die Möglichkeit optionale Parameter anzugeben.
                           </p>
                         )}
