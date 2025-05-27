@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, onSave}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, onSave, onDelete}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [isEditing, setIsEditing] = useState(true); //State dient dafür dass man wenn man auf Speichern klickt, die Felder nicht mehr editierbar sind (hier müsste User ja auf Bearbeiten, Löschen oder so klicken, damit du die Chain korrekt speichern kannst)
@@ -128,7 +128,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                         <button
                             type="button"
                             className="text-xl transform transition-transform duration-200 hover:scale-110 hover:-translate-y-0.5"
-                            // onClick={} Löschen-Handler hier
+                            onClick={() => onDelete?.(id)} 
                         >
                             🗑️
                         </button>
