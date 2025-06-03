@@ -299,15 +299,20 @@ export default function Edit() {
 
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
 
+
+    
+    
     // Send the final JSON to the server or handle it as needed
     // For now, just navigate back to the home page
     navigate("/preview", {
       state: {
         selectedFile: selectedFile,
-        editedSchema: jsonData
+        editedSchema: jsonData,
+        showSuccessMessage: true
       }
     }
     );
+  
   }
 
   return (
@@ -356,7 +361,7 @@ export default function Edit() {
           className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
           onClick={handleEditComplete}
         >Anwenden</button>
-        {/* apiapiapiapiapi */}
+       
       </div>
     </div>
   );
