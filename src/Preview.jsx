@@ -269,7 +269,7 @@ return (
     {showPPup
        && (
         <div className="mt-4 mx-auto bg-green-100 border border-green-500 text-green-800 px-6 py-3 rounded shadow">
-          Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie korrekte Datei hoch!        </div>
+          Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie die korrekte Datei hoch!        </div>
       )}
         {/* Popups */}
         <HelpDialog dialogRef={helpDialogRef}/>
