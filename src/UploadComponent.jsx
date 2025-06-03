@@ -1,20 +1,48 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import FileNameDialog from "./Popups/FileNameDialog";
 
 export default function UploadComponent({setFile, setValid}){
 
     const [selectedFile, setSelectedFile] = useState(null);
-    const [validFile, setValidFile] = useState(false);
     const fileInputRef = useRef(null); // Reference for the hidden input element
+    const fileNameDialogRef = useRef(null);
+    const [modifiedFileName, setModifiedFileName] = useState(selectedFile?.name || "");
+    const [showNamePopup, setShowNamePopup] = useState(false);
+    const [isValidFile, setIsValidFile] = useState(false);
 
-    const isValid = (file) => {
-        if( file.name.endsWith(".csv") || 
-        file.name.endsWith(".xlsx") ||
-        file.name.endsWith(".xls")){
-            return true;
-        }else return false;
-    }
+    const getByteSize = (str) => {
+      const encoder = new TextEncoder();
+      const encoded = encoder.encode(str);
+      return encoded.length;
+    };
 
-     const handleDragOver = (event) => {
+    useEffect(() => {
+        if (selectedFile && isValidFile){
+            setFile(selectedFile);
+            setValid(true);
+        }
+    }, [isValidFile]);
+
+
+    useEffect(() => {
+        if (selectedFile && getByteSize(selectedFile.name) > 63) {
+          setModifiedFileName(selectedFile.name); // Set the initial name
+          fileNameDialogRef.current?.showModal(); // Open the popup
+      }
+      }, [selectedFile]);
+    
+    
+    useEffect(() => {
+      if (selectedFile) {
+        const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
+        const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
+        setIsValidFile(isValidAndShortEnough);
+      } else {
+        setIsValidFile(false);
+      }
+    }, [selectedFile]);
+
+    const handleDragOver = (event) => {
         event.preventDefault();
     };
 
@@ -22,31 +50,26 @@ export default function UploadComponent({setFile, setValid}){
         event.preventDefault();
         const file = event.dataTransfer.files[0];
         setSelectedFile(file);
-        if(isValid(file)){
-            setValidFile(true);
-            setValid(true);
-            setFile(file);
-        }else setValid(false);
     };
 
     {/* helper functions */ }
     const handleFileChange = (event) => {
         console.log("change file");
         setSelectedFile(event.target.files[0]);
-        if(isValid(event.target.files[0])){
-            console.log("set file and valid");
-            setValidFile(true);
-            setValid(true);
-            setFile(event.target.files[0]);
-        }else setValid(false);
-        
     }
 
     const handleFileInputClick = () => {
         fileInputRef.current.click();
     };
 
+    const handleFileNameConfirm = (newName) => {
+      const newFile = new File([selectedFile], newName, { type: selectedFile.type });
+      setSelectedFile(newFile); // Update the file with the new name
+    };
+
     return(
+      <div>
+        <FileNameDialog dialogRef={fileNameDialogRef} fileName={modifiedFileName} onConfirm={handleFileNameConfirm}/>
         <div
           className="flex flex-col p-4 w-full bg-white shadow rounded-[10px] min-h-[75vh]"
           onDragOver={handleDragOver}
@@ -60,7 +83,7 @@ export default function UploadComponent({setFile, setValid}){
           >
             {selectedFile ? (
               <>
-                {validFile ? (
+                {isValidFile ? (
                   <svg
                     fill="none"
                     stroke="currentColor"
@@ -116,5 +139,6 @@ export default function UploadComponent({setFile, setValid}){
             <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>
           )}
         </div>
+      </div>
     );
 }

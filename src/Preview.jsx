@@ -18,7 +18,8 @@ import { StackedList } from "./StackedList";
 export default function Preview() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema, generatedSchema } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema, editedSchema, showSuccessMessage } = location.state || {}; // Destructure the state
+  const [showPPup, setShowPPup] = useState(false);
   const [data, setData] = useState([]);
   const actualSchemaRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -37,6 +38,13 @@ export default function Preview() {
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
 
+
+  useEffect(() => {
+    if(showSuccessMessage){
+      setShowPPup(true);
+    }
+
+  }, [showSuccessMessage]);
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -44,7 +52,7 @@ export default function Preview() {
     },
     {
       header: "Tabellentransformation",
-      text: selectedSchema?.name || generatedSchema?.name 
+      text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
     },
     {
      header: "Datei",
@@ -77,7 +85,11 @@ export default function Preview() {
 
     try {
       if (generatedSchema) {
+        console.log("Using generated schema: ", generatedSchema);
         actualSchemaRef.current = generatedSchema;
+      } else if (editedSchema) {
+        console.log("Using edited schema: ", editedSchema);
+        actualSchemaRef.current = editedSchema;
       } else if (selectedSchema) {
         actualSchemaRef.current = await new Promise((resolve, reject) => {
           console.log("Requested to get table structure from server");
@@ -95,6 +107,7 @@ export default function Preview() {
           console.error("Failed to get actual schema");
           return;
         }
+        console.log("Using selected schema: ", actualSchemaRef.current);
       }
 
       console.log("Actual schema set: ", actualSchemaRef.current);
@@ -156,7 +169,7 @@ export default function Preview() {
       }
 
       console.log("schemaId " + schemaId);
-      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
+      api.convertTable(schemaId, selectedFile, undefined, (error, data, response) =>{
         if(error){
           console.error(error);
           reject(error);
@@ -177,6 +190,26 @@ export default function Preview() {
     const api = new DefaultApi(client);
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log('API called successfully. data: ', data);
+          const id = data; // Assuming `response` contains the ID
+          resolve(id);
+        }
+      });
+    });
+  }
+
+  const sendEditedSchemaToServer = () => {
+    if (!editedSchema) {
+      console.error("No generated schema to send");
+      return null;
+    }
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const api = new DefaultApi(client);
+    return new Promise((resolve, reject) => {
+      api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {
           reject(error);
         } else {
@@ -226,11 +259,18 @@ export default function Preview() {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-<div>
+return (
+  <div>
+    
+      
       {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
-  
+        
+    {showPPup
+       && (
+        <div className="mt-4 mx-auto bg-green-100 border border-green-500 text-green-800 px-6 py-3 rounded shadow">
+          Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie die korrekte Datei hoch!        </div>
+      )}
         {/* Popups */}
         <HelpDialog dialogRef={helpDialogRef}/>
   
@@ -250,12 +290,14 @@ export default function Preview() {
             try {
               let schemaId = null;
               if (generatedSchema) {
-                  schemaId = await sendGeneratedSchemaToServer();
-                }
-                await sendTableToServer(schemaId);
+                schemaId = await sendGeneratedSchemaToServer();
+              } else if (editedSchema) {
+                schemaId = await sendEditedSchemaToServer();
+              }
+              await sendTableToServer(schemaId);
               uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
-              console.log("catched");
+                console.log("catched");
               setErrorText(error.message);
               errorDialogRef.current?.showModal();
             }
