@@ -4,8 +4,7 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import ConfirmNameDialog from "./Popups/ConfirmNameDialog";
-
-import Alert from "./Alert";
+import FileNameDialog from "./Popups/FileNameDialog";
 
 function Upload() {
   const [schemaList, setSchemaList] = useState([
@@ -22,7 +21,10 @@ function Upload() {
   const [helpType, setHelpType] = useState("info");
   const [schemaName, setSchemaName] = useState("");
   const [jsonData, setJsonData] = useState(null);
-
+  const [showNamePopup, setShowNamePopup] = useState(false);
+  const [modifiedFileName, setModifiedFileName] = useState(selectedFile?.name || "");
+  const fileNameDialogRef = useRef(null);
+  const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const confirmNameToPreviewRef = useRef();
   const confirmNameToEditRef = useRef();
@@ -42,6 +44,30 @@ function Upload() {
       getSchemaList();
     }
   }, [Th1]);
+
+  const getByteSize = (str) => {
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(str);
+    return encoded.length;
+  };
+
+  useEffect(() => {
+    if (selectedFile && getByteSize(selectedFile.name) > 63) {
+      setModifiedFileName(selectedFile.name); // Set the initial name
+      fileNameDialogRef.current?.showModal(); // Open the popup
+  }
+  }, [selectedFile]);
+
+
+  useEffect(() => {
+    if (selectedFile) {
+      const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
+      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
+      setIsValidFile(isValidAndShortEnough);
+    } else {
+      setIsValidFile(false);
+    }
+  }, [selectedFile]);
 
   const getSchemaList = function () {
     if (!Th1) {
@@ -105,6 +131,11 @@ function Upload() {
     fileInputRef.current.click();
   };
 
+  const handleFileNameConfirm = (newName) => {
+    const newFile = new File([selectedFile], newName, { type: selectedFile.type });
+    setSelectedFile(newFile); // Update the file with the new name
+  };
+
   //noch ausfüllen
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
@@ -124,41 +155,6 @@ function Upload() {
     console.log("Delete schema clicked");   
   };
 
-  useEffect(() => {
-    if (selectedFile) {
-      if (!selectedFile.name.endsWith(".csv") && !selectedFile.name.endsWith(".xlsx") && !selectedFile.name.endsWith(".xls")) {
-        setHelp("Die hochgeladene Datei ist kein Excel- oder CSV-File. Bitte laden Sie eine csv- oder Excel-Datei hoch!");
-        setHelpType("error");
-        return;
-      }
-      if (selectedFile && !selectedSchema) {
-        setHelp("Datei erfolgreich hochgeladen. Bitte wählen Sie ein passendes Schema aus oder lassen ein neues Schema generieren!")
-        setHelpType("info");
-      }
-      else if (selectedFile && selectedSchema) {
-        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
-        setHelpType("check");
-      }
-    };
-  }, [selectedFile]);
-
-  const isValidFile = selectedFile && ( //to check if the file ist valid (for svg in dragndrop)
-    selectedFile.name.endsWith(".csv") ||
-    selectedFile.name.endsWith(".xlsx") ||
-    selectedFile.name.endsWith(".xls"));
-
-  useEffect(() => {
-    if (selectedSchema && helpType !== "error") {
-      if (!selectedFile && selectedSchema) {
-        setHelp("Schema ausgewählt. Bitte laden Sie eine passende Excel- oder CSV-Datei hoch und klicken anschließend auf weiter!");
-        setHelpType("info");
-      }
-      else if (selectedFile && selectedSchema) {
-        setHelp("Datei und Schema erfolgreich ausgewählt. Klicken Sie auf weiter!");
-        setHelpType("check");
-      }
-    };
-  }, [selectedSchema]);
 
   const handleDragOver = (event) => {
     event.preventDefault();
@@ -173,8 +169,6 @@ function Upload() {
   const filteredSchemaList = schemaList
     .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
 
-  const schemaBlockClass = isValidFile ? "" : "opacity-50 pointer-events-none";
-
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
@@ -185,6 +179,8 @@ function Upload() {
       <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
 
       <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()}/>
+
+      <FileNameDialog dialogRef={fileNameDialogRef} fileName={modifiedFileName} onConfirm={handleFileNameConfirm}/>
 
       {/* Container: File Upload + Schema (left, right) */}
       <div className="flex flex-col lg:flex-row justify-center lg:space-x-8 space-y-4 lg:space-y-0 mx-15">
@@ -198,8 +194,9 @@ function Upload() {
           <button
             type="button"
             onClick={handleFileInputClick}
-            className="relative flex-1 rounded-lg bg-white border-2 border-dashed border-gray-300 p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
+            className={`relative flex-1 rounded-lg bg-white border-2 border-dashed ${
+              isValidFile ? "border-gray-300 hover:border-gray-400" : "border-red-500"
+            } p-12 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500`}          >
             {selectedFile ? (
               <>
                 {isValidFile ? (
@@ -260,7 +257,7 @@ function Upload() {
         </div>
 
         {/* Right Up, Down */}
-        <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${schemaBlockClass}`}>
+        <div className={`flex flex-col space-y-6 w-full lg:w-2/3 ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
           {/* Right Up  */}
           <div className="flex-1 p-4 bg-gray-100 rounded-[10px] flex flex-col h-full">
             <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
