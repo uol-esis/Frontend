@@ -7,7 +7,6 @@ import UploadComponent from "./UploadComponent";
 import SchemaList from "./SchemaList";
 import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
-import FileNameDialog from "./Popups/FileNameDialog";
 
 function Upload() {
   const [schemaList, setSchemaList] = useState([
@@ -17,13 +16,9 @@ function Upload() {
   ]); // Default for the list of schemata
   const [Th1, setTh1] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [validFile, setValidFile] = useState(false);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
   const [jsonData, setJsonData] = useState(null);
-  const [showNamePopup, setShowNamePopup] = useState(false);
-  const [modifiedFileName, setModifiedFileName] = useState(selectedFile?.name || "");
-  const fileNameDialogRef = useRef(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
 
@@ -168,10 +163,7 @@ function Upload() {
     fileInputRef.current.click();
   };
 
-  const handleFileNameConfirm = (newName) => {
-    const newFile = new File([selectedFile], newName, { type: selectedFile.type });
-    setSelectedFile(newFile); // Update the file with the new name
-  };
+  
 
   //noch ausfüllen
   const handleAddSchema = () => {
@@ -198,9 +190,6 @@ function Upload() {
     setSelectedFile(file);
   };
 
-  const filteredSchemaList = schemaList
-    .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
-
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
@@ -209,7 +198,6 @@ function Upload() {
       {/* Popup */}
         <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
         <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()}/>
-        <FileNameDialog dialogRef={fileNameDialogRef} fileName={modifiedFileName} onConfirm={handleFileNameConfirm}/>
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
@@ -235,34 +223,38 @@ function Upload() {
 
         {/* Upload */}
         <div className="reflex flex-col w-1/3 relative">
-            <UploadComponent setFile={setSelectedFile} setValid={setValidFile} />
+            <UploadComponent setFile={setSelectedFile} setValid={setIsValidFile} />
             <div className="absolute bottom-0 left-0">
               <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipDate} direction={"top"} onClick={TipDataToSchema}/>
             </div>
         </div>
 
           {/* Schemalist and Generate */}
-          <div className={`flex flex-col space-y-6 w-full h-full`}>
+          <div className={`flex flex-col space-y-6 w-full h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
 
             {/* Schemalist*/}
             <div className="relative h-full min-h-0">
-              <div className={`h-full ${schemaBlockClass}`}>
+              <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
                 <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
               </div>
-              <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw]">
+              <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
+                style={{opacity:1}}
+              >
                 <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
               </div>
            </div>
 
             {/* Generate */}
             <div className="relative">
-              <div className={`${schemaBlockClass}`}>
-                <GenerateSchemaComponent fileIsValid={validFile} onGenerate={generateNewSchema}/>
+              <div className={`${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
+                <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema}/>
               </div>
-                <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2">
-                    <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
-                </div>
+              <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2 pointer-events-auto"
+                style={{opacity:1}}
+              >
+                  <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
               </div>
+            </div>
 
           </div>
 
