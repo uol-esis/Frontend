@@ -219,11 +219,11 @@ export default function Wiki() {
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold">Vorher </figcaption>
-                            <img className=" object-contain" src="public/wiki/FillEmptyColumn.png" alt="fill empty column" />
+                            <img className="h-[40vh] object-contain" src="public/wiki/FillEmptyColumn.png" alt="fill empty column" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold"> Nachher</figcaption>
-                            <img className=" object-contain" src="public/wiki/FillEmptyColumn_Result.png" alt="fill empty column" />
+                            <img className="h-[40vh] object-contain" src="public/wiki/FillEmptyColumn_Result.png" alt="fill empty column" />
                         </figure>
                     </div>
                    
@@ -242,9 +242,8 @@ export default function Wiki() {
                     </p>
                     <p className="text-left font-semibold mt-4">Beispiel: </p>
                     <p className="text-left">
-                        Wir wollen im folgenden Beispiel die Spalte "Name" am Anfang der Tabelle löschen.
-                        <br/> <br/>
-                        Wir geben den Spaltenindex (die Spaltennummer) 0 an. 
+                        Wir wollen im folgenden Beispiel die Spalte "Stadtviertel" am Anfang der Tabelle löschen.
+                        
                     </p>
                     <div className="flex justify-center">
                         <figure>
@@ -254,7 +253,7 @@ export default function Wiki() {
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold"> Vorher </figcaption>
-                            <img className=" object-contain" src="../public/wiki/RemoveColumn.png" alt="remove Column" />
+                            <img className=" object-contain" src="/public/wiki/standardTable.png" alt="remove Column" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold"> Nachher</figcaption>
@@ -275,9 +274,7 @@ export default function Wiki() {
                     </p>
                         <p className="text-left font-semibold mt-4">Beispiel: </p>
                         <p className="text-left">
-                            Hier haben wir ein Zeilenduplikat, welches wir löschen möchten. Gemeint sind Zeilen 6 und 7.
-                            <br/> <br/>
-                            Wir geben 6 für die zu löschende Zeile an.
+                            Hier wollen wir Zeile 1 und 2 löschen.
                         </p>
                         <div className="mt-5 flex justify-center">
                             <figure>
@@ -288,7 +285,7 @@ export default function Wiki() {
                         <div className="flex justify-around p-4 ">
                             <figure>
                                 <figcaption className="font-semibold"> Vorher </figcaption>
-                                <img className="object-contain" src="public/wiki/RemoveRow.png" alt="remove row" />
+                                <img className="object-contain" src="public/wiki/standardTable.png" alt="remove row" />
                             </figure>
                             <figure>
                                 <figcaption className="font-semibold"> Nachher</figcaption>
