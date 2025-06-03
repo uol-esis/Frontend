@@ -18,7 +18,8 @@ import { StackedList } from "./StackedList";
 export default function Preview() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema, generatedSchema, editedSchema } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema, editedSchema, showSuccessMessage } = location.state || {}; // Destructure the state
+  const [showPPup, setShowPPup] = useState(false);
   const [data, setData] = useState([]);
   const actualSchemaRef = useRef(null);
   const [files, setFiles] = useState([]);
@@ -37,6 +38,13 @@ export default function Preview() {
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
 
+
+  useEffect(() => {
+    if(showSuccessMessage){
+      setShowPPup(true);
+    }
+
+  }, [showSuccessMessage]);
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -253,9 +261,16 @@ export default function Preview() {
 
 return (
   <div>
+    
+      
       {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
-  
+        
+    {showPPup
+       && (
+        <div className="mt-4 mx-auto bg-green-100 border border-green-500 text-green-800 px-6 py-3 rounded shadow">
+          Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie korrekte Datei hoch!        </div>
+      )}
         {/* Popups */}
         <HelpDialog dialogRef={helpDialogRef}/>
   
