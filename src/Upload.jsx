@@ -43,7 +43,6 @@ function Upload() {
     <span>Alternativ kann hier eine neue Tabellentransformation automatisch generiert werden. </span>
   )
 
-
   const TipDataToSchema = function () {
     setTipData(false);
     setTipSchema(true);
@@ -212,7 +211,7 @@ function Upload() {
           <button
             type="button"
             className=""
-            onClick={() => setTipData(true)}
+            onClick={() => {setTipData(true); setTipSchema(false); setTipGenerate(false);}}
           >
             <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
           </button>
