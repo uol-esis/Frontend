@@ -106,20 +106,20 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/removeGroupedHeaderParameter1.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/removeGroupedHeaderParameter1.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain w-[35vw]" src="public/wikiAssets/removeGroupedHeaderStandard1.png" alt="" />
+                            <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard1.png" alt="" />
 
                         </figure>
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain w-[35vw]" src="public/wikiAssets/removeGroupedHeaderNew1.png" alt="" />
+                            <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew1.png" alt="" />
 
                         </figure>
 
@@ -143,7 +143,7 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/removeGroupedHeaderParameter2.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/removeGroupedHeaderParameter2.png" alt="" />
                         </figure>
 
                     </div>
@@ -151,13 +151,13 @@ export default function Wiki() {
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain w-[35vw]" src="public/wikiAssets/removeGroupedHeaderStandard2.png" alt="" />
+                            <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard2.png" alt="" />
 
                         </figure>
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain w-[35vw]" src="public/wikiAssets/removeGroupedHeaderNew2.png" alt="" />
+                            <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew2.png" alt="" />
 
                         </figure>
                     </div>
@@ -182,17 +182,17 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption></figcaption>
-                            <img className="mt-5 object-contain w-[50vw] " src="public/wikiAssets/FillEmptyRow_Input.png" alt="fill empty row" />
+                            <img className="mt-5 object-contain w-[50vw] " src="wikiAssets/FillEmptyRow_Input.png" alt="fill empty row" />
                         </figure>
                     </div>
                     <div className="flex justify-around p-4">
                         <figure>
                             <figcaption className="font-semibold p-4"> Vorher </figcaption>
-                            <img className="object-contain" src="public/wikiAssets/FillEmptyRow.png" alt="fill empty row" />
+                            <img className="object-contain" src="wikiAssets/FillEmptyRow.png" alt="fill empty row" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher </figcaption>
-                            <img className=" object-contain" src="public/wikiAssets/FillEmptyRow_Result.png" alt="fill empty row" />
+                            <img className=" object-contain" src="wikiAssets/FillEmptyRow_Result.png" alt="fill empty row" />
                         </figure>
                     </div>
 
@@ -215,17 +215,17 @@ export default function Wiki() {
                     <div className="mt-5 flex justify-center">
                         <figure>
                             <figcaption></figcaption>
-                            <img className="w-[50vw] object-contain" src="public/wikiAssets/FillEmptyColumn_Input.png" alt="fill empty column" />
+                            <img className="w-[50vw] object-contain" src="wikiAssets/FillEmptyColumn_Input.png" alt="fill empty column" />
                         </figure>
                     </div>
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold">Vorher </figcaption>
-                            <img className="h-[40vh] object-contain" src="public/wikiAssets/FillEmptyColumn.png" alt="fill empty column" />
+                            <img className="h-[40vh] object-contain" src="wikiAssets/FillEmptyColumn.png" alt="fill empty column" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold"> Nachher</figcaption>
-                            <img className="h-[40vh] object-contain" src="public/wikiAssets/FillEmptyColumn_Result.png" alt="fill empty column" />
+                            <img className="h-[40vh] object-contain" src="wikiAssets/FillEmptyColumn_Result.png" alt="fill empty column" />
                         </figure>
                     </div>
 
@@ -249,17 +249,17 @@ export default function Wiki() {
                     </p>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="w-[50vw] object-contain" src="public/wikiAssets/RemoveColumn_Input.png" alt="remove Column" />
+                            <img className="w-[50vw] object-contain" src="wikiAssets/RemoveColumn_Input.png" alt="remove Column" />
                         </figure>
                     </div>
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold"> Vorher </figcaption>
-                            <img className=" object-contain" src="/public/wikiAssets/standardTable.png" alt="remove Column" />
+                            <img className=" object-contain" src="/wikiAssets/standardTable.png" alt="remove Column" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold"> Nachher</figcaption>
-                            <img className=" object-contain" src="/public/wikiAssets/RemoveColumn_Result.png" alt="remove Column" />
+                            <img className=" object-contain" src="/wikiAssets/RemoveColumn_Result.png" alt="remove Column" />
                         </figure>
                     </div>
 
@@ -280,18 +280,18 @@ export default function Wiki() {
                     </p>
                     <div className="mt-5 flex justify-center">
                         <figure>
-                            <img className="w-[50vw] object-contain" src="public/wikiAssets/RemoveRow_Input.png" alt="remove row" />
+                            <img className="w-[50vw] object-contain" src="wikiAssets/RemoveRow_Input.png" alt="remove row" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold"> Vorher </figcaption>
-                            <img className="object-contain" src="public/wikiAssets/standardTable.png" alt="remove row" />
+                            <img className="object-contain" src="wikiAssets/standardTable.png" alt="remove row" />
                         </figure>
                         <figure>
                             <figcaption className="font-semibold"> Nachher</figcaption>
-                            <img className="object-contain" src="public/wikiAssets/RemoveRow_Result.png" alt="remove row" />
+                            <img className="object-contain" src="wikiAssets/RemoveRow_Result.png" alt="remove row" />
                         </figure>
                     </div>
 
@@ -324,20 +324,20 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/addHeaderNameParameter.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/addHeaderNameParameter.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain w-[35vw]" src="public/wikiAssets/addHeaderNameStandard.png" alt="" />
+                            <img className=" object-contain w-[35vw]" src="wikiAssets/addHeaderNameStandard.png" alt="" />
 
                         </figure>
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain w-[35vw]" src="public/wikiAssets/addHeaderNameNew.png" alt="" />
+                            <img className="object-contain w-[35vw]" src="wikiAssets/addHeaderNameNew.png" alt="" />
 
                         </figure>
 
@@ -365,7 +365,7 @@ export default function Wiki() {
 
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     <p className="text-left">Bei dieser Tabelle wird der Text unter der Tabelle entfernt, also Zeile 80 und 81</p>
-                    <img className="mt-5 object-contain" src="public/wikiAssets/removeFooter.png" alt="Kopfzeile entfernen Bild" />
+                    <img className="mt-5 object-contain" src="wikiAssets/removeFooter.png" alt="Kopfzeile entfernen Bild" />
 
                 </section>
 
@@ -390,7 +390,7 @@ export default function Wiki() {
 
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     <p className="text-left">Bei dieser Tabelle werden der Text über der Tabelle, also Zeile 3 bis 7</p>
-                    <img className="mt-5 object-contain" src="public/wikiAssets/removeHeader.png" alt="Kopfzeile entfernen Bild" />
+                    <img className="mt-5 object-contain" src="wikiAssets/removeHeader.png" alt="Kopfzeile entfernen Bild" />
 
                 </section>
 
@@ -415,20 +415,20 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/replaceEntriesParameter.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/replaceEntriesParameter.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="public/wikiAssets/standardTable.png" alt="remove Column" />
+                            <img className=" object-contain" src="wikiAssets/standardTable.png" alt="remove Column" />
 
                         </figure>
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="public/wikiAssets/replaceEntriesTable.png" alt="remove Column" />
+                            <img className="object-contain" src="wikiAssets/replaceEntriesTable.png" alt="remove Column" />
 
                         </figure>
 
@@ -461,7 +461,7 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/splitRowParameter.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/splitRowParameter.png" alt="" />
                         </figure>
 
                     </div>
@@ -469,13 +469,13 @@ export default function Wiki() {
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="public/wikiAssets/splitRowStandard.png" alt="remove Column" />
+                            <img className=" object-contain" src="wikiAssets/splitRowStandard.png" alt="remove Column" />
 
                         </figure>
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="public/wikiAssets/splitRowNew.png" alt="remove Column" />
+                            <img className="object-contain" src="wikiAssets/splitRowNew.png" alt="remove Column" />
 
                         </figure>
                     </div>
@@ -512,7 +512,7 @@ export default function Wiki() {
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="public/wikiAssets/removeInvalidRowParameter.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/removeInvalidRowParameter.png" alt="" />
                         </figure>
 
                     </div>
@@ -520,12 +520,12 @@ export default function Wiki() {
                     <div className="flex justify-around p-4 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="public/wikiAssets/removeInvalidRowStandard.png" alt="remove Column" />
+                            <img className=" object-contain" src="wikiAssets/removeInvalidRowStandard.png" alt="remove Column" />
 
                         </figure>
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="public/wikiAssets/removeInvalidRowNew.png" alt="remove Column" />
+                            <img className="object-contain" src="wikiAssets/removeInvalidRowNew.png" alt="remove Column" />
 
                         </figure>
 
