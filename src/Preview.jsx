@@ -44,7 +44,7 @@ export default function Preview() {
     },
     {
       header: "Tabellentransformation",
-      text: selectedSchema?.name || generatedSchema?.name 
+      text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
     },
     {
      header: "Datei",
@@ -161,7 +161,7 @@ export default function Preview() {
       }
 
       console.log("schemaId " + schemaId);
-      api.convertTable(schemaId, selectedFile, (error, data, response) =>{
+      api.convertTable(schemaId, selectedFile, undefined, (error, data, response) =>{
         if(error){
           console.error(error);
           reject(error);
@@ -182,6 +182,26 @@ export default function Preview() {
     const api = new DefaultApi(client);
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          console.log('API called successfully. data: ', data);
+          const id = data; // Assuming `response` contains the ID
+          resolve(id);
+        }
+      });
+    });
+  }
+
+  const sendEditedSchemaToServer = () => {
+    if (!editedSchema) {
+      console.error("No generated schema to send");
+      return null;
+    }
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const api = new DefaultApi(client);
+    return new Promise((resolve, reject) => {
+      api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {
           reject(error);
         } else {
@@ -255,12 +275,14 @@ return (
             try {
               let schemaId = null;
               if (generatedSchema) {
-                  schemaId = await sendGeneratedSchemaToServer();
-                }
-                await sendTableToServer(schemaId);
+                schemaId = await sendGeneratedSchemaToServer();
+              } else if (editedSchema) {
+                schemaId = await sendEditedSchemaToServer();
+              }
+              await sendTableToServer(schemaId);
               uploadFinishedDialogRef.current?.showModal();
             } catch (error) {
-              console.log("catched");
+                console.log("catched");
               setErrorText(error.message);
               errorDialogRef.current?.showModal();
             }

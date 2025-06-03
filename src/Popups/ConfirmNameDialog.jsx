@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
-    //TODO das wird nur zum ANfang der Laufzeit gesetzt, wenn sich name dann nochmal ändert braucht man useEffect
+
     const [text, setText] = useState(name);
 
     useEffect(() => {
