@@ -7,6 +7,10 @@ export default function Wiki() {
 
     const introductionRef = useRef();
     const addColNameRef = useRef();
+    const fillEmptyRowRef = useRef();
+    const fillEmptyColref = useRef();
+    const removeColRef = useRef();
+    const removeRowRef = useRef();
     const removeFooterRef = useRef();
     const removeHeaderRef = useRef();
     const replaceEntriesRef = useRef();
@@ -19,10 +23,10 @@ export default function Wiki() {
         {name: 'Einleitung', href: introductionRef },
         {name: 'Converter', href: '#', children: [
            { name: 'Gruppenüberschrift entfernen', href: removeGroupedHeaderRef },
-           { name: 'Leere Zeilen ausfüllen', href:'#' },
-            { name: 'Leere Spalte ausfüllen', href:'#' },
-            { name: 'Spalte entfernen (nach Index)', href:'#' },
-            { name: 'Zeile entfernen (nach Index)', href:'#' },
+           { name: 'Leere Zeilen ausfüllen', href: fillEmptyRowRef },
+            { name: 'Leere Spalte ausfüllen', href: fillEmptyColref },
+            { name: 'Spalte entfernen (nach Index)', href: removeColRef },
+            { name: 'Zeile entfernen (nach Index)', href: removeRowRef },
            { name: 'Spalteüberschriften hinzufügen', href: addColNameRef },
            { name: 'Fußzeile entfernen', href: removeFooterRef },
            { name: 'Kopfzeile entfernen', href: removeHeaderRef },
@@ -50,11 +54,11 @@ export default function Wiki() {
                 {/* Introduction */}
                 <section ref={introductionRef}>
                     <h2 className="text font-semibold text-lg"> Einleitung </h2>
-                    <p> Work in Progress! Achtung: Hier sollte eine Einführung stehen, wie die Indizes zu lesen sind etc. Ist teils etwas verwirrend, weil der Index bei den Zeilen bei 1 beginnt, aber eigentlich schon bei 0 (wegen Kopfzeile) und so weiter...</p>
+                    <p> Work in Progress! </p>
                 </section>
 
                 <section className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Funktionen</h2>
+                    <h2 className="text font-semibold text-lg" >Funktionen / Converter</h2>
                     <p>
                         Funktionen werden in der Ansicht "Tabellentransformation bearbeiten" verwendent.
                         Eine Funktion entspricht einem Bearbeitungsschritt, der auf die Tabelle angwendet wird.
@@ -63,6 +67,8 @@ export default function Wiki() {
 
                     </p>
                 </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
 
                 {/* remove grouped header */}
                 <section ref={removeGroupedHeaderRef} className="mt-10">
@@ -134,96 +140,158 @@ export default function Wiki() {
                     </div>
                     
                     <div className="flex justify-around p-4 ">
-                            <figure>
-                                <figcaption className="font-semibold p-4">Vorher </figcaption>
-                                <img className=" object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderStandard2.png" alt="" />
-                                
-                            </figure>
+                        <figure>
+                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <img className=" object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderStandard2.png" alt="" />
                             
-                            <figure>
-                                <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                                <img className="object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderNew2.png" alt="" />
-                                
-                            </figure>
+                        </figure>
+                        
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <img className="object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderNew2.png" alt="" />
                             
+                        </figure>
                     </div>
                     
                 </section>
 
-                <section ref={converterRef} className="mt-10">
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* fill empty row */}
+                <section ref={fillEmptyRowRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Leere Zeilen ausfüllen</h2>
                     <p>
                         Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.
-                        <p className="text-left font-semibold mt-4">Beispiel: Die folgende Tabelle enthält zum Beispiel eine leere Zelle rechts von "Leistungen". Um die Tabelle weiter bearbeiten zu können wie z. B. die Kopfzeile zu ändern, müssen wir in der Zeile alle Zellen gefüllt haben.</p>
-                        <div className="flex justify-center">
-                            <figure>
-                                <figcaption>Wir geben für die Zeilennummer Zeile 1 an, da sich hier die leere Zelle rechts von "Leistungen" befindet.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow_Input.png" alt="fill empty row" />
-                            </figure>
-                        </div>
-                        <div className="flex justify-around p-4">
-                            <figure>
-                                <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow.png" alt="fill empty row" />
-                            </figure>
-                            <figure>
-                                <figcaption>So sieht die Tabelle nach der Funktion aus.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow_Result.png" alt="fill empty row" />
-                            </figure>
-                        </div>
                     </p>
+                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left">
+                        Die folgende Tabelle enthält zum Beispiel eine leere Zelle rechts von "Leistungen". 
+                        Um die Tabelle weiter bearbeiten zu können wie z. B. die Kopfzeile zu ändern, 
+                        müssen wir in der Zeile alle Zellen gefüllt haben. <br/> <br/>
+                        Wir geben für die Zeilennummer Zeile 1 an, da sich hier die leere Zelle rechts von "Leistungen" befindet.
+                    </p>
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption></figcaption>
+                            <img className="mt-5 object-contain w-[50vw] " src="public/wiki/FillEmptyRow_Input.png" alt="fill empty row" />
+                        </figure>
+                    </div>
+                    <div className="flex justify-around p-4">
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Vorher </figcaption>
+                            <img className="object-contain" src="public/wiki/FillEmptyRow.png" alt="fill empty row" />
+                        </figure>
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher </figcaption>
+                            <img className=" object-contain" src="public/wiki/FillEmptyRow_Result.png" alt="fill empty row" />
+                        </figure>
+                    </div>
+                    
                 </section>
 
-                <section ref={converterRef} className="mt-10">
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* fill empty column */}
+                <section ref={fillEmptyColref} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Leere Spalten ausfüllen</h2>
                     <p>
                         Die Funktion "Leere Spalten ausfüllen" operiert von der Funktionsweise wie die Funktion "Leere Zeilen ausfüllen" bezogen auf Spalten. Sie füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.
-                        <p className="text-left font-semibold mt-4">Beispiel: In der folgenden Tabelle sehen wir eine fiktive Auflistung von Familien mit der Anzahl in ihr lebender schulpflichtiger Kinder, in einem bestimmten Stadtteil wohnend. Wir wollen nun die Stadtteile in der Spalte "Stadtteil" auffüllen.</p>
-                        <div className="flex justify-center">
-                            <figure>
-                                <figcaption>Wir geben die Spalte 0 an, da "Stadtteil" die erste Spalte von links ist.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn_Input.png" alt="fill empty column" />
-                            </figure>
-                        </div>
-                        <div className="flex justify-around p-4 ">
-                            <figure>
-                                <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn.png" alt="fill empty column" />
-                            </figure>
-                            <figure>
-                                <figcaption>Ergebnis der Funktion "Leere Spalte ausfüllen"</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn_Result.png" alt="fill empty column" />
-                            </figure>
-                        </div>
                     </p>
+                    <p className="text-left font-semibold mt-4">Beispiel: </p>
+                    <p className="text-left"> In der folgenden Tabelle sehen wir eine fiktive Auflistung von Familien mit der 
+                        Anzahl in ihr lebender schulpflichtiger Kinder, in einem bestimmten Stadtteil wohnend. Wir wollen nun die Stadtteile 
+                        in der Spalte "Stadtteil" auffüllen. <br/> <br/>
+                        Wir geben die Spalte 0 an, da "Stadtteil" die erste Spalte von links ist.
+                    </p>
+                    <div className="mt-5 flex justify-center">
+                        <figure>
+                            <figcaption></figcaption>
+                            <img className="w-[50vw] object-contain" src="public/wiki/FillEmptyColumn_Input.png" alt="fill empty column" />
+                        </figure>
+                    </div>
+                    <div className="flex justify-around p-4 ">
+                        <figure>
+                            <figcaption className="font-semibold">Vorher </figcaption>
+                            <img className=" object-contain" src="public/wiki/FillEmptyColumn.png" alt="fill empty column" />
+                        </figure>
+                        <figure>
+                            <figcaption className="font-semibold"> Nachher</figcaption>
+                            <img className=" object-contain" src="public/wiki/FillEmptyColumn_Result.png" alt="fill empty column" />
+                        </figure>
+                    </div>
+                   
                 </section>
 
-                <section ref={converterRef} className="mt-10">
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* remove column */}
+                <section ref={removeColRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Spalte entfernen (nach Index)</h2>
                     <p>
                         Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird.
                         Bei der Angabe ist zu beachten, das die Spalte "Index" nicht mitgezählt wird und danach die Zählung bei 0 beginnt.
                         Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander
                         getrennt werden.
-                        <p className="text-left font-semibold mt-4">Beispiel: Wir wollen im folgenden Beispiel die Spalte "Name" am Anfang der Tabelle löschen.</p>
-                        <div className="flex justify-center">
+                    </p>
+                    <p className="text-left font-semibold mt-4">Beispiel: </p>
+                    <p className="text-left">
+                        Wir wollen im folgenden Beispiel die Spalte "Name" am Anfang der Tabelle löschen.
+                        <br/> <br/>
+                        Wir geben den Spaltenindex (die Spaltennummer) 0 an. 
+                    </p>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="w-[50vw] object-contain" src="public/wiki/RemoveColumn_Input.png" alt="remove Column" />
+                        </figure>
+                    </div>
+                    <div className="flex justify-around p-4 ">
+                        <figure>
+                            <figcaption className="font-semibold"> Vorher </figcaption>
+                            <img className=" object-contain" src="../public/wiki/RemoveColumn.png" alt="remove Column" />
+                        </figure>
+                        <figure>
+                            <figcaption className="font-semibold"> Nachher</figcaption>
+                            <img className=" object-contain" src="/public/wiki/RemoveColumn_Result.png" alt="remove Column" />
+                        </figure>
+                    </div>
+                    
+                </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* remove row */}
+                 <section ref={removeRowRef} className="mt-10">
+                    <h2 className="text font-semibold text-lg" >Zeile entfernen (nach Index)</h2>
+                    <p>
+                        Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
+                        Alternativ kann auch die Funktion "Fußzeile entfernen" genutzt werden, wenn die zu löschende Zeile die letzte ist. Der Unterschied ist, dass bei letzteren keine Angaben gemacht werden müssen.
+                    </p>
+                        <p className="text-left font-semibold mt-4">Beispiel: </p>
+                        <p className="text-left">
+                            Hier haben wir ein Zeilenduplikat, welches wir löschen möchten. Gemeint sind Zeilen 6 und 7.
+                            <br/> <br/>
+                            Wir geben 6 für die zu löschende Zeile an.
+                        </p>
+                        <div className="mt-5 flex justify-center">
                             <figure>
-                                <figcaption>Wir geben den Spaltenindex (die Spaltennummer) 0 an. </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveColumn_Input.png" alt="remove Column" />
+                                <img className="w-[50vw] object-contain" src="public/wiki/RemoveRow_Input.png" alt="remove row" />
                             </figure>
                         </div>
+
                         <div className="flex justify-around p-4 ">
                             <figure>
-                                <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="../public/wiki/RemoveColumn.png" alt="remove Column" />
+                                <figcaption className="font-semibold"> Vorher </figcaption>
+                                <img className="object-contain" src="public/wiki/RemoveRow.png" alt="remove row" />
                             </figure>
                             <figure>
-                                <figcaption>Die Spalte "Name" ist gelöscht.</figcaption>
-                                <img className="h-[70vh] object-contain" src="/public/wiki/RemoveColumn_Result.png" alt="remove Column" />
+                                <figcaption className="font-semibold"> Nachher</figcaption>
+                                <img className="object-contain" src="public/wiki/RemoveRow_Result.png" alt="remove row" />
                             </figure>
                         </div>
-                    </p>
+                    
                 </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
 
                 {/* add column name */}
                 <section ref={addColNameRef} className="mt-10">
@@ -394,7 +462,6 @@ export default function Wiki() {
                                 <img className="object-contain" src="public/wiki/splitRowNew.png" alt="remove Column" />
                                 
                             </figure>
-                            
                     </div>
                     
                 </section>
@@ -464,31 +531,6 @@ export default function Wiki() {
                         />
                     </div>
                     
-                </section>
-
-                <section ref={converterRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Zeile entfernen (nach Index)</h2>
-                    <p>
-                        Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
-                        Alternativ kann auch die Funktion "Fußzeile entfernen" genutzt werden, wenn die zu löschende Zeile die letzte ist. Der Unterschied ist, dass bei letzteren keine Angaben gemacht werden müssen.
-                        <p className="text-left font-semibold mt-4">Beispiel: Hier haben wir ein Zeilenduplikat, welches wir löschen möchten. Gemeint sind Zeilen 6 und 7.</p>
-                        <div className="flex justify-center">
-                            <figure>
-                                <figcaption>Wir geben 6 für die zu löschende Zeile an.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow_Input.png" alt="remove row" />
-                            </figure>
-                        </div>
-                        <div className="flex justify-around p-4 ">
-                            <figure>
-                                <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow.png" alt="remove row" />
-                            </figure>
-                            <figure>
-                                <figcaption>Das Duplikat wurde entfernt.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow_Result.png" alt="remove row" />
-                            </figure>
-                        </div>
-                    </p>
                 </section>
             </div>
         </div>
