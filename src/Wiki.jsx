@@ -80,14 +80,16 @@ export default function Wiki() {
                     <p>
                         Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.
                         <p className="text-left font-semibold mt-4">Beispiel: Die folgende Tabelle enthält zum Beispiel eine leere Zelle rechts von "Leistungen". Um die Tabelle weiter bearbeiten zu können wie z. B. die Kopfzeile zu ändern, müssen wir in der Zeile alle Zellen gefüllt haben.</p>
-                        <div className="flex justify-around p-4 ">
-                            <figure>
-                                <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow.png" alt="fill empty row" />
-                            </figure>
+                        <div className="flex justify-center">
                             <figure>
                                 <figcaption>Wir geben für die Zeilennummer Zeile 1 an, da sich hier die leere Zelle rechts von "Leistungen" befindet.</figcaption>
                                 <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow_Input.png" alt="fill empty row" />
+                            </figure>
+                        </div>
+                        <div className="flex justify-around p-4">
+                            <figure>
+                                <figcaption>Original Tabelle </figcaption>
+                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyRow.png" alt="fill empty row" />
                             </figure>
                             <figure>
                                 <figcaption>So sieht die Tabelle nach der Funktion aus.</figcaption>
@@ -102,14 +104,16 @@ export default function Wiki() {
                     <p>
                         Die Funktion "Leere Spalten ausfüllen" operiert von der Funktionsweise wie die Funktion "Leere Zeilen ausfüllen" bezogen auf Spalten. Sie füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.
                         <p className="text-left font-semibold mt-4">Beispiel: In der folgenden Tabelle sehen wir eine fiktive Auflistung von Familien mit der Anzahl in ihr lebender schulpflichtiger Kinder, in einem bestimmten Stadtteil wohnend. Wir wollen nun die Stadtteile in der Spalte "Stadtteil" auffüllen.</p>
+                        <div className="flex justify-center">
+                            <figure>
+                                <figcaption>Wir geben die Spalte 0 an, da "Stadtteil" die erste Spalte von links ist.</figcaption>
+                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn_Input.png" alt="fill empty column" />
+                            </figure>
+                        </div>
                         <div className="flex justify-around p-4 ">
                             <figure>
                                 <figcaption>Original Tabelle </figcaption>
                                 <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn.png" alt="fill empty column" />
-                            </figure>
-                            <figure>
-                                <figcaption>Wir geben die Spalte 0 an, da "Stadtteil" die erste Spalte von links ist.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/FillEmptyColumn_Input.png" alt="fill empty column" />
                             </figure>
                             <figure>
                                 <figcaption>Ergebnis der Funktion "Leere Spalte ausfüllen"</figcaption>
@@ -126,15 +130,21 @@ export default function Wiki() {
                         Bei der Angabe ist zu beachten, das die Spalte "Index" nicht mitgezählt wird und danach die Zählung bei 0 beginnt.
                         Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander
                         getrennt werden.
-                        <p className="text-left font-semibold mt-4">Beispiel: Spalte "Anzahl" löschen</p>
+                        <p className="text-left font-semibold mt-4">Beispiel: Wir wollen im folgenden Beispiel die Spalte "Name" am Anfang der Tabelle löschen.</p>
+                        <div className="flex justify-center">
+                            <figure>
+                                <figcaption>Wir geben den Spaltenindex (die Spaltennummer) 0 an. </figcaption>
+                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveColumn_Input.png" alt="remove Column" />
+                            </figure>
+                        </div>
                         <div className="flex justify-around p-4 ">
                             <figure>
                                 <figcaption>Original Tabelle </figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveColumn2.png" alt="remove Column" />
+                                <img className="h-[70vh] object-contain" src="../public/wiki/RemoveColumn.png" alt="remove Column" />
                             </figure>
                             <figure>
-                                <figcaption> Spalte "Anzahl" gelöscht</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveColumn1.png" alt="remove Column" />
+                                <figcaption>Die Spalte "Name" ist gelöscht.</figcaption>
+                                <img className="h-[70vh] object-contain" src="/public/wiki/RemoveColumn_Result.png" alt="remove Column" />
                             </figure>
                         </div>
                     </p>
@@ -146,14 +156,16 @@ export default function Wiki() {
                         Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
                         Alternativ kann auch die Funktion "Fußzeile entfernen" genutzt werden, wenn die zu löschende Zeile die letzte ist. Der Unterschied ist, dass bei letzteren keine Angaben gemacht werden müssen.
                         <p className="text-left font-semibold mt-4">Beispiel: Hier haben wir ein Zeilenduplikat, welches wir löschen möchten. Gemeint sind Zeilen 6 und 7.</p>
+                        <div className="flex justify-center">
+                            <figure>
+                                <figcaption>Wir geben 6 für die zu löschende Zeile an.</figcaption>
+                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow_Input.png" alt="remove row" />
+                            </figure>
+                        </div>
                         <div className="flex justify-around p-4 ">
                             <figure>
                                 <figcaption>Original Tabelle </figcaption>
                                 <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow.png" alt="remove row" />
-                            </figure>
-                            <figure>
-                                <figcaption>Wir geben 6 für die zu löschende Zeile an.</figcaption>
-                                <img className="h-[70vh] object-contain" src="public/wiki/RemoveRow_Input.png" alt="remove row" />
                             </figure>
                             <figure>
                                 <figcaption>Das Duplikat wurde entfernt.</figcaption>
