@@ -6,7 +6,6 @@ import InfoCard from "./components/InfoCard";
 export default function Wiki() {
 
     const introductionRef = useRef();
-    const converterRef = useRef();
     const addColNameRef = useRef();
     const removeFooterRef = useRef();
     const removeHeaderRef = useRef();
@@ -14,11 +13,12 @@ export default function Wiki() {
     const splitRowRef = useRef();
     const removeInvalidRowsRef = useRef();
     const removeTrailingColRef = useRef();
+    const removeGroupedHeaderRef = useRef();
 
     const navigation = [
         {name: 'Einleitung', href: introductionRef },
-        {name: 'Converter', href: converterRef, children: [
-           { name: 'Spalte entfernen', href:'#' },
+        {name: 'Converter', href: '#', children: [
+           { name: 'Gruppenüberschrift entfernen', href: removeGroupedHeaderRef },
            { name: 'Spalteüberschriften hinzufügen', href: addColNameRef },
            { name: 'Fußzeile entfernen', href: removeFooterRef },
            { name: 'Kopfzeile entfernen', href: removeHeaderRef },
@@ -50,73 +50,110 @@ export default function Wiki() {
                 </section>
 
                 {/* Converter */}
-                <section ref={converterRef} className="mt-10">
+                <section className="mt-10">
                     <h2 className="text font-semibold text-lg" >Converter</h2>
                     <p> 
-                        Converter werden in der Ansicht "Tabellentransformation bearbeiten" verwendent.
-                        Ein Converter entspricht einem Bearbeitungsschritt, der auf die Tabelle angwendet wird. 
+                        Converter werden in der Ansicht "Tabellentransformation bearbeiten" verwendet.
+                        Ein Converter entspricht einem Bearbeitungsschritt, der auf die Tabelle angewendet wird. 
                         Damit dieser Bearbeitungsschritt korrekt durchgeführt wird braucht jeder Converter verschiedene Informationen, beispielsweise
-                        Start- und Endreihe. Im folgenden werden alle Converter aufgelistet und deren Funktionweise genauer erklärt.
+                        Start- und Endreihe. Im folgenden werden alle Converter aufgelistet und deren Funktionsweise genauer erklärt.
 
                     </p> 
                 </section>
 
                 {/* remove grouped header */}
-                <section ref={addColNameRef} className="mt-10">
+                <section ref={removeGroupedHeaderRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" > Gruppenüberschrift entfernen</h2>
                     <p> 
-                        Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in Spalten aufgelöst werden. 
-                        Dabei müssen die Zeilen und Spalten angegeben werden, wo die Verschachtelungen auftreten. Außerdem muss vorher
-                        der Converter "Leere Zeilen auffüllen" angewendet werden,damit keine leeren Einträge in den Verschachtelungen auftreten.
-                        
-                        
+                        Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden. 
+                        Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig, 
+                        da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist
+
                     </p> 
                     <div className="p-4">
                         <InfoCard 
                             text={
+                            "- Vorher muss der Converter \"Leere Zeilen ausfüllen\" angewendet werden, damit keine leeren Einträge in den Verschachtelungen auftreten \n" +
                             "- Wenn in den Spalten keine Verschachtelungen auftreten, dann kann beim Spaltenindex 0 eingetragen werden \n" +
-                            "- Am Ende müssen die Spaltennamen mit dem Converter \"Spalten überschriften hinzufügen\" angepasst werden"
+                            "- Am Ende müssen die Spaltennamen mit dem Converter \"Spaltenüberschriften hinzufügen\" angepasst werden"
                         }/>
                     </div>
                     
-                    <p className="text-left font-semibold mt-4">Beispiel: "Undefined" zu "Anzahl" ändern</p>
+                    {/* example 1 */}
+                    <p className="text-left font-semibold mt-4">Beispiel 1: Verschachtelten Header auflösen</p>
         	        <p className="text-left">
-                        Da die letzte Spalte undefined ist, also kein Name vergeben wurde taucht dieser nicht in der Auflsitung auf.
-                        Also kann der neue Spaltenname "Anzahl" am Ende der Aufzählung hinzugefügt werden.    
+                        Vorher muss der Converter "Leere Zeilen ausfüllen" angewendet werden, damit keine leeren Einträge in den Verschachtelungen auftreten.
+                        Zuerst müssen die beiden Zeilen, in der die Verschachtelung auftritt angegeben werden, also Zeile 1 und 2.
+                        Dies muss bei Zeilennummer eingetragen werden. Da keine Verschachtelungen innerhalb der Spalten vorzufinden
+                        sind kann bei Spaltennummer 0 eingetragen werden. Die nächsten beiden Angaben beziehen sich auf die Daten. 
+                        Es muss der Beginn der tatsächlichen Daten angegeben werden, in diesem Fall ist Stadtviertel eigentlich eine eigene Spalte,
+                        also fangen die Daten bei Zeile 1 Spalte 3 an (bei dem Eintrag 35).
+                        Wie am Ende zu sehen ist, sind nun die Spaltennamen undefined, diese müssen mit dem Converter "Spaltenüberschriften hinzufügen"
+                        hinzugefügt werden.
                     </p>
 
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/addHeaderNameParameter.png" alt="" />
+                        <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter1.png" alt="" />
                     </div>
                     
                     <div className="flex justify-around p-4 ">
                             <figure>
                                 <figcaption className="font-semibold p-4">Vorher </figcaption>
-                                <img className=" object-contain w-[35vw]" src="public/wiki/addHeaderNameStandard.png" alt="" />
+                                <img className=" object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderStandard1.png" alt="" />
                                 
                             </figure>
                             
                             <figure>
                                 <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                                <img className="object-contain w-[35vw]" src="public/wiki/addHeaderNameNew.png" alt="" />
+                                <img className="object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderNew1.png" alt="" />
+                                
+                            </figure>
+                            
+                    </div>
+
+                    {/* example 2 */}
+                    <p className="text-left font-semibold mt-4">Beispiel 2: Verschachtelten Header und Spalten auflösen</p>
+        	        <p className="text-left">
+                        Vorher muss der Converter "Leere Zeilen ausfüllen" mit Wert 0 und der Converter
+                        "Leere Spalten ausfüllen" mit dem Wert 0,1 angewendet werden.
+                        Bei diesem Beispiel sind nun auch Verschachtelungen innerhalb der Spalten. Dies erkennt
+                        man daran, das innerhalb einer Spalte verschiedenen Überschriften stehen, z.B. in Spalte 0
+                        sind die Überschriften: Geschlecht, 13 Altersgruppen und Sozialräume. 
+                        Eigentlich sollte es nur eine Überschrift pro Spalte geben. Deswegen muss nun bei Spaltennummern die Spalten
+                        0, 1 und 2 angegeben werden. Die verschachtelten Zeilen sind 0 und 1, diese werden bei Zeilennummern eingetragen und
+                        die tatsächlichen Daten beginnen bei Zeile 3 und Spalte 3. Dies wird bei Startzeile und Startspalte eingetragen.
+                        Zum Schluss muss wieder mit dem Converter "Spaltenüberschriften hinzufügen" die Spaltennamen ergänzt werden.
+                        
+                    </p>
+
+                    <div className="flex justify-center">
+                        <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter2.png" alt="" />
+                    </div>
+                    
+                    <div className="flex justify-around p-4 ">
+                            <figure>
+                                <figcaption className="font-semibold p-4">Vorher </figcaption>
+                                <img className=" object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderStandard2.png" alt="" />
+                                
+                            </figure>
+                            
+                            <figure>
+                                <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                                <img className="object-contain w-[35vw]" src="public/wiki/removeGroupedHeaderNew2.png" alt="" />
                                 
                             </figure>
                             
                     </div>
                     
-                   
                 </section>
-
-                    
-                
 
                 {/* add column name */}
                 <section ref={addColNameRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" > Spaltenüberschriften hinzufügen</h2>
                     <p> 
                         Mithilfe dieses Converters können die Spaltennamen verändert werden. 
-                        Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angwendet,
-                         der zweite Name auf die zweite Spalte undsoweiter.
+                        Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet,
+                         der zweite Name auf die zweite Spalte und so weiter.
                         
                     </p> 
                     <div className="p-4">
@@ -128,7 +165,7 @@ export default function Wiki() {
                     
                     <p className="text-left font-semibold mt-4">Beispiel: "Undefined" zu "Anzahl" ändern</p>
         	        <p className="text-left">
-                        Da die letzte Spalte undefined ist, also kein Name vergeben wurde taucht dieser nicht in der Auflistung auf.
+                        Da die letzte Spalte undefined ist, also kein Name vergeben wurde, taucht dieser nicht in der Auflistung auf.
                         Also kann der neue Spaltenname "Anzahl" am Ende der Aufzählung hinzugefügt werden.    
                     </p>
 
@@ -159,7 +196,7 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Fußzeile entfernen</h2>
                     <p> 
                         Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. 
-                        Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. 
+                        Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. 
                         Für die korrekte Verarbeitung der Daten wird nur die Tabelle benötigt. Andernfalls werden die Textzeilen als Daten angesehen
                         und in die Tabelle geschrieben.
                         
@@ -208,7 +245,7 @@ export default function Wiki() {
                 <section ref={replaceEntriesRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Einträge ersetzen </h2>
                     <p> 
-                        Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispilsweise fehlerhafte Einträge zu korrigieren.
+                        Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren.
                         Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.
                     </p> 
 
@@ -259,7 +296,7 @@ export default function Wiki() {
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                      <p className="text-left">
                         In der Spalte "Fallantragsbezeichnung" befinden sich in einer Zelle mehrerer Einträge, 
-                        diese sollen in seperate Zeilen angegeben werden. 
+                        diese sollen in separate Zeilen angegeben werden. 
                         Dafür muss der Index der entsprechenden Spalte angegeben werden. 
                     </p>
         	        
@@ -290,16 +327,14 @@ export default function Wiki() {
                 <section ref={removeInvalidRowsRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Ungültige Zeilen entfernen </h2>
                     <p> 
-                        Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich minedstens
+                        Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens
                         eine leere Zelle in dieser Zeile befindet. Dies kann dazu verwendet werden, 
-                        um nur vollständige Zeilen für die Visualisierung zu verwenden. 
-                        Threshold gibt an wie viele Einträge in einer Zeile gefüllt sein müssen, damit sie nicht gelöscht wird.
-                        
+                        nur vollständige Zeilen für die Visualisierung zu verwenden. 
                     </p> 
 
                     <div className="p-4">
                         <InfoCard
-                            text={"- Der Threshold gibt an wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht wird. \n "+
+                            text={"- Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. \n "+
                                 " - Komplett leere Zeilen werden immer gelöscht"}
                         />
                     </div>
@@ -309,7 +344,7 @@ export default function Wiki() {
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                      <p className="text-left">
                         Wird der Threshold auf 1 gesetzt, so werden alle Zeilen mit mehr als einer korrekt befüllten Zelle behalten.
-                        Dadurch wird die Zeile mit dem Eintrag "m" gelöscht , weil die Anzahl der korrekten Einträge
+                        Dadurch wird Zeile 2 gelöscht , weil die Anzahl der korrekten Einträge
                         kleiner gleich dem Threshold ist. Die komplett leere Zeile wird immer gelöscht.
                     </p>
         	        
