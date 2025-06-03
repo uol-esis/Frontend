@@ -102,7 +102,10 @@ export default function Wiki() {
                     </p>
 
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter1.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter1.png" alt="" />
+                        </figure>
                     </div>
                     
                     <div className="flex justify-around p-4 ">
@@ -136,7 +139,11 @@ export default function Wiki() {
                     </p>
 
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter2.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/removeGroupedHeaderParameter2.png" alt="" />
+                        </figure>
+                        
                     </div>
                     
                     <div className="flex justify-around p-4 ">
@@ -316,7 +323,10 @@ export default function Wiki() {
                     </p>
 
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/addHeaderNameParameter.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/addHeaderNameParameter.png" alt="" />
+                        </figure>
                     </div>
                     
                     <div className="flex justify-around p-4 ">
@@ -404,7 +414,10 @@ export default function Wiki() {
                     <p className="text-left font-semibold mt-4">Beispiel: "Stadtviertel" durch "Stadtteil" ersetzt</p>
         	        
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/replaceEntriesParameter.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/replaceEntriesParameter.png" alt="" />
+                        </figure>
                     </div>
                     
                     <div className="flex justify-around p-4 ">
@@ -447,7 +460,11 @@ export default function Wiki() {
                     </p>
         	        
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/splitRowParameter.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/splitRowParameter.png" alt="" />
+                        </figure>
+                        
                     </div>
                     
                     <div className="flex justify-around p-4 ">
@@ -494,7 +511,11 @@ export default function Wiki() {
                     </p>
         	        
                     <div className="flex justify-center">
-                        <img className="mt-5 object-contain" src="public/wiki/removeInvalidRowParameter.png" alt="" />
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="public/wiki/removeInvalidRowParameter.png" alt="" />
+                        </figure>
+                        
                     </div>
                     
                     <div className="flex justify-around p-4 ">
