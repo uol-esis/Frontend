@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ConverterCard from "./components/ConverterCard";
+import {ConverterProvider} from "./components/ConverterContext";
+
 
 import { ApiClient, DefaultApi } from "th1";
 
@@ -316,6 +318,7 @@ export default function Edit() {
   }
 
   return (
+    <ConverterProvider>
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
       {/* Seitenüberschrift */}
@@ -364,5 +367,6 @@ export default function Edit() {
        
       </div>
     </div>
+    </ConverterProvider>
   );
 }

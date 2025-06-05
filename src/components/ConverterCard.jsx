@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 import TableFromJSON from "./../TableFromJSON";
+import { useConverterContext } from "./ConverterContex";
 
 
 
@@ -15,6 +16,20 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const requiredParameters=parameters.filter(param => param.required);
     const optionalParameters = parameters.filter(param => !param.required);
+
+
+    //for context
+    const {register, isSaved} = useConverterContext();
+
+    //register to context
+    useEffect(() => {
+        register({
+            id,
+            saveFn: handleSave, //hier ist der Zusammenhang zwischen der erwarteten Funktion und der handleSave
+        }[id]);
+    })
+
+    const saved = isSaved(id); //Check if the card is saved
 
 
     // formData updaten, wenn initialFormData sich ändert
@@ -37,7 +52,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
         }));
     };
     
-    const handleSave = () => {
+    const handleSave = async () => {
         // Check if any previous cards are still in editing mode
         const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
         if (unsavedCards.length > 0) {
