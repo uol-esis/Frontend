@@ -18,9 +18,9 @@ export default function Tooltip({
 
 
     return(
-        <div className="h-[20vh]">
+        <div className="h-full">
             {showTutorial &&
-            <div  className= " h-full overflow-auto  p-3 rounded-lg bg-gray-800 text-white text-wrap  "
+            <div  className= " p-3 rounded-lg bg-gray-800 text-white text-wrap  "
                 onMouseEnter={openPopup}
                 onMouseLeave={closePopup}
             > 
