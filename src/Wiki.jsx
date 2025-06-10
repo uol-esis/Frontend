@@ -560,42 +560,69 @@ export default function Wiki() {
                     Nach der Weiterleitung zu Metabase starten Sie auf der Übersichtsseite der Datenbank. Hier sehen Sie die vorhandenen Tabellen, die bereits in die Datenbank hochgeladen wurden. Auch Ihre zuletzt hochgeladene Tabelle sollte hier zu finden sein.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="public/wiki/metabase/Einstieg-1.png" alt="Dateiauswahl" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-1.png" alt="Dateiauswahl" />
                         </figure>
                     </div>
                     <p className="text-left font-semibold mt-4">Was kann ich tun?</p>
                     Sobald die Datei ausgewählt wurde, erscheinen die Daten. Es gibt zwei wichtige Funktionsbereiche: Oben rechts mit den Bearbeitungsmöglichkeiten der Daten wie Filtern, Zusammenfassen und mehr. Mit dem Button unten links gelangt man zu Visualisierungsoptionen.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="public/wiki/metabase/Einstieg-2.png" alt="Funktionsbereiche" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-2.png" alt="Funktionsbereiche" />
                         </figure>
                     </div>
                     <p className="text-left font-semibold mt-4">Wie filtere ich eine Tabelle?</p>
                     Wollen Sie die Tabelle nach bestimmten Eigenschaften filtern, wählen Sie den Filter-Button aus und wählen Sie zwischen den Spalten der Tabelle.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="public/wiki/metabase/Einstieg-3.png" alt="Filter" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-3.png" alt="Filter" />
                         </figure>
                     </div>
                     <p className="text-left font-semibold mt-4">Wie fasse ich einzelne Werte in der Tabelle zusammen?</p>
                     Wollen Sie Werte kumulieren oder ähnliches, wählen Sie den Zusammenfassung-Button aus und wählen Sie eine Funktion und eine Gruppierung. Eine Funktion sagt aus, was mit den Werten passieren soll wie zum Beispiel bei Summe die Summe aller relevanten Zellen oder bei Anzahl die Häufigkeit der Zellen mit demselben Inhalt. Die Gruppierung sagt aus, welche Spalte ausschlaggebend ist.
-                    ACHTUNG/HIER MUSS EIN HINWEIS FELD HIN//Bitte beachten Sie: Haben Sie eine Zusammenfassung ausgewählt und wollen diese wieder löschen, müssen Sie erst die Gruppierung rausnehmen und dann die Funktion entfernen.
+                    Schritt 1:
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="public/wiki/metabase/Einstieg-4.png" alt="Zusammenfassen" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4.png" alt="Zusammenfassen" />
                         </figure>
                     </div>
+                        <div className="p-4">
+                            <InfoCard
+                                text={"Bitte beachten Sie: Haben Sie eine Zusammenfassung ausgewählt und wollen diese wieder löschen, müssen Sie erst die Gruppierung rausnehmen und dann die Funktion entfernen."}
+                            />
+                        </div>
+                    Schritt 2:
+                    <div>
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4a.png" alt="Zusammenfassen" />
+                        </figure>
+                    </div>
+
                     <p className="text-left font-semibold mt-4">Wie visualisiere ich eine Tabelle?</p>
-                    Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon Tabelle gelangen Sie wieder zur Ursprungsform zurück.
-                    Sie können jederzeit Daten filtern oder zusammenfassen.
+                    Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon "Tabelle" gelangen Sie wieder zur Ursprungsform zurück.
+                    Sie können jederzeit Daten filtern, zusammenfassen oder die Darstellungsform ändern. Gleitet der Cursor über eines der Darstellungsicons, erscheint ein kleines Rädchen für weitere Einstellungen der Grafik.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="public/wiki/metabase/Einstieg-6.png" alt="Visualisierung" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-5.png" alt="Visualisierung" />
+                        </figure>
+                    </div>
+
+                    <p className="text-left font-semibold mt-4">Wie lege ich die Daten über eine Karte?</p>
+                    Wenn Sie Ihre Daten über eine Stadtkarte von Ulm legen wollen, nutzen Sie die Darstellungsform "Karte" und wählen Ihre Karte in den Einstellungen aus.
+                    Schritt 1:
+                        <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6.png" alt="Karte" />
+                        </figure>
+                    </div>
+                    Schritt 2:
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6a.png" alt="Karte" />
                         </figure>
                     </div>
                 </p>
                 </section>
-             </div>
+            </section>
         </div>
     );
 };
