@@ -177,18 +177,6 @@ function Upload() {
     });
   };
 
-
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    setSelectedFile(file);
-  };
-
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
 
   {/* Actual page */ }
