@@ -124,7 +124,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                         <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
                     </button>
                     <div className="max-h-[20vh] overflow-auto absolute top-0 -translate-y-full z-50 col-start-3 justify-self-end ">
-                        <Tooltip tooltipContent={description} showTutorial={showTutorial} direction={"bottom"} showButton={false} openPopup={openPopup} closePopup={closePopupWithDelay} />
+                        <Tooltip tooltipContent={description} showTutorial={showTutorial} showButton={false} openPopup={openPopup} closePopup={closePopupWithDelay} />
                     </div>
               </div>
               

@@ -400,7 +400,7 @@ export default function Edit() {
                 {conv.label}
               </button>
             ))}
-            <div className=" absolute top-1/3 translate-x-full z-50">
+            <div className=" absolute top-0 translate-x-full z-50">
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
         </div>
