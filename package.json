@@ -22,7 +22,7 @@
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.3",
     "tailwindcss": "^4.0.7",
-    "th1": "github:uol-esis/TH1-JS-Client#authentication"
+    "th1": "github:uol-esis/TH1-JS-Client"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
