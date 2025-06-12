@@ -6,49 +6,56 @@ import { ApiClient, DefaultApi } from "th1";
 
 
 export default function Edit() {
+  const { keycloak } = useKeycloak();
+  const isLoggedIn = keycloak.authenticated;
+  useEffect(() => {
+    if (isLoggedIn === false) keycloak?.login();
+  }, [isLoggedIn, keycloak]);
+  if (!isLoggedIn) return <div>Not logged in</div>;
+
   // Liste aller Cards (mit initialer Start-Card)
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedFile, schemaToEdit } = location.state || {}; // Daten von der vorherigen Seite (Upload)
-  const [cards, setCards] = useState([{id: 0, label: "Start", parameters: [{name:'Start'}], isEditing: false}]); //Wir beginnen immer mit der Startcard
+  const [cards, setCards] = useState([{ id: 0, label: "Start", parameters: [{ name: 'Start' }], isEditing: false }]); //Wir beginnen immer mit der Startcard
   const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
   const [windowSize, setWindowSize] = useState({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
 
 
   const handleConverterClick = (label, params, converterType) => {
-    const newCard = {id: cardIdCounter, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true}; //Neue Card mit ID, label, Parametern, und converterType
+    const newCard = { id: cardIdCounter, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true }; //Neue Card mit ID, label, Parametern, und converterType
     setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
     setCardIdCounter(cardIdCounter + 1);
   }
 
   const handleDeleteCard = (idToDelete) => {
     setCards(prevCards => prevCards.filter(card => card.id !== idToDelete)
-        .map((card) => {
-          if (card.id === idToDelete) {
-            return { ...card, isEditing: false };
-          } else if (card.id > idToDelete) {
-            return { ...card, isEditing: true, preview: null };
-          }
-          return card;
-        }));
+      .map((card) => {
+        if (card.id === idToDelete) {
+          return { ...card, isEditing: false };
+        } else if (card.id > idToDelete) {
+          return { ...card, isEditing: true, preview: null };
+        }
+        return card;
+      }));
   };
 
   const converters = [
-    {label: 'Gruppenüberschriften entfernen ', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER' }, //RemoveGroupedHeader
-    {label: 'Leere Zeilen ausfüllen ', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW' }, //FillEmptyRows
-    {label: 'Leere Spalten ausfüllen ', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN' }, //FillEmptyColumns
-    {label: 'Spalten entfernen (nach Index) ', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX'},//RemoveColumnByIndex
-    {label: 'Zeilen entfernen (nach Index) ', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX'},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen ', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME'}, //AddHeaderNames
-    {label: 'Fußzeile entfernen ', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER'}, //RemoveFooter
-    {label: 'Kopfzeile entfernen ', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER'}, //RemoveHeader
-    {label: 'Einträge ersetzen ', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES'}, //ReplaceEntries
-    {label: 'Zeile aufteilen ', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW'}, //SplitRow
-    {label: 'Ungültige Zeilen entfernen ', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS'}, //RemoveInvalidRows
-    {label: 'Nachträgliche Spalten entfernen ', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMNS'}, //RemoveTrailingColumns
+    { label: 'Gruppenüberschriften entfernen ', params: [{ name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex' }, { name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex' }, { name: 'Startzeile', type: 'number', required: false, apiName: 'startRow' }, { name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn' }], converterType: 'REMOVE_GROUPED_HEADER' }, //RemoveGroupedHeader
+    { label: 'Leere Zeilen ausfüllen ', params: [{ name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex' }], converterType: 'FILL_EMPTY_ROW' }, //FillEmptyRows
+    { label: 'Leere Spalten ausfüllen ', params: [{ name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex' }], converterType: 'FILL_EMPTY_COLUMN' }, //FillEmptyColumns
+    { label: 'Spalten entfernen (nach Index) ', params: [{ name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex' }], converterType: 'REMOVE_COLUMN_BY_INDEX' },//RemoveColumnByIndex
+    { label: 'Zeilen entfernen (nach Index) ', params: [{ name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex' }], converterType: 'REMOVE_ROW_BY_INDEX' },//RemoveColumnByIndex
+    { label: 'Spaltenüberschriften hinzufügen ', params: [{ name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames' }], converterType: 'ADD_HEADER_NAME' }, //AddHeaderNames
+    { label: 'Fußzeile entfernen ', params: [{ name: 'Threshold', type: 'number', required: false, apiName: 'threshold' }, { name: 'Blocklist', type: 'array', required: false, apiName: 'blockList' }], converterType: 'REMOVE_FOOTER' }, //RemoveFooter
+    { label: 'Kopfzeile entfernen ', params: [{ name: 'Threshold', type: 'number', required: false, apiName: 'threshold' }, { name: 'Blocklist', type: 'array', required: false, apiName: 'blockList' }], converterType: 'REMOVE_HEADER' }, //RemoveHeader
+    { label: 'Einträge ersetzen ', params: [{ name: 'Suchbegriff', type: 'string', required: true, apiName: 'search' }, { name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement' }, { name: 'Startzeile', type: 'number', required: false, apiName: 'startRow' }, { name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn' }, { name: 'Endzeile', type: 'number', required: false, apiName: 'endRow' }, { name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn' }], converterType: 'REPLACE_ENTRIES' }, //ReplaceEntries
+    { label: 'Zeile aufteilen ', params: [{ name: 'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex' }, { name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter' }, { name: 'Startzeile', type: 'number', required: false, apiName: 'startRow' }, { name: 'Endzeile', type: 'number', required: false, apiName: 'endRow' }], converterType: 'SPLIT_ROW' }, //SplitRow
+    { label: 'Ungültige Zeilen entfernen ', params: [{ name: 'Threshold', type: 'number', apiName: 'threshold' }, { name: 'Blocklist', type: 'array', apiName: 'blockList' }], converterType: 'REMOVE_INVALID_ROWS' }, //RemoveInvalidRows
+    { label: 'Nachträgliche Spalten entfernen ', params: [{ name: 'Threshold', type: 'number', apiName: 'threshold' }, { name: 'Blocklist', type: 'array', apiName: 'blockList' }], converterType: 'REMOVE_TRAILING_COLUMNS' }, //RemoveTrailingColumns
 
     // weitere Converter hier hinzufügen
   ];
@@ -227,7 +234,7 @@ export default function Edit() {
   const computeTablelimit = () => {
     let limit = windowSize.height;
     limit = limit * 0.75 - 36; // 75% of screen - header row
-    limit = limit / 32.4 - 2 ; // / row height - puffer
+    limit = limit / 32.4 - 2; // / row height - puffer
     return parseInt(limit);
   }
 
@@ -241,16 +248,18 @@ export default function Edit() {
     }
 
     const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const oAuth2Auth = client.authentications["oAuth2Auth"];
+    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new DefaultApi(client);
 
     try {
-      const data= await new Promise((resolve, reject) => {
+      const data = await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
         console.log("selectedFileType: ", selectedFile.type);
         //set amount of rows based on window height
         let limit = computeTablelimit();
-        if(limit < 5) {limit = 5}
-        let opts = {"limit" : limit};
+        if (limit < 5) { limit = 5 }
+        let opts = { "limit": limit };
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
             console.error("error" + error)
@@ -263,7 +272,7 @@ export default function Edit() {
         });
       });
       return data;
-    } catch(error) {
+    } catch (error) {
       console.error("Error during previewConvertTable:", error);
       return null;
     }
@@ -300,8 +309,8 @@ export default function Edit() {
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
 
 
-    
-    
+
+
     // Send the final JSON to the server or handle it as needed
     // For now, just navigate back to the home page
     navigate("/preview", {
@@ -312,7 +321,7 @@ export default function Edit() {
       }
     }
     );
-  
+
   }
 
   return (
@@ -361,7 +370,7 @@ export default function Edit() {
           className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
           onClick={handleEditComplete}
         >Anwenden</button>
-       
+
       </div>
     </div>
   );
