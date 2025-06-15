@@ -9,7 +9,7 @@ import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
 import keycloak from "./keycloak"
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
-
+import { getApiInstance } from "./hooks/ApiInstance";
 
 
 function Upload() {
@@ -26,7 +26,7 @@ function Upload() {
     { name: "Schema 2", description: "Description for Schema 2" },
     { name: "Schema 3", description: "Description for Schema 3" }
   ]); // Default for the list of schemata
-  const [Th1, setTh1] = useState(null);
+  const {Th1, API} = getApiInstance();
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
@@ -74,11 +74,13 @@ function Upload() {
     });
   }, []);
 
+  /* 
   useEffect(() => {
     if (Th1) {
       getSchemaList();
     }
   }, [Th1]);
+  */
 
   useEffect(() => {
     const dontShowAgain = localStorage.getItem("hideUploadTutorial");
@@ -122,7 +124,7 @@ function Upload() {
     const oAuth2Auth = client.authentications["oAuth2Auth"];
     oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new Th1.DefaultApi(client);
-    api.getTableStructures((error, response) => {
+    API.getTableStructures((error, response) => {
       if (error) {
         console.error(error);
       } else {

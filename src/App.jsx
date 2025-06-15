@@ -55,4 +55,11 @@ const SecuredContent = () => {
   );
 };
 
+export const isLoggedIn = () => {
+  const { keycloak } = useKeycloak();
+  const isLoggedIn = keycloak.authenticated;
+  if (isLoggedIn === false) keycloak?.login();
+  if (!isLoggedIn) return <div>Not logged in</div>;
+}
+
 export default App
