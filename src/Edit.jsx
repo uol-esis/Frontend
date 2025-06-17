@@ -8,7 +8,7 @@ import { ApiClient, DefaultApi } from "th1";
 
 export default function Edit() {
   
-  useAuthGuard();
+  const isLoggedIn = useAuthGuard();
   
   // Liste aller Cards (mit initialer Start-Card)
   const navigate = useNavigate();
@@ -322,6 +322,7 @@ export default function Edit() {
   }
 
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
       {/* Seitenüberschrift */}

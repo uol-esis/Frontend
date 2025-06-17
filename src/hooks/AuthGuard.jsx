@@ -1,4 +1,5 @@
 import { useKeycloak } from "@react-keycloak/web";
+import keycloak from "../keycloak";
 import { useEffect } from "react";
 
 export const useAuthGuard = () => {
@@ -6,15 +7,11 @@ export const useAuthGuard = () => {
   const isLoggedIn = keycloak?.authenticated;
 
   useEffect(() => {
-    //console.log("Keycloak initialized:", initialized);
-    console.log("Keycloak authenticated:", keycloak?.authenticated);
-    console.log("isLoggedIn "+ isLoggedIn);
-    if (isLoggedIn === false) {
-        console.log("not logged in");
+    if (initialized && isLoggedIn === false) {
       keycloak?.login();
     }
   }, [initialized, isLoggedIn, keycloak]);
 
-  
+  return isLoggedIn;
 };
   
