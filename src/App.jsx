@@ -8,9 +8,9 @@ import Feedback from './Feedback';
 import Edit from "./Edit";
 import { useEffect } from "react";
 import './css/App.css'
-import Apis from "./Apis"
 import keycloak from "./keycloak"
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
+import Wiki from './Wiki';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -25,7 +25,8 @@ function App() {
           <Route path="/wip" element={<WorkInProgress />} />
           <Route path="/secured" element={<SecuredContent />} />
           <Route path="/edit" element={<Edit />} />
-          <Route path= "/feedback" element={<Feedback/>} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/wiki" element={<Wiki />} />
         </Routes>
       </Router>
     </ReactKeycloakProvider>
@@ -42,7 +43,14 @@ const SecuredContent = () => {
   return (
     <div>
       <h2>Secured frontend content</h2>
-      <Apis />
+
+      <button
+        type="button"
+        className="text-blue-800"
+        onClick={() => keycloak.logout()}
+      >
+        Logout ({keycloak?.tokenParsed?.preferred_username})
+      </button>
     </div>
   );
 };

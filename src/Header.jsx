@@ -7,7 +7,7 @@ import { href } from 'react-router-dom';
 const leftNavigation = [
   { name: 'Wiki', href: '/wiki' },
   { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
-  { name: 'Feedback' , href: '/feedback'},
+  { name: 'Feedback', href: '/feedback' },
 ];
 
 // Navigation items for the right section
@@ -69,7 +69,7 @@ export default function Header() {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.name === 'Metabase' || 'Feedback' ? '_blank' : '_self'}
+                target={item.name === 'Metabase' ? '_blank' : '_self'}
                 rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
                 className="text-sm/6 font-semibold text-gray-900 flex items-center hover:scale-105 transition-transform"
               >

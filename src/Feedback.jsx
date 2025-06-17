@@ -3,7 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
 
-export default function Feedback(){
+export default function Feedback() {
+    const { keycloak } = useKeycloak();
+    const isLoggedIn = keycloak.authenticated;
+    useEffect(() => {
+        if (isLoggedIn === false) keycloak?.login();
+    }, [isLoggedIn, keycloak]);
+    if (!isLoggedIn) return <div>Not logged in</div>;
+
 
     const [category, setCategory] = useState("landingpage");
     const [Th1, setTh1] = useState(null);
@@ -13,11 +20,11 @@ export default function Feedback(){
 
     useEffect(() => {
         import('th1').then(module => {
-          setTh1(module);
+            setTh1(module);
         }).catch(error => {
-          console.error("Error loading th1 module:", error);
+            console.error("Error loading th1 module:", error);
         });
-      }, []);
+    }, []);
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -34,12 +41,14 @@ export default function Feedback(){
         sendToServer(jsonString);
     }
 
-    function sendToServer(feedbackString){
+    function sendToServer(feedbackString) {
         if (!Th1) {
             console.error("Th1 module is not loaded yet.");
             return;
         }
         const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
+        const oAuth2Auth = client.authentications["oAuth2Auth"];
+        oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
         const api = new Th1.DefaultApi(client);
         let feedback = new Th1.Feedback();
         feedback.content = feedbackString;
@@ -55,15 +64,15 @@ export default function Feedback(){
         });
     }
 
-    return(
+    return (
         <div className='flex items-center justify-center mt-4'>
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
                 <p>
-                    Bitte fassen Sie hier zusammen, welche Funktionen Sie benutzt haben und wie Ihre Erfahrung damit war. <br/> 
-                    Beispiel: "Beim Erstellen eines neuen Schemas finde ich die Darstellung der Knöpfe unübersichtlich".  <br/> <br/>
-                    Bitte beschreiben Sie außerdem, wie Sie ihre Datenkompetenz bei der Nutzung des Tools wahrnehmen. <br/>
-                    Beispiel: Welche Entwicklung bei Ihren Kompetenzen gibt es? Welche genutzen Funktionen würden Sie einer Grund- oder Fachkompetenz bei der Arbeit mit Daten zuordnen? 
+                    Bitte fassen Sie hier zusammen, welche Funktionen Sie benutzt haben und wie Ihre Erfahrung damit war. <br />
+                    Beispiel: "Beim Erstellen eines neuen Schemas finde ich die Darstellung der Knöpfe unübersichtlich".  <br /> <br />
+                    Bitte beschreiben Sie außerdem, wie Sie ihre Datenkompetenz bei der Nutzung des Tools wahrnehmen. <br />
+                    Beispiel: Welche Entwicklung bei Ihren Kompetenzen gibt es? Welche genutzen Funktionen würden Sie einer Grund- oder Fachkompetenz bei der Arbeit mit Daten zuordnen?
                 </p>
                 {/* Feedback successful sent */}
                 {isFeedbackSend &&
@@ -76,8 +85,8 @@ export default function Feedback(){
                         </div>
                     </div>
                 }
-                
-            {/* Choose category */}
+
+                {/* Choose category */}
                 <div className='p-4 self-start'>
                     <label htmlFor="location" className="text-left block text-sm/6 font-medium text-gray-900">
                         Kategorie
@@ -86,7 +95,7 @@ export default function Feedback(){
                         <select
                             id="location"
                             name="location"
-                            onChange={(choice) => {setCategory(choice.target.value)}}
+                            onChange={(choice) => { setCategory(choice.target.value) }}
                             className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         >
                             <option value={"landingpage"}>Startseite</option>
@@ -105,36 +114,36 @@ export default function Feedback(){
 
                 {/* Text input */}
                 <form className="w-full p-4" method="post" onSubmit={handleSubmit}>
-                <label htmlFor="comment" className="text-left block text-sm/6 font-medium text-gray-900">
-                    Feedback
-                </label>
-                <div className="mt-2">
-                    <textarea
-                        id="comment"
-                        name="comment"
-                        rows={4}
-                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                    />
-                </div>
-                
-                {/* Buttons */}
-                <div className='flex justify-between'>
-                    <button
-                        type="button"
-                        onClick={() => navigate("/")}
-                        className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                    >
-                        Zurück
-                    </button>
-                     <button
-                        type="submit"
-                        className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                    >
-                        Senden
-                    </button>
-                </div>
+                    <label htmlFor="comment" className="text-left block text-sm/6 font-medium text-gray-900">
+                        Feedback
+                    </label>
+                    <div className="mt-2">
+                        <textarea
+                            id="comment"
+                            name="comment"
+                            rows={4}
+                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Buttons */}
+                    <div className='flex justify-between'>
+                        <button
+                            type="button"
+                            onClick={() => navigate("/")}
+                            className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                        >
+                            Zurück
+                        </button>
+                        <button
+                            type="submit"
+                            className="p-4 m-4 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                        >
+                            Senden
+                        </button>
+                    </div>
                 </form>
 
             </div>
