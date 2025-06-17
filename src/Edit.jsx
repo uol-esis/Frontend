@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ConverterCard from "./components/ConverterCard";
+import { useAuthGuard } from "./hooks/AuthGuard";
 
 import { ApiClient, DefaultApi } from "th1";
 
 
 export default function Edit() {
-  const { keycloak } = useKeycloak();
-  const isLoggedIn = keycloak.authenticated;
-  useEffect(() => {
-    if (isLoggedIn === false) keycloak?.login();
-  }, [isLoggedIn, keycloak]);
-  if (!isLoggedIn) return <div>Not logged in</div>;
-
+  
+  const isLoggedIn = useAuthGuard();
+  
   // Liste aller Cards (mit initialer Start-Card)
   const navigate = useNavigate();
   const location = useLocation();
@@ -325,6 +322,7 @@ export default function Edit() {
   }
 
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
       {/* Seitenüberschrift */}
