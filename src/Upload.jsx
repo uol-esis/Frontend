@@ -24,8 +24,8 @@ function Upload() {
     { name: "Schema 3", description: "Description for Schema 3" }
   ]); // Default for the list of schemata
   
-  //const {Th1, API} = getApiInstance();
   const [Th1, setTh1] = useState();
+  const [api, setApi] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
@@ -65,20 +65,38 @@ function Upload() {
   }
 
   {/* Load the Th1 module and get the Schema List from the api*/ }
+  /* 
   useEffect(() => {
     import('th1').then(module => {
       setTh1(module);
     }).catch(error => {
       console.error("Error loading th1 module:", error);
     });
+  }, []);*/
+
+  useEffect(() => {
+    const loadApi = async () => {
+      try {
+        const [api, module] = await getApiInstance();
+        console.log("set api");
+        setApi(api);
+        setTh1(module);
+
+      } catch (error) {
+        console.error('API-Fehler:', error);
+      }
+    };
+
+    loadApi();
+    
   }, []);
 
   
   useEffect(() => {
-    if (Th1) {
+      if (!api) return;
       getSchemaList();
-    }
-  }, [Th1]);
+    
+  }, [api]);
   
 
   useEffect(() => {
@@ -115,14 +133,21 @@ function Upload() {
   }, [selectedFile]);
 
   const getSchemaList = function () {
-    if (!Th1) {
-      console.error("Th1 module is not loaded yet.");
+    
+    if (!api) {
+      console.error("api is not loaded yet.");
       return;
     }
+    
+    /* 
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const oAuth2Auth = client.authentications["oAuth2Auth"];
     oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new Th1.DefaultApi(client);
+    const api = new Th1.DefaultApi(client);*/
+
+    console.log("API :", api);
+    console.log("Methoden:", Object.keys(api));
+
     api.getTableStructures((error, response) => {
       if (error) {
         console.error(error);
@@ -135,15 +160,11 @@ function Upload() {
 
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = function () {
-    if (!Th1) {
-      console.error("Th1 module is not loaded yet.");
+    if (!api ) {
+      console.error("api is not loaded yet.");
       return;
     }
-    console.log("try to generate");
-    const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new Th1.DefaultApi(client);
+  
     const settings = new Th1.TableStructureGenerationSettings();
     // 
     const callback = function (error, data, response) {

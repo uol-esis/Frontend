@@ -13,7 +13,6 @@ import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
-import { useAuthGuard } from "./hooks/AuthGuard";
 import keycloak from "./keycloak";
 
 export default function Preview() {

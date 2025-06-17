@@ -2,8 +2,7 @@ import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
-import { useKeycloak } from "@react-keycloak/web";
-import { useAuthGuard } from "./hooks/AuthGuard";
+import keycloak from './keycloak';
 
 export default function Feedback() {
     const [category, setCategory] = useState("landingpage");
