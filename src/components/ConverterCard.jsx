@@ -25,9 +25,9 @@ export default function ConverterCard({id, label, parameters, converterType, for
     useEffect(() => {
         register({
             id,
-            saveFn: handleSave, //hier ist der Zusammenhang zwischen der erwarteten Funktion und der handleSave
-        }[id]);
-    })
+            saveFn: handleSave }); //hier ist der Zusammenhang zwischen der erwarteten Funktion und der handleSave
+        },[register, id, handleSave]);
+    
 
     const saved = isSaved(id); //Check if the card is saved
 
@@ -53,12 +53,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
     };
     
     const handleSave = async () => {
-        // Check if any previous cards are still in editing mode
-        const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
-        if (unsavedCards.length > 0) {
-          setValidationError("Bitte speichern Sie zuerst alle vorherigen Karten."); // Set error message
-          return; // Prevent saving
-        }
+        // Validierung aktueller Karte        
         // Clear validation error if all previous cards are saved
         setValidationError("");
 
@@ -76,10 +71,20 @@ export default function ConverterCard({id, label, parameters, converterType, for
         if (Object.keys(newErrors).length === 0) {
             //console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
         
+
+        //Aktuelle Karte speichern
             //call function in edit.jsx
             if (onSave) {
-              onSave(id, formData); // Pass the card ID and form data to the parent function
+              await onSave(id, formData); // Pass the card ID and form data to the parent function
             }
+        //und auch die vorherigen
+
+        for(const card of cards) {
+            if(card.id > id) break;
+            if(!card.isSaved) {
+                await card.saveFn(); 
+            }
+        }
         }
     }
 
