@@ -13,19 +13,12 @@ import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
-import keycloak from "./keycloak"
-import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
+import { useAuthGuard } from "./hooks/AuthGuard";
+import keycloak from "./keycloak";
 
 export default function Preview() {
 
-  const { keycloak } = useKeycloak();
-  const isLoggedIn = keycloak.authenticated;
-  useEffect(() => {
-    if (isLoggedIn === false) keycloak?.login();
-  }, [isLoggedIn, keycloak]);
-  if (!isLoggedIn) return <div>Not logged in</div>;
-
-
+  const isLoggedIn = useAuthGuard();
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedFile, selectedSchema, generatedSchema, editedSchema, showSuccessMessage } = location.state || {}; // Destructure the state
@@ -280,9 +273,8 @@ export default function Preview() {
   }, []);
 
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div>
-
-
       {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
 

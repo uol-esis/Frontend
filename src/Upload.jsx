@@ -9,24 +9,23 @@ import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
 import keycloak from "./keycloak"
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
-
+import { getApiInstance } from "./hooks/ApiInstance";
+import { useAuthGuard } from "./hooks/AuthGuard";
+import { div } from "framer-motion/client";
 
 
 function Upload() {
-  const { keycloak } = useKeycloak();
-  const isLoggedIn = keycloak.authenticated;
-  useEffect(() => {
-    if (isLoggedIn === false) keycloak?.login();
-  }, [isLoggedIn, keycloak]);
-  if (!isLoggedIn) return <div>Not logged in</div>;
 
-
+  const isLoggedIn = useAuthGuard();
+  
   const [schemaList, setSchemaList] = useState([
     { name: "Schema 1", description: "Description for Schema 1" },
     { name: "Schema 2", description: "Description for Schema 2" },
     { name: "Schema 3", description: "Description for Schema 3" }
   ]); // Default for the list of schemata
-  const [Th1, setTh1] = useState(null);
+  
+  //const {Th1, API} = getApiInstance();
+  const [Th1, setTh1] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
@@ -74,11 +73,13 @@ function Upload() {
     });
   }, []);
 
+  
   useEffect(() => {
     if (Th1) {
       getSchemaList();
     }
   }, [Th1]);
+  
 
   useEffect(() => {
     const dontShowAgain = localStorage.getItem("hideUploadTutorial");
@@ -207,6 +208,7 @@ function Upload() {
 
   {/* Actual page */ }
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
       <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName} />

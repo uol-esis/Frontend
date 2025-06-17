@@ -2,21 +2,16 @@ import { ChevronDownIcon } from '@heroicons/react/16/solid'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
+import { useKeycloak } from "@react-keycloak/web";
+import { useAuthGuard } from "./hooks/AuthGuard";
 
 export default function Feedback() {
-    const { keycloak } = useKeycloak();
-    const isLoggedIn = keycloak.authenticated;
-    useEffect(() => {
-        if (isLoggedIn === false) keycloak?.login();
-    }, [isLoggedIn, keycloak]);
-    if (!isLoggedIn) return <div>Not logged in</div>;
-
-
     const [category, setCategory] = useState("landingpage");
     const [Th1, setTh1] = useState(null);
     const navigate = useNavigate();
     const [isFeedbackSend, setFeedbackSend] = useState(false);
     const [comment, setComment] = useState('');
+    const isLoggedIn = useAuthGuard();
 
     useEffect(() => {
         import('th1').then(module => {
@@ -25,6 +20,8 @@ export default function Feedback() {
             console.error("Error loading th1 module:", error);
         });
     }, []);
+
+    if (!isLoggedIn) return <div>Not logged in</div>;
 
     function handleSubmit(e) {
         // Prevent the browser from reloading the page
@@ -65,6 +62,7 @@ export default function Feedback() {
     }
 
     return (
+        !isLoggedIn ? <div>Not logged in</div>:
         <div className='flex items-center justify-center mt-4'>
             <div className='w-1/2 flex flex-col items-center gap-4'>
                 <p className='text-lg font-semibold'>Feedback</p>
