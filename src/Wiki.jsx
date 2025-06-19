@@ -105,7 +105,6 @@ export default function Wiki() {
                         Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden.
                         Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig,
                         da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist
-
                     </p>
                     <div className="p-4">
                         <InfoCard
@@ -142,7 +141,6 @@ export default function Wiki() {
                             <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard1.png" alt="" />
 
                         </figure>
-
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
                             <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew1.png" alt="" />
@@ -575,16 +573,17 @@ export default function Wiki() {
 
                 </section>
 
-                <div className="mt-6 border-1 border-gray-200"></div>
+                <div className="mt-6
+                 border-1 border-gray-200"></div>
 
                 <section className="mt-10">
                     <h1 className="text font-bold text-lg" ref={metabaseRef}>Metabase</h1>
                     <h2 className="text font-semibold text-lg" ref={metabaseEinstiegRef} >Einstieg finden</h2>
                     <p className="text-left font-semibold mt-4">Welche Bereiche hat Metabase?</p>
-                    <p>
                     Nach der Weiterleitung zu Metabase starten Sie auf der Übersichtsseite der Modelle. Erstellen Sie oben rechts mit dem Button "Neu" und dann "Modell" ein Modell mit den Daten, die Sie gerne bearbeiten oder analysieren wollen.<br />
                         <br /> Ein Modell ist eine Ansicht bestimmter Daten, quasi eine Kopie. Dies hat den Vorteil, dass Sie nicht direkt mit den "Orignialdaten" in der Datenbank arbeiten und diese in ihrer ursprünglichen Form bleiben.
                         <br /> Sie haben links noch die Bereiche "Datenbanken" und "Metrik". Im Bereich "Datenbanken" haben Sie Einsicht in alle Tabellen, die sich in der Datenbank befinden. Im Bereich "Metrik" können Sie Indizes oder Key Performance Indicators (kurz KPIs) erstellen und einsehen. Diese können unter anderem in Dashboards eingebunden werden.
+
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-1.png" alt="Bereiche" />
@@ -615,7 +614,10 @@ export default function Wiki() {
 
                     <p className="text-left font-semibold mt-4" ref={metabaseSummaryRef}>Wie fasse ich einzelne Werte in der Tabelle zusammen?</p>
                     Wollen Sie Werte kumulieren oder ähnliches, wählen Sie den Zusammenfassung-Button aus und wählen Sie eine Funktion und eine Gruppierung. Eine Funktion sagt aus, was mit den Werten passieren soll wie zum Beispiel bei Summe die Summe aller relevanten Zellen oder bei Anzahl die Häufigkeit der Zellen mit demselben Inhalt. Die Gruppierung sagt aus, welche Spalte ausschlaggebend ist.
-                    Schritt 1:
+
+                    <div className="p-5">
+                        Schritt 1:
+                    </div>
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4.png" alt="Zusammenfassen" />
@@ -626,8 +628,10 @@ export default function Wiki() {
                                 text={"Bitte beachten Sie: Haben Sie eine Zusammenfassung ausgewählt und wollen diese wieder löschen, müssen Sie erst die Gruppierung rausnehmen und dann die Funktion entfernen."}
                             />
                         </div>
-                    Schritt 2:
-                    <div>
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
+                    <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4a.png" alt="Zusammenfassen" />
                         </figure>
@@ -636,8 +640,11 @@ export default function Wiki() {
                     <div className="mt-6 border-1 border-gray-200"></div>
 
                     <p className="text-left font-semibold mt-4" ref={metabaseVisualisierungRef}>Wie visualisiere ich eine Tabelle?</p>
-                    Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon "Tabelle" gelangen Sie wieder zur Ursprungsform zurück.
-                    Sie können jederzeit Daten filtern, zusammenfassen oder die Darstellungsform ändern. Gleitet der Cursor über eines der Darstellungsicons, erscheint ein kleines Rädchen für weitere Einstellungen der Grafik.
+
+                    <div className="p-5">
+                        Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon "Tabelle" gelangen Sie wieder zur Ursprungsform zurück.
+                        Sie können jederzeit Daten filtern, zusammenfassen oder die Darstellungsform ändern. Gleitet der Cursor über eines der Darstellungsicons, erscheint ein kleines Rädchen für weitere Einstellungen der Grafik.
+                    </div>
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-5.png" alt="Visualisierung" />
@@ -647,20 +654,31 @@ export default function Wiki() {
                     <div className="mt-6 border-1 border-gray-200"></div>
 
                     <p className="text-left font-semibold mt-4">Wie lege ich die Daten über eine Karte?</p>
-                    Wenn Sie Ihre Daten über eine Stadtkarte von Ulm legen wollen, nutzen Sie die Darstellungsform "Karte" und wählen Ihre Karte in den Einstellungen aus.
-                    Schritt 1:
+                    <div className="p-5">
+                        Wenn Sie Ihre Daten über eine Stadtkarte von Ulm legen wollen, nutzen Sie die Darstellungsform "Karte" und wählen Ihre Karte in den Einstellungen aus.
+                    </div>
+
+                    <div className="p-5">
+                        Schritt 1:
+                    </div>
                         <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6.png" alt="Karte" />
                         </figure>
                     </div>
-                    Schritt 2:
+
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6a.png" alt="Karte" />
                         </figure>
                     </div>
-                    Ergebnis:
+
+                    <div className="p-5">
+                        Ergebnis:
+                    </div>
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6b.png" alt="Karte" />
@@ -670,7 +688,11 @@ export default function Wiki() {
                     <div className="mt-6 border-1 border-gray-200"></div>
 
                     <p className="text-left font-semibold mt-4" ref={metabaseJoinRef}>Wie kann ich unterschiedliche Tabellen miteinander verbinden?</p>
+
+                    <div className="p-5">
                     Sie haben unterschiedliche Tabellen, die Sie miteinander verbinden wollen. Im Fachjargon nennt man das "Tabellen joinen". Dies dient dazu, die Tabelle i. d. Regel zu erweitern. Voraussetzung dafür ist das Vorhandensein einer gemeinsamen Spalte. Es muss in beiden Tabellen, die man joinen möchte, eine Spalte geben, in der die Werte von der Bedeutung und der Schreibweise übereinstimmen.
+                    </div>
+
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     Wir wollen herausfinden, wie die Altersverteilung der Bürger über die Sozialräume aussieht. Uns liegen folgende Tabellen vor.
                         <div className="flex justify-around p-4 ">
@@ -690,7 +712,10 @@ export default function Wiki() {
                         />
                     </div>
 
-                    Schritt 1: Wir starten mit der Bearbeitung, indem wir mit der Funktion "Daten verknüpfen" die beiden Tabellen über die Spalte "Stadtviertel" miteinander verschneiden. Dies bedeutet, dass wir den Zeilen in Tabelle 1 die Werte zuordnen, die in Tabelle 2 das gleiche Stadtviertel haben.
+                    <div className="p-5">
+                    Schritt 1:
+                    </div>
+                    Wir starten mit der Bearbeitung, indem wir mit der Funktion "Daten verknüpfen" die beiden Tabellen über die Spalte "Stadtviertel" miteinander verschneiden. Dies bedeutet, dass wir den Zeilen in Tabelle 1 die Werte zuordnen, die in Tabelle 2 das gleiche Stadtviertel haben.
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7b.png" alt="Join" />
@@ -707,15 +732,15 @@ export default function Wiki() {
                             </figure>
                         </div>
 
-                    Schritt 2: Nachdem Sie das Modell gespeichert haben, können Sie die Daten visualisieren.
-                        Für diese Information eignet sich eine Flächendarstellung, da sich hier die Altersverteilung gut über eine Linie anzeigen lässt, die an die Baumstruktur bei der Ansicht von demografischen Verteilungen erinnert.
-                        Außerdem lassen sich die Flächen übereinander legen, sodass die unterschiedlichen Sozialräume gleichzeitig vergleichbar sind.
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
+                    Nachdem Sie das Modell gespeichert haben, können Sie die Daten visualisieren. Für diese Information eignet sich eine Flächendarstellung, da sich hier die Altersverteilung gut über eine Linie anzeigen lässt, die an die Baumstruktur bei der Ansicht von demografischen Verteilungen erinnert. Außerdem lassen sich die Flächen übereinander legen, sodass die unterschiedlichen Sozialräume gleichzeitig vergleichbar sind.
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7d.png" alt="Join" />
                         </figure>
                     </div>
-                    </p>
                 </section>
             </section>
         </div>
