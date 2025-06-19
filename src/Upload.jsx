@@ -7,14 +7,25 @@ import UploadComponent from "./UploadComponent";
 import SchemaList from "./SchemaList";
 import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
+import keycloak from "./keycloak"
+import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
+import { getApiInstance } from "./hooks/ApiInstance";
+import { useAuthGuard } from "./hooks/AuthGuard";
+import { div } from "framer-motion/client";
+
 
 function Upload() {
+
+  const isLoggedIn = useAuthGuard();
+  
   const [schemaList, setSchemaList] = useState([
     { name: "Schema 1", description: "Description for Schema 1" },
     { name: "Schema 2", description: "Description for Schema 2" },
     { name: "Schema 3", description: "Description for Schema 3" }
   ]); // Default for the list of schemata
-  const [Th1, setTh1] = useState(null);
+  
+  //const {Th1, API} = getApiInstance();
+  const [Th1, setTh1] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
@@ -22,16 +33,16 @@ function Upload() {
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
 
-  const[tipDate, setTipData] = useState(false);
-  const[tipSchema, setTipSchema] = useState(false);
-  const[tipGenerate, setTipGenerate] = useState(false);
+  const [tipDate, setTipData] = useState(false);
+  const [tipSchema, setTipSchema] = useState(false);
+  const [tipGenerate, setTipGenerate] = useState(false);
 
   const confirmNameToPreviewRef = useRef();
   const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
 
 
- const ExplainerUpload = (
+  const ExplainerUpload = (
     <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
   )
 
@@ -62,15 +73,17 @@ function Upload() {
     });
   }, []);
 
+  
   useEffect(() => {
     if (Th1) {
       getSchemaList();
     }
   }, [Th1]);
+  
 
   useEffect(() => {
     const dontShowAgain = localStorage.getItem("hideUploadTutorial");
-    if(dontShowAgain){
+    if (dontShowAgain) {
       return;
     }
     setTipData(true);
@@ -87,7 +100,7 @@ function Upload() {
     if (selectedFile && getByteSize(selectedFile.name) > 63) {
       setModifiedFileName(selectedFile.name); // Set the initial name
       fileNameDialogRef.current?.showModal(); // Open the popup
-  }
+    }
   }, [selectedFile]);
 
 
@@ -107,6 +120,8 @@ function Upload() {
       return;
     }
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const oAuth2Auth = client.authentications["oAuth2Auth"];
+    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new Th1.DefaultApi(client);
     api.getTableStructures((error, response) => {
       if (error) {
@@ -118,7 +133,7 @@ function Upload() {
     });
   }
 
-  {/* Generate a new Schema for the selected File */}
+  {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = function () {
     if (!Th1) {
       console.error("Th1 module is not loaded yet.");
@@ -126,6 +141,8 @@ function Upload() {
     }
     console.log("try to generate");
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const oAuth2Auth = client.authentications["oAuth2Auth"];
+    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new Th1.DefaultApi(client);
     const settings = new Th1.TableStructureGenerationSettings();
     // 
@@ -136,7 +153,7 @@ function Upload() {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
         console.log("Generated schema:", data); // or data
-        
+
         //show ConfirmNameModal
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
@@ -162,8 +179,6 @@ function Upload() {
     fileInputRef.current.click();
   };
 
-  
-
   //noch ausfüllen
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
@@ -181,28 +196,29 @@ function Upload() {
 
   {/* Actual page */ }
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-        <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName}/>
-        <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()}/>
+      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName} />
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()} />
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
-          <button
-            type="button"
-            className=""
-            onClick={() => navigate("/")}
-          >
-            <ArrowLeftCircleIcon className="h-7 w-7 text-gray-600  hover:text-indigo-500"/>
-          </button>
+        <button
+          type="button"
+          className=""
+          onClick={() => navigate("/")}
+        >
+          <ArrowLeftCircleIcon className="h-7 w-7 text-gray-600  hover:text-indigo-500" />
+        </button>
 
-          <button
-            type="button"
-            className=""
-            onClick={() => {setTipData(true); setTipSchema(false); setTipGenerate(false);}}
-          >
-            <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
-          </button>
+        <button
+          type="button"
+          className=""
+          onClick={() => { setTipData(true); setTipSchema(false); setTipGenerate(false); }}
+        >
+          <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500" />
+        </button>
       </div>
 
       {/* Upload, Schemalist and Generate */}
@@ -210,40 +226,40 @@ function Upload() {
 
         {/* Upload */}
         <div className="reflex flex-col w-1/3 relative">
-            <UploadComponent setFile={setSelectedFile} setValid={setIsValidFile} />
-            <div className="absolute bottom-0 left-0">
-              <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipDate} direction={"top"} onClick={TipDataToSchema}/>
-            </div>
+          <UploadComponent setFile={setSelectedFile} setValid={setIsValidFile} />
+          <div className="absolute bottom-0 left-0">
+            <Tooltip tooltipContent={ExplainerUpload} showTutorial={tipDate} direction={"top"} onClick={TipDataToSchema} />
+          </div>
         </div>
 
-          {/* Schemalist and Generate */}
-          <div className={`flex flex-col space-y-6 w-full h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
+        {/* Schemalist and Generate */}
+        <div className={`flex flex-col space-y-6 w-full h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
 
-            {/* Schemalist*/}
-            <div className="relative h-full min-h-0">
-              <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-                <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema}/>
-              </div>
-              <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
-                style={{opacity:1}}
-              >
-                <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate}/>
-              </div>
-           </div>
-
-            {/* Generate */}
-            <div className="relative">
-              <div className={`${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-                <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema}/>
-              </div>
-              <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2 pointer-events-auto"
-                style={{opacity:1}}
-              >
-                  <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)}/>
-              </div>
+          {/* Schemalist*/}
+          <div className="relative h-full min-h-0">
+            <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
+              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} />
             </div>
-
+            <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
+              style={{ opacity: 1 }}
+            >
+              <Tooltip tooltipContent={ExplainerSchemalist} showTutorial={tipSchema} direction={"right"} onClick={TipSchemaToGenerate} />
+            </div>
           </div>
+
+          {/* Generate */}
+          <div className="relative">
+            <div className={`${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
+              <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema} />
+            </div>
+            <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2 pointer-events-auto"
+              style={{ opacity: 1 }}
+            >
+              <Tooltip tooltipContent={ExplainerGenerate} showTutorial={tipGenerate} direction={"bottom"} onClick={() => setTipGenerate(false)} />
+            </div>
+          </div>
+
+        </div>
 
       </div>
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ConverterCard from "./components/ConverterCard";
+import { useAuthGuard } from "./hooks/AuthGuard";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "./ToolTip";
 
@@ -8,16 +9,19 @@ import { ApiClient, DefaultApi } from "th1";
 
 
 export default function Edit() {
+  
+  const isLoggedIn = useAuthGuard();
+  
   // Liste aller Cards (mit initialer Start-Card)
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedFile, schemaToEdit } = location.state || {}; // Daten von der vorherigen Seite (Upload)
-  const [cards, setCards] = useState([{id: 0, label: "Start", parameters: [{name:'Start'}], isEditing: false}]); //Wir beginnen immer mit der Startcard
+  const [cards, setCards] = useState([{ id: 0, label: "Start", parameters: [{ name: 'Start' }], isEditing: false }]); //Wir beginnen immer mit der Startcard
   const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
   const [windowSize, setWindowSize] = useState({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
+    width: window.innerWidth,
+    height: window.innerHeight
+  });
 
   const [showConverterListTip, setShowConverterListTip] = useState(false);
   const [showCardListTip, setShowCardListTip] = useState(false);
@@ -53,14 +57,14 @@ export default function Edit() {
 
   const handleDeleteCard = (idToDelete) => {
     setCards(prevCards => prevCards.filter(card => card.id !== idToDelete)
-        .map((card) => {
-          if (card.id === idToDelete) {
-            return { ...card, isEditing: false };
-          } else if (card.id > idToDelete) {
-            return { ...card, isEditing: true, preview: null };
-          }
-          return card;
-        }));
+      .map((card) => {
+        if (card.id === idToDelete) {
+          return { ...card, isEditing: false };
+        } else if (card.id > idToDelete) {
+          return { ...card, isEditing: true, preview: null };
+        }
+        return card;
+      }));
   };
 
   const converters = [
@@ -266,7 +270,7 @@ export default function Edit() {
   const computeTablelimit = () => {
     let limit = windowSize.height;
     limit = limit * 0.75 - 36; // 75% of screen - header row
-    limit = limit / 32.4 - 2 ; // / row height - puffer
+    limit = limit / 32.4 - 2; // / row height - puffer
     return parseInt(limit);
   }
 
@@ -280,16 +284,18 @@ export default function Edit() {
     }
 
     const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const oAuth2Auth = client.authentications["oAuth2Auth"];
+    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new DefaultApi(client);
 
     try {
-      const data= await new Promise((resolve, reject) => {
+      const data = await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
         console.log("selectedFileType: ", selectedFile.type);
         //set amount of rows based on window height
         let limit = computeTablelimit();
-        if(limit < 5) {limit = 5}
-        let opts = {"limit" : limit};
+        if (limit < 5) { limit = 5 }
+        let opts = { "limit": limit };
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
             console.error("error" + error)
@@ -302,7 +308,7 @@ export default function Edit() {
         });
       });
       return data;
-    } catch(error) {
+    } catch (error) {
       console.error("Error during previewConvertTable:", error);
       return null;
     }
@@ -339,8 +345,8 @@ export default function Edit() {
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
 
 
-    
-    
+
+
     // Send the final JSON to the server or handle it as needed
     // For now, just navigate back to the home page
     navigate("/preview", {
@@ -351,10 +357,11 @@ export default function Edit() {
       }
     }
     );
-  
+
   }
 
   return (
+    !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
       {/* Tutorial */}
@@ -439,7 +446,7 @@ export default function Edit() {
           className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
           onClick={handleEditComplete}
         >Anwenden</button>
-       
+
       </div>
     </div>
   );
