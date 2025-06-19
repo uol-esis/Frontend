@@ -4,7 +4,7 @@ import ConverterCard from "./components/ConverterCard";
 import { useAuthGuard } from "./hooks/AuthGuard";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "./ToolTip";
-
+import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
 
 
