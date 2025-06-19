@@ -30,7 +30,7 @@ export default function Edit() {
   const ExplainerCardList = (
     <span> 
       Hier werden alle ausgewählten Converter angezeigt. Der neuste Converter wird immer ganz oben angezeigt und 
-      alle vorherigen Converter werden darunter angezeigt. Alle Converter werden von unten nach oben nacheinander angezeigt, deswegen müssen
+      alle vorherigen Converter werden darunter angezeigt. Die Reihenfolg der Converter ist wichtig, da sie logisch voneinander abhängig sind. Deswegen
       müssen alle Converter gespeichert werden, damit der aktuellste Converter angewendet werden kann.
       </span>
   )
@@ -85,7 +85,7 @@ export default function Edit() {
     {label: 'Zeile aufteilen ', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW', 
       description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt.'}, //SplitRow
     {label: 'Ungültige Zeilen entfernen ', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
-      description: '- Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. \n - - Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. \n - Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
+      description: 'Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
     {label: 'Nachträgliche Spalten entfernen ', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMNS',
       description: 'Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle leer sind, so werden diese entfernt.'}, //RemoveTrailingColumns
 
@@ -360,7 +360,7 @@ export default function Edit() {
       {/* Tutorial */}
         <dialog ref={tutorialRef} className="place-self-center shadow-xl backdrop:bg-black/50 p-5">
           <p className="text-lg font-semibold">Tutorial</p>
-          <img src="public/TutorialConverterCard.png" alt="tutorial"/>
+          <img src="/TutorialConverterCard.png" alt="tutorial"/>
           <button
             type="button"
             className="mt-2 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
