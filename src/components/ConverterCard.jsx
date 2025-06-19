@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 import TableFromJSON from "./../TableFromJSON";
 import { useConverterContext } from "./ConverterContex";
+import keycloak from "../keycloak";
 
 
 
@@ -79,12 +80,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
             }
         //und auch die vorherigen
 
-        for(const card of cards) {
-            if(card.id > id) break;
-            if(!card.isSaved) {
-                await card.saveFn(); 
-            }
-        }
         }
     }
 
