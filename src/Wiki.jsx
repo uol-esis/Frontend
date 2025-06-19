@@ -272,7 +272,7 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Zeile entfernen (nach Index)</h2>
                     <p>
                         Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
-                        Alternativ kann auch die Funktion "Fußzeile entfernen" genutzt werden, wenn die zu löschende Zeile die letzte ist. Der Unterschied ist, dass bei letzteren keine Angaben gemacht werden müssen.
+                        
                     </p>
                     <p className="text-left font-semibold mt-4">Beispiel: </p>
                     <p className="text-left">
@@ -442,7 +442,8 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Zeile aufteilen </h2>
                     <p>
                         Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig,
-                        wenn sich in einer Zelle mehrere Einträge befinden.
+                        wenn sich in einer Zelle mehrere Werte befinden. In der Datenbank darf in jeder Zelle, allerdings nur ein Wert stehen, deswegen müssen die
+                        Werte auf mehrere Zeilen aufgeteilt werden.
                     </p>
 
                     <div className="p-4">
@@ -541,7 +542,7 @@ export default function Wiki() {
                 <section ref={removeTrailingColRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Nachträglich Spalten entfernen </h2>
                     <p>
-                        Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzen beiden Spalten der Tabelle
+                        Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle
                         leer sind, so werden diese entfernt.
                     </p>
 

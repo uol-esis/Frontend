@@ -75,10 +75,10 @@ function Upload() {
 
   
   useEffect(() => {
-    if (Th1) {
+    if (Th1 && isLoggedIn) {
       getSchemaList();
     }
-  }, [Th1]);
+  }, [Th1, isLoggedIn]);
   
 
   useEffect(() => {
@@ -190,18 +190,6 @@ function Upload() {
         selectedFile: selectedFile,
       },
     });
-  };
-
-
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    setSelectedFile(file);
   };
 
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
