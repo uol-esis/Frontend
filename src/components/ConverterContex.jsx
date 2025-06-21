@@ -48,7 +48,7 @@ export function ConverterProvider({ children }) {
                 //entry.saveFn soll die intern bestehende Save Logik handleSaveFromCard aufrufen
                 await entry.saveFn(); //wir warten also bis es aufgerufen wurde
                 savedSetRef.current.add(entry.id);  //wenn saveFn erfolgreich war, dann fügen wir die ID zum savedSetRef hinzu
-                console.log[`[ConverterContext] Converter ID: ${entry.id} saved successfully.`];
+                console.log(`[ConverterContext] Converter ID: ${entry.id} saved successfully.`);
 
             } catch (err) {
                 console.error(`[ConverterContext] Error saving Converter ID: ${entry.id}:`, err);

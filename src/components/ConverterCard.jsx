@@ -1,10 +1,6 @@
 import React, {useState, useEffect, useRef} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 import TableFromJSON from "./../TableFromJSON";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-import Tooltip from "../ToolTip";
-import { useConverterContext } from "./ConverterContex";
-import keycloak from "../keycloak";
 
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onDelete, description}) {
@@ -20,33 +16,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const requiredParameters=parameters.filter(param => param.required);
     const optionalParameters = parameters.filter(param => !param.required);
-
-    const openPopup = () => {
-        if (closeTimeoutRef.current) {
-            clearTimeout(closeTimeoutRef.current);
-            closeTimeoutRef.current = null;
-        }
-        setShowTutorial(true);
-    };
-
-    const closePopupWithDelay = () => {
-        closeTimeoutRef.current = setTimeout(() => {
-        setShowTutorial(false);
-        }, 100); 
-    };
-
-    //for context
-    const {register, isSaved} = useConverterContext();
-
-    //register to context
-    useEffect(() => {
-        register({
-            id,
-            saveFn: handleSave }); //hier ist der Zusammenhang zwischen der erwarteten Funktion und der handleSave
-        },[register, id, handleSave]);
-    
-
-    const saved = isSaved(id); //Check if the card is saved
 
 
     // formData updaten, wenn initialFormData sich ändert
