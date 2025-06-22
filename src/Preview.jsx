@@ -14,6 +14,8 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 import keycloak from "./keycloak";
+import { useAuthGuard } from "./hooks/AuthGuard";
+import { getApiInstance } from "./hooks/ApiInstance";
 
 export default function Preview() {
 
@@ -82,10 +84,7 @@ export default function Preview() {
   {/* Function to set the actual schema */ }
   const setActualSchema = async () => {
     console.log("Setting actual schema...");
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new DefaultApi(client);
+    const {api} = await getApiInstance();
 
     try {
       if (generatedSchema) {
@@ -133,10 +132,7 @@ export default function Preview() {
       return;
     }
 
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new DefaultApi(client);
+    const {api} = await getApiInstance();
 
     try {
       await new Promise((resolve, reject) => {
@@ -165,12 +161,9 @@ export default function Preview() {
 
 
   {/* Send the converted table to the server, when the preview is good */ }
-  const sendTableToServer = (schemaId) => {
+  const sendTableToServer = async (schemaId) => {
+    const {api} = await getApiInstance();
     return new Promise((resolve, reject) => {
-      const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-      const oAuth2Auth = client.authentications["oAuth2Auth"];
-      oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-      const api = new DefaultApi(client);
 
       if (schemaId === null) {
         schemaId = selectedSchema.id;
@@ -189,15 +182,13 @@ export default function Preview() {
   }
 
   {/* Send the generated schema to the server (if a generated schema was used) */ }
-  const sendGeneratedSchemaToServer = () => {
+  const sendGeneratedSchemaToServer = async () => {
     if (!generatedSchema) {
       console.error("No generated schema to send");
       return null;
     }
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new DefaultApi(client);
+    
+    const {api, Th1} = await getApiInstance();
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
@@ -211,15 +202,13 @@ export default function Preview() {
     });
   }
 
-  const sendEditedSchemaToServer = () => {
+  const sendEditedSchemaToServer = async () => {
     if (!editedSchema) {
       console.error("No generated schema to send");
       return null;
     }
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new DefaultApi(client);
+    
+    const api = await getApiInstance();
     return new Promise((resolve, reject) => {
       api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {

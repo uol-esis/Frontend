@@ -3,22 +3,15 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
 import keycloak from './keycloak';
+import { getApiInstance } from './hooks/ApiInstance';
+import { useAuthGuard } from './hooks/AuthGuard';
 
 export default function Feedback() {
     const [category, setCategory] = useState("landingpage");
-    const [Th1, setTh1] = useState(null);
     const navigate = useNavigate();
     const [isFeedbackSend, setFeedbackSend] = useState(false);
     const [comment, setComment] = useState('');
     const isLoggedIn = useAuthGuard();
-
-    useEffect(() => {
-        import('th1').then(module => {
-            setTh1(module);
-        }).catch(error => {
-            console.error("Error loading th1 module:", error);
-        });
-    }, []);
 
     if (!isLoggedIn) return <div>Not logged in</div>;
 
@@ -37,15 +30,8 @@ export default function Feedback() {
         sendToServer(jsonString);
     }
 
-    function sendToServer(feedbackString) {
-        if (!Th1) {
-            console.error("Th1 module is not loaded yet.");
-            return;
-        }
-        const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
-        const oAuth2Auth = client.authentications["oAuth2Auth"];
-        oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-        const api = new Th1.DefaultApi(client);
+    async function sendToServer(feedbackString) {
+        const {api, Th1} = await getApiInstance();
         let feedback = new Th1.Feedback();
         feedback.content = feedbackString;
         api.submitFeedback(feedback, (error, data, response) => {
