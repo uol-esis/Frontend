@@ -21,7 +21,7 @@ export default function Preview() {
   const isLoggedIn = useAuthGuard();
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedFile, selectedSchema, generatedSchema, editedSchema, showSuccessMessage } = location.state || {}; // Destructure the state
+  const { selectedFile, selectedSchema, generatedSchema, editedSchema, showSuccessMessage, reports } = location.state || {}; // Destructure the state
   const [showPPup, setShowPPup] = useState(false);
   const [data, setData] = useState([]);
   const actualSchemaRef = useRef(null);
@@ -62,6 +62,13 @@ export default function Preview() {
       text: selectedFile?.name || "keine Datei ausgewählt"
     },
   ]
+
+  const readReports = () => {
+    if(!reports[0]){
+      return;
+    }
+    console.log("report type " + reports[0].reportType);
+  }
 
   const computeTablelimit = () => {
     let limit = windowSize.height;
@@ -124,6 +131,7 @@ export default function Preview() {
 
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
+    readReports();
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
