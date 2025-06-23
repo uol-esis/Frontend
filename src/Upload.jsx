@@ -76,10 +76,10 @@ function Upload() {
 
   
   useEffect(() => {
-    if (Th1) {
+    if (Th1 && isLoggedIn) {
       getSchemaList();
     }
-  }, [Th1]);
+  }, [Th1, isLoggedIn]);
   
 
   useEffect(() => {
