@@ -30,6 +30,7 @@ export default function Preview() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorText, setErrorText] = useState("");
+  const [reportContent, setReportContent] = useState([]);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
@@ -48,6 +49,7 @@ export default function Preview() {
     }
 
   }, [showSuccessMessage]);
+
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -63,11 +65,16 @@ export default function Preview() {
     },
   ]
 
+
   const readReports = () => {
     if(!reports[0]){
-      return;
+      //return;
     }
-    console.log("report type " + reports[0].reportType);
+
+    console.log("set reports");
+    const array = [{header: "test", text: "123" }];
+    setReportContent(array);
+    //console.log("report type " + reports[0].reportType);
   }
 
   const computeTablelimit = () => {
@@ -335,13 +342,12 @@ export default function Preview() {
         />
 
         {/* Information text */}
-        <div className="flex justify-self-center ">
+        <div className="flex justify-self-center h-[70vh] ">
 
-          <div className="flex flex-col mt-7 text-left flex-shrink-0">
-            <p className="p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md">
-              Vorschau
-            </p>
-            <StackedList headerTextArray={previewText} />
+          <div className="flex flex-col gap-4 mt-7 text-left flex-shrink-0 overflow-auto">
+            
+            <StackedList title={"Vorschau"} headerTextArray={previewText} />
+            <StackedList title={"Fehelermeldungen"} headerTextArray={reportContent} />
           </div>
           {/* Table with preview or error message */}
           <div className="flex-1 overflow-auto">
@@ -377,6 +383,7 @@ export default function Preview() {
           >
             Zurück
           </button>
+
           <button
             type="button"
             className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
