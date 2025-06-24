@@ -74,7 +74,7 @@ export default function Sidebar({onClick, navigation}) {
                             <DisclosureButton
                               as="a"
                               onClick={() => {onClick(subItem.href)}}
-                              
+
                               className={classNames(
                                 subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50',
                                 'block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700',
