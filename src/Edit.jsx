@@ -27,12 +27,7 @@ export default function Edit() {
   const [showCardListTip, setShowCardListTip] = useState(false);
   const tutorialRef = useRef();
 
-  //Converter dropdown
-  const [openCategory, setOpenCategory]=useSate(null);
-  const categorizedConverters={
-    add: converters.filter((c) => c.category === 'add'),
-    rmv: converters.filter((c)=> c.category === 'rmv')
-  };
+  
 
   const ExplainerConverterList = (
     <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
@@ -102,6 +97,16 @@ export default function Edit() {
 
     // weitere Converter hier hinzufügen
   ];
+
+  //Converter dropdown
+  const [openCategory, setOpenCategory]=useState(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isRmvOpen, setIsRmvOpen] = useState(false);
+  const categorizedConverters={
+    add: converters.filter((c) => c.category === 'add'),
+    rmv: converters.filter((c)=> c.category === 'rmv')
+  };
+
 
   useEffect(() => {
     if (schemaToEdit) {
@@ -406,23 +411,53 @@ export default function Edit() {
         {/* Linke Spalte: Converter-Buttons */}
           <div className="flex-1 w-1/5 space-y-2 pl-4 relative">
 
-            {/* Hinzufügen Dropdown */}
-          <button onClick={() => setOpenCategory(openCategory === 'add' ? null : 'add')}
-          className="w-full text-left px-4 py-2 bg-gray-600 hover:bg-indigo-500 text-white rounded-lg shadow"
-          >Hinzufügen</button>
-            {openCategory === 'add' && (
-    <div className="space-y-1 ml-2">
-      {categorizedConverters.add.map((conv) => (
+            {/* Hinzufügen-Dropdown */}
         <button
-          key={conv.label}
-          onClick={() => handleConverterClick(conv.label, conv.params, conv.converterType, conv.description)}
-          className="w-full text-left px-3 py-1 bg-gray-600 hover:bg-indigo-500 text-white rounded"
+          onClick={() => setIsAddOpen(!isAddOpen)}
+          className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-indigo-500 text-white rounded-lg shadow transition-colors"
         >
-          {conv.label}
+          <span>Converter zum Hinzufügen</span>
+          {isAddOpen ? "▲" : "▼" }
         </button>
-      ))}
-    </div>
-  )}
+        {isAddOpen && (
+          <div className="space-y-1 ml-2 mt-1 transition-all duration-300 ease-in-out">
+            {categorizedConverters.add.map((conv) => (
+              <button
+                key={conv.label}
+                onClick={() =>
+                  handleConverterClick(conv.label, conv.params, conv.converterType, conv.description)
+                }
+                className="w-full text-left px-3 py-1 bg-gray-700 hover:bg-indigo-500 text-white rounded transition-colors"
+              >
+                {conv.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Entfernen-Dropdown */}
+        <button
+          onClick={() => setIsRmvOpen(!isRmvOpen)}
+          className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow transition-colors"
+        >
+          <span>Converter zum Entfernen</span>
+          {isRmvOpen ? "▲" : "▼"}
+        </button>
+        {isRmvOpen && (
+          <div className="space-y-1 ml-2 mt-1 transition-all duration-300 ease-in-out">
+            {categorizedConverters.rmv.map((conv) => (
+              <button
+                key={conv.label}
+                onClick={() =>
+                  handleConverterClick(conv.label, conv.params, conv.converterType, conv.description)
+                }
+                className="w-full text-left px-3 py-1 bg-gray-700 hover:bg-indigo-500 text-white rounded transition-colors"
+              >
+                {conv.label}
+              </button>
+            ))}
+          </div>
+        )}
             <div className=" absolute top-0 translate-x-full z-50">
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
@@ -459,7 +494,7 @@ export default function Edit() {
         </div>
 
         <button
-          className="fixed bottom-10 right-4 bg-red-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
+          className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
           onClick={handleEditComplete}
         >Anwenden</button>
 
