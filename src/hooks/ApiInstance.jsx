@@ -7,7 +7,6 @@ export async function getApiInstance() {
   if (apiInstancePromise) return apiInstancePromise;
 
   apiInstancePromise = (async () => {
-    console.log("Lade API...");
     const module = await import('th1');
 
     const client = new module.ApiClient(import.meta.env.VITE_API_ENDPOINT);
