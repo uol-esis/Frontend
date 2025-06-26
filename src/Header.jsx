@@ -70,7 +70,7 @@ export default function Header() {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.name === 'Metabase' || 'Feedback' ? '_blank' : '_self'}
+                target={item.name === 'Metabase' ? '_blank' : '_self'}
                 rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
                 className="text-sm/6 font-semibold text-gray-900 flex items-center hover:scale-105 transition-transform"
               >
