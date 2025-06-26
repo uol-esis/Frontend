@@ -15,6 +15,8 @@ import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 import { useAuthGuard } from "./hooks/AuthGuard";
 import keycloak from "./keycloak";
+import { StackedListDropDown } from "./components/StackedListDropDown";
+import { parseReports } from "./hooks/ReadReports";
 
 export default function Preview() {
 
@@ -42,14 +44,6 @@ export default function Preview() {
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
 
-
-  useEffect(() => {
-    if (showSuccessMessage) {
-      setShowPPup(true);
-    }
-
-  }, [showSuccessMessage]);
-
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -65,16 +59,26 @@ export default function Preview() {
     },
   ]
 
+  useEffect(() => {
+    readReports();
+  }, []);
 
-  const readReports = () => {
-    if(!reports[0]){
-      //return;
+  useEffect(() => {
+    if (showSuccessMessage) {
+      setShowPPup(true);
     }
 
-    console.log("set reports");
-    const array = [{header: "test", text: "123" }];
+  }, [showSuccessMessage]);
+
+  const readReports = () => {
+    if(!reports){
+      return;
+    }
+
+    const array = [];
+    parseReports(reports, array);
     setReportContent(array);
-    //console.log("report type " + reports[0].reportType);
+    
   }
 
   const computeTablelimit = () => {
@@ -101,6 +105,7 @@ export default function Preview() {
     const oAuth2Auth = client.authentications["oAuth2Auth"];
     oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
     const api = new DefaultApi(client);
+
 
     try {
       if (generatedSchema) {
@@ -138,7 +143,7 @@ export default function Preview() {
 
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
-    readReports();
+    
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
@@ -344,10 +349,11 @@ export default function Preview() {
         {/* Information text */}
         <div className="flex justify-self-center h-[70vh] ">
 
-          <div className="flex flex-col gap-4 mt-7 text-left flex-shrink-0 overflow-auto">
+          <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
             
-            <StackedList title={"Vorschau"} headerTextArray={previewText} />
-            <StackedList title={"Fehelermeldungen"} headerTextArray={reportContent} />
+            <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
+            <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} /> 
+
           </div>
           {/* Table with preview or error message */}
           <div className="flex-1 overflow-auto">
