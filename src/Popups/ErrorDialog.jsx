@@ -1,4 +1,27 @@
-export default function ErrorDialog({dialogRef, text, onConfirm, errorMsg}){
+import { useState, useEffect} from "react";
+
+export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
+
+    const [errorMsg, setErrorMsg] = useState("");
+    const locale = "errorsDE";
+
+    {/* load error message based on id */}
+    useEffect(() => {
+        fetch(`src/language/${locale}.json`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netzwerkfehler: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                setErrorMsg(data[errorId]);
+            })
+            .catch(error => {
+                console.error('Fehler beim Laden oder Verarbeiten:', error);
+            });
+    }, [errorId])
+
     return(
         <dialog  className=" justify-self-center p-5 mt-[20vh] w-[30vw] shadow-md bg-white " ref={dialogRef}>
             <div className="flex flex-col place-items-center p-5 gap-5 bg-white">

@@ -3,5 +3,7 @@
     "400": "Es wurde eine fehlerhafte Anfrage an den Server gestellt.",
     "401": "Der Zugriff ist nicht autorisiert.",
     "404": "Die angefragten Informationen konnten nicht gefunden werden.",
-    "409": "Die Datei existiert bereits in der Datenbank."
+    "409ConvertTable": "Die Datei existiert bereits in der Datenbank.",
+    "409CreateTableStructure": "Der Tabellentransformationsname wird bereits verwendet.",
+    "500": "Interner Server Error."
 }
