@@ -67,6 +67,18 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
         parameters.forEach(param => {
             const value = formData[param.apiName];
+
+            /*  
+            if(param.type == "string" && param.required &&  (!value || value.toString().trim() === '') ){
+                formData[param.apiName] = "";
+                return;
+            }
+           */
+            if(converterType == "REPLACE_ENTRIES" && param.apiName == "search" && (!value || value.toString().trim() === '')) {
+                formData[param.apiName] = "";
+                return;
+            } 
+
             if (param.required && (!value || value.toString().trim() === '')) {
             newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
             } 

@@ -32,6 +32,7 @@ function Upload() {
   const [jsonData, setJsonData] = useState(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
+  const [confirmNameError, setConfirmNameError] = useState();
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -139,7 +140,7 @@ function Upload() {
       console.error("Th1 module is not loaded yet.");
       return;
     }
-    console.log("try to generate");
+    
     const client = new Th1.ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const oAuth2Auth = client.authentications["oAuth2Auth"];
     oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
@@ -163,8 +164,23 @@ function Upload() {
     api.generateTableStructure(selectedFile, settings, callback);
   }
 
+  const isNameTaken = function (newName) {
+    for (const schema of schemaList) {
+      if (schema.name === newName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   {/* Confirm name and navigate to preview page*/ }
   const confirmGeneratedName = function (newName) {
+    
+    if(isNameTaken(newName)){
+      setConfirmNameError("Der Name wird bereits verwendet");
+      return;
+    }
+
     jsonData.name = newName;
     const cleaned = JSON.parse(JSON.stringify(jsonData));
     navigate("/preview", { state: { selectedFile, generatedSchema: cleaned } }) // or data // Pass data to preview page
@@ -179,11 +195,13 @@ function Upload() {
     fileInputRef.current.click();
   };
 
-  //noch ausfüllen
+
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
     confirmNameToEditRef.current?.showModal();
   };
+
+  //TODO name is not set
   const handleConfirmNewSchema = () => {
     navigate("/edit", {
       state: {
@@ -199,8 +217,8 @@ function Upload() {
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()} />
+      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={() => handleConfirmNewSchema()} />
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
