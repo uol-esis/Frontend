@@ -17,11 +17,22 @@ export default function UploadComponent({setFile, setValid}){
     };
 
     useEffect(() => {
-        if (selectedFile && isValidFile){
-            setFile(selectedFile);
-            setValid(true);
-        }
-    }, [isValidFile]);
+
+    if (selectedFile) {
+      const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
+      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
+
+      setIsValidFile(isValidAndShortEnough);
+
+      if (isValidAndShortEnough) {
+        setFile(selectedFile);
+        setValid(true);
+      }
+    } else {
+      setIsValidFile(false);
+    }
+  }, [selectedFile]);
+
 
 
     useEffect(() => {
@@ -31,16 +42,6 @@ export default function UploadComponent({setFile, setValid}){
       }
       }, [selectedFile]);
     
-    
-    useEffect(() => {
-      if (selectedFile) {
-        const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
-        const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
-        setIsValidFile(isValidAndShortEnough);
-      } else {
-        setIsValidFile(false);
-      }
-    }, [selectedFile]);
 
     const handleDragOver = (event) => {
         event.preventDefault();

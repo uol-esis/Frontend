@@ -70,13 +70,13 @@ export default function Preview() {
 
   }, [showSuccessMessage]);
 
-  const readReports = () => {
+  const readReports = async () => {
     if(!reports){
       return;
     }
 
     const array = [];
-    parseReports(reports, array);
+    await parseReports(reports, array);
     setReportContent(array);
     
   }
