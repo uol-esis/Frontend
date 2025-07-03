@@ -30,6 +30,7 @@ function Upload() {
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
   const [jsonData, setJsonData] = useState(null);
+  const [reports, setReports] = useState(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
 
@@ -155,6 +156,7 @@ function Upload() {
         console.log("Generated schema:", data); // or data
 
         //show ConfirmNameModal
+        setReports(data.reports);
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
         confirmNameToPreviewRef.current?.showModal();
@@ -166,8 +168,9 @@ function Upload() {
   {/* Confirm name and navigate to preview page*/ }
   const confirmGeneratedName = function (newName) {
     jsonData.name = newName;
-    const cleaned = JSON.parse(JSON.stringify(jsonData));
-    navigate("/preview", { state: { selectedFile, generatedSchema: cleaned } }) // or data // Pass data to preview page
+    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+    const reportsJson = JSON.parse(JSON.stringify(reports));
+    navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } }) // or data // Pass data to preview page
   };
 
   {/* helper functions */ }

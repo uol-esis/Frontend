@@ -1,9 +1,10 @@
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { p } from "framer-motion/client";
 import { useState, useEffect } from "react";
 
 
-export function StackedList({title , headerTextArray}){
+export function StackedListDropDown({title , headerTextArray}){
 
     const [showAll, setShowAll] = useState(false);
 
@@ -27,14 +28,15 @@ export function StackedList({title , headerTextArray}){
                 
             </div>
             {showAll ? 
-                <ul role="list" className="bg-white w-[25vw] divide-y divide-gray-200 border-2 border-solid border-gray-200 rounded-r-md ">
-                    {headerTextArray.map((item) => (
-                        <li key={item.header} className="p-4 ">
-                        <div className="flex items-center gap-x-3">
+                <ul role="list" className="bg-white w-[25vw]  border-2 border-solid border-gray-200 rounded-r-md ">
+                    {headerTextArray.length == 0 ? <li>Keine Einträge vorhanden</li> : null}
+                    {headerTextArray.map((item, index) => (
+                        <li key={item.header + item.text} className={` ${item.header ? "p-3 mt-3 " : "p-1 ml-3" } ${index != 0 && item.header ? " border-t-2 border-gray-200 ": ""} `}>
+                        <div className={`flex items-center  `}>
                             <h3 className="flex-auto truncate  text-sm/6 font-semibold text-gray-900">{item.header}</h3>
                         </div>
-                        <p className="mt-1 wrap-break-word text-sm">
-                            <span className="font-medium text-gray-500">{item.text}</span>
+                        <p className={`wrap-break-word text-sm  ${item.header ? "" : "divide-y divide-gray-200" }`}>
+                            <span className={`font-medium text-gray-500 `}>{item.text}</span>
                         </p>
                         </li>
                     ))}
