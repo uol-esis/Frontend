@@ -16,7 +16,6 @@ import { StackedList } from "./StackedList";
 import keycloak from "./keycloak";
 import { useAuthGuard } from "./hooks/AuthGuard";
 import { getApiInstance } from "./hooks/ApiInstance";
-import { getApiInstance } from "./hooks/ApiInstance";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";

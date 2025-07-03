@@ -7,8 +7,6 @@ import UploadComponent from "./UploadComponent";
 import SchemaList from "./SchemaList";
 import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
-import keycloak from "./keycloak"
-import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import { getApiInstance } from "./hooks/ApiInstance";
 import { useAuthGuard } from "./hooks/AuthGuard";
 import { div } from "framer-motion/client";
