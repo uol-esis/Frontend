@@ -1,5 +1,5 @@
 import { div } from "framer-motion/client";
-import { useRef } from "react";
+import {useRef, useState} from "react";
 import Sidebar from "./Sidebar";
 import InfoCard from "./components/InfoCard";
 
@@ -18,6 +18,18 @@ export default function Wiki() {
     const removeInvalidRowsRef = useRef();
     const removeTrailingColRef = useRef();
     const removeGroupedHeaderRef = useRef();
+    const metabaseRef = useRef();
+    const metabaseEinstiegRef = useRef();
+    const metabaseFilterRef = useRef();
+    const metabaseSummaryRef = useRef();
+    const metabaseVisualisierungRef = useRef();
+    const metabaseJoinRef = useRef();
+
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight
+    });
+
 
     const navigation = [
         { name: 'Einleitung', href: introductionRef },
@@ -35,23 +47,37 @@ export default function Wiki() {
                 { name: 'Zeile aufteilen', href: splitRowRef },
                 { name: 'Ungültige Zeilen entfernen', href: removeInvalidRowsRef },
                 { name: 'Nachträglich Spalten entfernen', href: removeTrailingColRef },
-            ]
-        }
+            ]},
+        {name: 'Metabase', href: '#', children: [
+                { name: 'Einstieg', href: metabaseEinstiegRef},
+                { name: 'Daten filtern', href: metabaseFilterRef},
+                { name: 'Daten zusammenfassen', href: metabaseSummaryRef},
+                { name: 'Visualisierung erstellen', href: metabaseVisualisierungRef},
+                { name: 'Unterschiedliche Tabellen verbinden', href: metabaseJoinRef},
+            ]},
     ]
 
-    const scrollTo = (ref) => {
-        ref.current?.scrollIntoView({ behavior: "smooth" });
+    const scrollToWithOffset = (ref, offset = window.innerHeight * 0.15) => {
+        const element = ref.current;
+        if (!element) return;
+
+        const topPos = element.getBoundingClientRect().top + window.pageYOffset - offset;
+
+        window.scrollTo({
+            top: topPos,
+            behavior: 'smooth'
+        });
     };
 
-    return (
-        <div className="flex h-full ">
+    return(
+        <div className="flex h-full">
             {/* Sidebar */}
             <div className="h-screen w-[15vw] fixed">
-                <Sidebar onClick={scrollTo} navigation={navigation} />
+                <Sidebar onClick={scrollToWithOffset} navigation={navigation}/>
             </div>
 
             {/* Wiki */}
-            <div className="flex flex-col ml-[15vw] p-5 mb-5">
+            <section className="flex flex-col ml-[15vw] mb-[5vh] p-5">
 
                 {/* Introduction */}
                 <section ref={introductionRef}>
@@ -79,7 +105,6 @@ export default function Wiki() {
                         Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden.
                         Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig,
                         da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist
-
                     </p>
                     <div className="p-4">
                         <InfoCard
@@ -116,7 +141,6 @@ export default function Wiki() {
                             <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard1.png" alt="" />
 
                         </figure>
-
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
                             <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew1.png" alt="" />
@@ -272,7 +296,7 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Zeile entfernen (nach Index)</h2>
                     <p>
                         Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
-                        Alternativ kann auch die Funktion "Fußzeile entfernen" genutzt werden, wenn die zu löschende Zeile die letzte ist. Der Unterschied ist, dass bei letzteren keine Angaben gemacht werden müssen.
+                        
                     </p>
                     <p className="text-left font-semibold mt-4">Beispiel: </p>
                     <p className="text-left">
@@ -442,7 +466,8 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Zeile aufteilen </h2>
                     <p>
                         Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig,
-                        wenn sich in einer Zelle mehrere Einträge befinden.
+                        wenn sich in einer Zelle mehrere Werte befinden. In der Datenbank darf in jeder Zelle, allerdings nur ein Wert stehen, deswegen müssen die
+                        Werte auf mehrere Zeilen aufgeteilt werden.
                     </p>
 
                     <div className="p-4">
@@ -528,11 +553,7 @@ export default function Wiki() {
                             <img className="object-contain" src="wikiAssets/removeInvalidRowNew.png" alt="remove Column" />
 
                         </figure>
-
                     </div>
-
-
-
                 </section>
 
                 <div className="mt-6 border-1 border-gray-200"></div>
@@ -541,7 +562,7 @@ export default function Wiki() {
                 <section ref={removeTrailingColRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Nachträglich Spalten entfernen </h2>
                     <p>
-                        Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzen beiden Spalten der Tabelle
+                        Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle
                         leer sind, so werden diese entfernt.
                     </p>
 
@@ -552,7 +573,177 @@ export default function Wiki() {
                     </div>
 
                 </section>
-            </div>
+
+                <div className="mt-6
+                 border-1 border-gray-200"></div>
+
+                <section className="mt-10">
+                    <h1 className="text font-bold text-lg" ref={metabaseRef}>Metabase</h1>
+                    <h2 className="text font-semibold text-lg" ref={metabaseEinstiegRef} >Einstieg finden</h2>
+                    <p className="text-left font-semibold mt-4">Welche Bereiche hat Metabase?</p>
+                    Nach der Weiterleitung zu Metabase starten Sie auf der Übersichtsseite der Modelle. Erstellen Sie oben rechts mit dem Button "Neu" und dann "Modell" ein Modell mit den Daten, die Sie gerne bearbeiten oder analysieren wollen.<br />
+                        <br /> Ein Modell ist eine Ansicht bestimmter Daten, quasi eine Kopie. Dies hat den Vorteil, dass Sie nicht direkt mit den "Orignialdaten" in der Datenbank arbeiten und diese in ihrer ursprünglichen Form bleiben.
+                        <br /> Sie haben links noch die Bereiche "Datenbanken" und "Metrik". Im Bereich "Datenbanken" haben Sie Einsicht in alle Tabellen, die sich in der Datenbank befinden. Im Bereich "Metrik" können Sie Indizes oder Key Performance Indicators (kurz KPIs) erstellen und einsehen. Diese können unter anderem in Dashboards eingebunden werden.
+
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-1.png" alt="Bereiche" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4">Was kann ich tun?</p>
+                    Sobald Sie ein neues Modell erstellt und eine Datei ausgewählt haben, erscheinen die Daten. Es gibt zwei wichtige Funktionsbereiche: Oben rechts mit den Bearbeitungsmöglichkeiten der Daten wie Filtern, Zusammenfassen und mehr. Mit dem Button unten links gelangt man zu Visualisierungsoptionen.
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-2.png" alt="Funktionsbereiche" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4" ref={metabaseFilterRef}>Wie filtere ich eine Tabelle?</p>
+                    Wollen Sie die Tabelle nach bestimmten Eigenschaften filtern, wählen Sie den Filter-Button aus und wählen Sie zwischen den Spalten der Tabelle.
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-3.png" alt="Filter" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4" ref={metabaseSummaryRef}>Wie fasse ich einzelne Werte in der Tabelle zusammen?</p>
+                    Wollen Sie Werte kumulieren oder ähnliches, wählen Sie den Zusammenfassung-Button aus und wählen Sie eine Funktion und eine Gruppierung. Eine Funktion sagt aus, was mit den Werten passieren soll wie zum Beispiel bei Summe die Summe aller relevanten Zellen oder bei Anzahl die Häufigkeit der Zellen mit demselben Inhalt. Die Gruppierung sagt aus, welche Spalte ausschlaggebend ist.
+
+                    <div className="p-5">
+                        Schritt 1:
+                    </div>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4.png" alt="Zusammenfassen" />
+                        </figure>
+                    </div>
+                        <div className="p-4">
+                            <InfoCard
+                                text={"Bitte beachten Sie: Haben Sie eine Zusammenfassung ausgewählt und wollen diese wieder löschen, müssen Sie erst die Gruppierung rausnehmen und dann die Funktion entfernen."}
+                            />
+                        </div>
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4a.png" alt="Zusammenfassen" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4" ref={metabaseVisualisierungRef}>Wie visualisiere ich eine Tabelle?</p>
+
+                    <div className="p-5">
+                        Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon "Tabelle" gelangen Sie wieder zur Ursprungsform zurück.
+                        Sie können jederzeit Daten filtern, zusammenfassen oder die Darstellungsform ändern. Gleitet der Cursor über eines der Darstellungsicons, erscheint ein kleines Rädchen für weitere Einstellungen der Grafik.
+                    </div>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-5.png" alt="Visualisierung" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4">Wie lege ich die Daten über eine Karte?</p>
+                    <div className="p-5">
+                        Wenn Sie Ihre Daten über eine Stadtkarte von Ulm legen wollen, nutzen Sie die Darstellungsform "Karte" und wählen Ihre Karte in den Einstellungen aus.
+                    </div>
+
+                    <div className="p-5">
+                        Schritt 1:
+                    </div>
+                        <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6.png" alt="Karte" />
+                        </figure>
+                    </div>
+
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6a.png" alt="Karte" />
+                        </figure>
+                    </div>
+
+                    <div className="p-5">
+                        Ergebnis:
+                    </div>
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6b.png" alt="Karte" />
+                        </figure>
+                    </div>
+
+                    <div className="mt-6 border-1 border-gray-200"></div>
+
+                    <p className="text-left font-semibold mt-4" ref={metabaseJoinRef}>Wie kann ich unterschiedliche Tabellen miteinander verbinden?</p>
+
+                    <div className="p-5">
+                    Sie haben unterschiedliche Tabellen, die Sie miteinander verbinden wollen. Im Fachjargon nennt man das "Tabellen joinen". Dies dient dazu, die Tabelle i. d. Regel zu erweitern. Voraussetzung dafür ist das Vorhandensein einer gemeinsamen Spalte. Es muss in beiden Tabellen, die man joinen möchte, eine Spalte geben, in der die Werte von der Bedeutung und der Schreibweise übereinstimmen.
+                    </div>
+
+                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    Wir wollen herausfinden, wie die Altersverteilung der Bürger über die Sozialräume aussieht. Uns liegen folgende Tabellen vor.
+                        <div className="flex justify-around p-4 ">
+                            <figure>
+                                <figcaption className="font-semibold p-4">Tabelle 1: Anzahl der Bürger eines Alters und Geschlechts pro Stadtviertel</figcaption>
+                                <img className=" object-contain" src="wikiAssets/metabase/Einstieg-7a.png" alt="Tabelle1" />
+                            </figure>
+                            <figure>
+                                <figcaption className="font-semibold p-4">Tabelle 2: Zuordnung der Straßen zu Stadtvierteln, -teilen und Sozialräumen</figcaption>
+                                <img className="object-contain" src="wikiAssets/metabase/Einstieg-7aa.png" alt="Tabelle2" />
+                            </figure>
+                        </div>
+                    <div className="p-4">
+                        <InfoCard
+                            text={"Wenn Sie in eines der rechteckigen Elemente klicken, erscheint rechts oben über dem Element ein kleines x zum Löschen des Elements." +
+                                "Das Dreieck neben einem Element zeigt die Tabelle. Wurde in dem Element eine Funktion angewandt, zeigt das Dreieck die Tabelle nach Ausführung der Funktion an. In unserem Fall zum Beispiel das Joinen der beiden Tabellen."}
+                        />
+                    </div>
+
+                    <div className="p-5">
+                    Schritt 1:
+                    </div>
+                    Wir starten mit der Bearbeitung, indem wir mit der Funktion "Daten verknüpfen" die beiden Tabellen über die Spalte "Stadtviertel" miteinander verschneiden. Dies bedeutet, dass wir den Zeilen in Tabelle 1 die Werte zuordnen, die in Tabelle 2 das gleiche Stadtviertel haben.
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7b.png" alt="Join" />
+                        </figure>
+                    </div>
+                        <div className="p-4">
+                            <InfoCard
+                                text={"Bitte beachten Sie: Die Werte in den beiden Spalten müssen jeweils gleich geschrieben werden. Werte wie Str. und Straße werden nicht als gleich definiert."}/>
+                        </div>
+                    Um die gewünschte Information zu erhalten, müssen wir die gejointe Tabelle nach der Summe der Anzahl der Bürger auswerten, gruppiert nach Alter und Sozialräumen, und darstellen.
+                        <div className="flex justify-center">
+                            <figure>
+                                <img className="h-[45vh] object-contain" src="wikiAssets/metabase/Einstieg-7c.png" alt="Join" />
+                            </figure>
+                        </div>
+
+                    <div className="p-5">
+                        Schritt 2:
+                    </div>
+                    Nachdem Sie das Modell gespeichert haben, können Sie die Daten visualisieren. Für diese Information eignet sich eine Flächendarstellung, da sich hier die Altersverteilung gut über eine Linie anzeigen lässt, die an die Baumstruktur bei der Ansicht von demografischen Verteilungen erinnert. Außerdem lassen sich die Flächen übereinander legen, sodass die unterschiedlichen Sozialräume gleichzeitig vergleichbar sind.
+                    <div className="flex justify-center">
+                        <figure>
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7d.png" alt="Join" />
+                        </figure>
+                    </div>
+                </section>
+            </section>
         </div>
     );
-}
+};

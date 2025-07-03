@@ -1,21 +1,37 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 import TableFromJSON from "./../TableFromJSON";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import Tooltip from "../ToolTip";
 
 
-
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onDelete}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onDelete, description}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     const [validationError, setValidationError] = useState(""); // State for validation error message
 
+    const closeTimeoutRef = useRef(null);
+    const [showTutorial, setShowTutorial] = useState(false);
 
     const [showOptional, setShowOptional]= useState(false); //State für die optionalen Parameter
 
     const requiredParameters=parameters.filter(param => param.required);
     const optionalParameters = parameters.filter(param => !param.required);
 
+    const openPopup = () => {
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+        setShowTutorial(true);
+    };
+
+    const closePopupWithDelay = () => {
+        closeTimeoutRef.current = setTimeout(() => {
+        setShowTutorial(false);
+        }, 100); 
+    };
 
     // formData updaten, wenn initialFormData sich ändert
     useEffect(() => {
@@ -51,6 +67,18 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
         parameters.forEach(param => {
             const value = formData[param.apiName];
+
+            /*  
+            if(param.type == "string" && param.required &&  (!value || value.toString().trim() === '') ){
+                formData[param.apiName] = "";
+                return;
+            }
+           */
+            if(converterType == "REPLACE_ENTRIES" && param.apiName == "search" && (!value || value.toString().trim() === '')) {
+                formData[param.apiName] = "";
+                return;
+            } 
+
             if (param.required && (!value || value.toString().trim() === '')) {
             newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
             } 
@@ -95,7 +123,23 @@ export default function ConverterCard({id, label, parameters, converterType, for
                 </>
             ) : (
               <>
-              <h2 className="text-lg font-semibold text-gray-700 mb-2 text-center">{label}</h2>
+              {/* name and questionmark */}
+              <div className="grid grid-cols-3 items-center w-full relative">
+                
+                <h2 className="col-start-2 text-center text-lg font-semibold text-gray-700 mb-2 text-center">{label}</h2>
+                    <button
+                        type="button"
+                        className="col-start-3 justify-self-end "
+                        onMouseEnter={openPopup}
+                        onMouseLeave={closePopupWithDelay}
+                        >
+                        <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
+                    </button>
+                    <div className="max-h-[20vh] overflow-auto absolute top-0 -translate-y-full z-50 col-start-3 justify-self-end ">
+                        <Tooltip tooltipContent={description} showTutorial={showTutorial} showButton={false} openPopup={openPopup} closePopup={closePopupWithDelay} />
+                    </div>
+              </div>
+              
                 <div className="flex flex-col md:flex-row gap-4">
 
                     {/* Linke Seite: Parameterbereich */}

@@ -28,8 +28,10 @@ function Upload() {
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaName, setSchemaName] = useState("");
   const [jsonData, setJsonData] = useState(null);
+  const [reports, setReports] = useState(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
+  const [confirmNameError, setConfirmNameError] = useState();
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -134,6 +136,7 @@ function Upload() {
         console.log("Generated schema:", data); // or data
 
         //show ConfirmNameModal
+        setReports(data.reports);
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
         confirmNameToPreviewRef.current?.showModal();
@@ -143,11 +146,27 @@ function Upload() {
     api.generateTableStructure(selectedFile, settings, callback);
   }
 
+  const isNameTaken = function (newName) {
+    for (const schema of schemaList) {
+      if (schema.name === newName) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   {/* Confirm name and navigate to preview page*/ }
   const confirmGeneratedName = function (newName) {
+    
+    if(isNameTaken(newName)){
+      setConfirmNameError("Der Name wird bereits verwendet");
+      return;
+    }
+
     jsonData.name = newName;
-    const cleaned = JSON.parse(JSON.stringify(jsonData));
-    navigate("/preview", { state: { selectedFile, generatedSchema: cleaned } }) // or data // Pass data to preview page
+    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+    const reportsJson = JSON.parse(JSON.stringify(reports));
+    navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } }) // or data // Pass data to preview page
   };
 
   {/* helper functions */ }
@@ -159,29 +178,19 @@ function Upload() {
     fileInputRef.current.click();
   };
 
-  //noch ausfüllen
+
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
     confirmNameToEditRef.current?.showModal();
   };
+
+  //TODO name is not set
   const handleConfirmNewSchema = () => {
     navigate("/edit", {
       state: {
         selectedFile: selectedFile,
       },
     });
-  };
-
-
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    setSelectedFile(file);
   };
 
   const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
@@ -191,8 +200,8 @@ function Upload() {
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} onCLickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} onCLickFunction={() => handleConfirmNewSchema()} />
+      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={() => handleConfirmNewSchema()} />
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
