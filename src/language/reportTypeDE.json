@@ -1,0 +1,28 @@
+{
+"COLUMN_TYPE_MISMATCH":"Datentypen in der Spalte fehlerhaft",
+"GROUPED_HEADER": "Verschachtelung in der Kopfzeile",
+"EMPTY_HEADER": "leere Kopfzeile",
+"EMPTY_ROW": "leere Zeile",
+"EMPTY_COLUMN": "leere Spalte",
+"SAME_AS_HEADER": "duplizierte Kopfzeile",
+"MISSING_ENTRY": "fehlender Eintrag",
+"MERGEABLE_COLUMNS": "Spalten zusammenfassbar",
+"SPLIT_ROW": "Zeilen aufteilen",
+"SUM": "Summe entfernen",
+
+"columnIndex": "Spaltenindex",
+"column": "Spalte",
+"rowIndex": "Zeilenindex",
+"row": "Zeile",
+"cells": "Zelle",
+"startRow": "Startzeile",
+"endRow": "Endzeile",
+"startColumn": "Startspalte",
+"endColumn": "Endspalte",
+"delimiter": "Trennzeichen",
+"mismatches": "Fehler",
+"headerNames": "Kopfzeilenname",
+"columnsToFill": "Spalte füllen",
+"rowsToFill": "Zeile füllen",
+"mergeables": "Zusammenfassen"
+}
