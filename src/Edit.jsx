@@ -86,9 +86,9 @@ export default function Edit() {
       description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
     {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
       description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
-    {label: 'Einträge ersetzen ', category: 'rmv', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
+    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
       description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.'}, //ReplaceEntries
-    {label: 'Zeile aufteilen ', category: 'add', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW', 
+    {label: 'Zeile aufteilen ', category: 'mdfy', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW', 
       description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt.'}, //SplitRow
     {label: 'Ungültige Zeilen entfernen ', category: 'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
       description: 'Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
@@ -102,9 +102,11 @@ export default function Edit() {
   const [openCategory, setOpenCategory]=useState(null);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isRmvOpen, setIsRmvOpen] = useState(false);
+  const [isMdfyOpen, setIsMdfyOpen] = useState(false);
   const categorizedConverters={
     add: converters.filter((c) => c.category === 'add'),
-    rmv: converters.filter((c)=> c.category === 'rmv')
+    rmv: converters.filter((c)=> c.category === 'rmv'),
+    mdfy: converters.filter((c) => c.category === 'mdfy')
   };
 
 
@@ -294,7 +296,7 @@ export default function Edit() {
       console.error("No file selected");
       return;
     }
-
+      
     const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
     const oAuth2Auth = client.authentications["oAuth2Auth"];
     oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
@@ -458,6 +460,31 @@ export default function Edit() {
             ))}
           </div>
         )}
+        {/* Bearbeiten */}
+        <button
+          onClick={() => setIsMdfyOpen(!isMdfyOpen)}
+          className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow transition-colors"
+          >
+            <span>Converter zum Bearbeiten</span>
+            {isMdfyOpen ? "▲" : "▼"}
+          </button>
+          {isMdfyOpen && (
+            <div className="space-y-1 ml-2 mt-1 transition-all duration-300 ease-in-out">
+              {categorizedConverters.mdfy.map((conv) => (
+                <button
+                  key={conv.label}
+                  onClick={() =>
+                    handleConverterClick(conv.label, conv.params, conv.converterType, conv.description)
+                  }
+                  className="w-full text-left px-3 py-1 bg-gray-700 hover:bg-indigo-500 text-white rounded transition-colors"
+                >
+                  {conv.label}
+                </button>
+              ))}
+              </div>
+          )}
+
+          
             <div className=" absolute top-0 translate-x-full z-50">
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
