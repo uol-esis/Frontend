@@ -6,6 +6,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "./ToolTip";
 import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
+import { getApiInstance } from "./hooks/ApiInstance";
 
 
 export default function Edit() {
@@ -174,6 +175,7 @@ export default function Edit() {
         formData: formData, // Pre-fill formData
         selectedFile: selectedFile, // Include the selected file if needed
         isEditing: true,
+        description: converter.description
       };
     }).filter(Boolean); // Remove null values
 
@@ -296,11 +298,8 @@ export default function Edit() {
       console.error("No file selected");
       return;
     }
-      
-    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
-    const oAuth2Auth = client.authentications["oAuth2Auth"];
-    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
-    const api = new DefaultApi(client);
+
+    const {api} = await getApiInstance();
 
     try {
       const data = await new Promise((resolve, reject) => {
