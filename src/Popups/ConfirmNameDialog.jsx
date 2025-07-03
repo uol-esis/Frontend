@@ -1,18 +1,23 @@
 import { useState, useEffect } from "react";
-export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
-
+export default function ConfirmNameDialog({dialogRef, name, onClickFunction, errorText}){
+    const [error, setError] = useState(errorText)
     const [text, setText] = useState(name);
 
     useEffect(() => {
         setText(name);
     }, [name]);
 
+    useEffect(() => {
+        setError(errorText);
+    }, [errorText]);
+
     return(
-        <dialog  className="justify-self-center mt-[20vh] h-[30vh] w-[50vw] shadow-md bg-white " ref={dialogRef}>
+        <dialog  className="justify-self-center mt-[20vh] w-[50vw] shadow-md bg-white " ref={dialogRef}>
             <div className="flex flex-col justify-between h-full p-5 bg-white">
                 <p className="text font-semibold ">Tabellentransformationsnamen bestätigen oder bearbeiten</p>
                 {/* Text input */} 
                 <div className="flex flex-col">
+                    <p className="text-sm font-semibold text-red-800 bg-red-200">{error}</p>
                     <label htmlFor="username" className=" text-left block text-sm/6 font-medium text-gray-900">
                         Generierter Tabellentarnsformationsname:
                     </label>
@@ -28,7 +33,7 @@ export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
                         </div>
                 </div>
                 {/* Buttons */}
-                <div className="flex justify-between">
+                <div className="flex mt-2 justify-between">
                     <button
                         className=" p-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                         onClick={() => {dialogRef.current?.close()}}
@@ -37,8 +42,7 @@ export default function ConfirmNameDialog({dialogRef, name, onCLickFunction}){
                     </button>
                     <button
                         onClick={() => {
-                            onCLickFunction(text);
-                            dialogRef.current?.close();
+                            onClickFunction(text);
                         }}
                         className=" p-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >

@@ -14,9 +14,11 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 import { useAuthGuard } from "./hooks/AuthGuard";
+import { getApiInstance } from "./hooks/ApiInstance";
 import keycloak from "./keycloak";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
+import DecisionDialog from "./Popups/DecisionDialog";
 
 export default function Preview() {
 
@@ -31,7 +33,8 @@ export default function Preview() {
   const [allCheck, setAllCheck] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [errorId, setErrorId] = useState("");
+  const [globalSchemaId, setGlobalSchemaId] = useState("");
   const [reportContent, setReportContent] = useState([]);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -43,7 +46,14 @@ export default function Preview() {
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
+  const decisionDialogRef = useRef();
 
+  useEffect(() => {
+    if (showSuccessMessage) {
+      setShowPPup(true);
+    }
+
+  }, [showSuccessMessage]);
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -133,7 +143,7 @@ export default function Preview() {
         }
         console.log("Using selected schema: ", actualSchemaRef.current);
       }
-
+      
       console.log("Actual schema set: ", actualSchemaRef.current);
     } catch (error) {
       console.error("Error during setActualSchema:", error);
@@ -197,15 +207,50 @@ export default function Preview() {
         schemaId = selectedSchema.id;
       }
 
-      console.log("schemaId " + schemaId);
       api.convertTable(schemaId, selectedFile, undefined, (error, data, response) => {
         if (error) {
           console.error(error);
-          reject(error);
+          const errorObj = JSON.parse(error.message);
+          if(errorObj.statusCode == "409"){
+            decisionDialogRef.current?.showModal();
+            resolve("decision");
+          }else{
+            setErrorId(errorObj.status);
+            reject(error);
+          }
         } else {
           resolve(data);
         }
       });
+    });
+  }
+
+  const replaceTableInServer = (schemaId) => {
+    //if schema is not generated, get id from selected schema
+    if(!schemaId) schemaId = actualSchemaRef.current.id;
+
+    const client = new ApiClient(import.meta.env.VITE_API_ENDPOINT);
+    const oAuth2Auth = client.authentications["oAuth2Auth"];
+    oAuth2Auth.accessToken = keycloak.token; // Use Keycloak token for authentication
+    const api = new DefaultApi(client);
+
+    let opts = {
+      'mode': "'REPLACE'"
+    };
+
+    api.convertTable(schemaId, selectedFile, opts, (error, data, response) => {
+      if (error) {
+        console.error(error);
+        const errorObj = JSON.parse(error.message);
+        setErrorId(errorObj.status);
+        decisionDialogRef.current?.close();
+        errorDialogRef.current?.showModal();
+
+      } else {
+        decisionDialogRef.current?.close();
+        uploadFinishedDialogRef.current?.showModal();
+        console.log('Table successfully replaced.');
+      }
     });
   }
 
@@ -222,6 +267,11 @@ export default function Preview() {
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
+          const errorObj = JSON.parse(error.message);
+          if(errorObj.status == "409"){
+            setErrorId(errorObj.status + "CreateTableStructure");
+          }else setErrorId(errorObj.status);
+          
           reject(error);
         } else {
           console.log('API called successfully. data: ', data);
@@ -244,6 +294,10 @@ export default function Preview() {
     return new Promise((resolve, reject) => {
       api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {
+          const errorObj = JSON.parse(error.message);
+          if(errorObj.status == "409"){
+            setErrorId(errorObj.status + "CreateTableStructure");
+          }else setErrorId(errorObj.status);
           reject(error);
         } else {
           console.log('API called successfully. data: ', data);
@@ -304,6 +358,15 @@ export default function Preview() {
               Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie die korrekte Datei hoch!        </div>
           )}
         {/* Popups */}
+          <DecisionDialog
+            dialogRef={decisionDialogRef}
+            text={"Die Datei befindet sich bereits in der Datenbank. Es gibt die Möglichkeit die Datei zu ersetzen oder das Hochladen abzubrechen."}
+            label1={"Datei ersetzen"}
+            function1={() => {replaceTableInServer(globalSchemaId)}}
+            label2={"Hochladen abbrechen"}
+            function2={() => navigate("/upload")}
+          />
+
         <HelpDialog dialogRef={helpDialogRef} />
 
         <UploadDialog
@@ -318,22 +381,26 @@ export default function Preview() {
           allCheck={allCheck}
           setAllCheck={setAllCheck}
           onConfirm={async () => {
+            let schemaId = null;
             checkboxDialogRef.current?.close();
             try {
-              let schemaId = null;
               if (generatedSchema) {
                 schemaId = await sendGeneratedSchemaToServer();
               } else if (editedSchema) {
                 schemaId = await sendEditedSchemaToServer();
               }
-              await sendTableToServer(schemaId);
-              uploadFinishedDialogRef.current?.showModal();
+              setGlobalSchemaId(schemaId)
+              const result = await sendTableToServer(schemaId);
+              if(result == "decision"){
+                decisionDialogRef.current?.showModal();
+              }else{
+                uploadFinishedDialogRef.current?.showModal();
+              }
+              
             } catch (error) {
-              console.log("catched");
-              setErrorText(error.message);
+              console.error(error);
               errorDialogRef.current?.showModal();
-            }
-
+              }
           }}
         />
 
@@ -341,7 +408,7 @@ export default function Preview() {
 
         <ErrorDialog
           text={"Upload fehlgeschlagen "}
-          errorMsg={""}
+          errorId={errorId}
           onConfirm={() => { errorDialogRef.current?.close(); navigate("/"); }}
           dialogRef={errorDialogRef}
         />
