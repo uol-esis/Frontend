@@ -222,30 +222,36 @@ export default function Edit() {
 
     // Update the cards state with the formData for the saved card
     setCards((prevCards) => {
-      const updatedCards = prevCards.map((card) => {
+      const updatedCards = prevCards.map((card) => { // hier wird dafür gesorft dass ich die Karte und Formdata bekomme und sie nicht mehr im Bearbeitungszustand ist
         if (card.id === cardId) {
+          console.log("Was ist das denn?", card, "Und die FormData?", formData)
+
           return { ...card, formData, isEditing: false };
-        } else if (card.id > cardId) {
+        } else if (card.id > cardId) { //hier wird dafür gesorgt dass die Karten NACH der gespeicherten zurückgesetzt werden
           return { ...card, isEditing: true, preview: null };
         }
         return card;
       });
 
       // Generate the JSON for the saved card and its predecessors
-      const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse();
+      const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse(); //nur aus der aktuellen und denen davor ohne 0 die json bauen!
+      console.log("Die gefilterten Karten: ", filteredCards);
 
       const structures = filteredCards.map((card) => {
-        const inputs = card.parameters.reduce((acc, param) => {
+        const inputs = card.parameters.reduce((acc, param) => { //reduce macht daraus ein Objekt mit allen Parametern
           const apiName = param.apiName;
-          acc[apiName] = getValueFromFormData(param, card.formData);
-          return acc;
+          acc[apiName] = getValueFromFormData(param, card.formData); //getValueFromFormData: aus der formData die Werte extrahieren
+         
+          return acc; //für jede Karte wird ein Objekt mit allen Infos erstellt
         }, {});
+         
 
         return {
           converterType: card.converterType,
           ...inputs,
         };
       });
+      console.log("Die Strukturen sind: ", structures); //
 
       const jsonData = {
         name: "Example Name",
@@ -263,7 +269,7 @@ export default function Edit() {
 
           setCards((latestCards) =>
             latestCards.map((card) =>
-              card.id === cardId ? { ...card, preview: previewData } : card
+              card.id === cardId ? { ...card, preview: previewData } : card //die Preview wird nur bei der aktuellen Karte aktualisiert
             )
           );
         }

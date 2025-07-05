@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import TableFromJSON from "./../TableFromJSON";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../ToolTip";
+import { SaveStatus } from "./saveStateCC";
 
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onDelete, description}) {
@@ -18,6 +19,8 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const requiredParameters=parameters.filter(param => param.required);
     const optionalParameters = parameters.filter(param => !param.required);
+
+    const [saveState, setSaveState] = useState("unsaved"); //für die visuelle Rückgabe des Speicherzustands
 
     const openPopup = () => {
         if (closeTimeoutRef.current) {
@@ -36,9 +39,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
     // formData updaten, wenn initialFormData sich ändert
     useEffect(() => {
       setFormData(initialFormData || {});
+      setSaveState("unsaved");
     }, [initialFormData]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
+
+       
 
         let error = "";
 
@@ -53,11 +59,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
         }));
     };
     
-    const handleSave = () => {
+    const handleSave = () => { //hier wird nur auf Errors überprüft (alle Pflichtfelder gefüllt...) und dann wird die ID und die FormDaten über onSave an die handleSaveFromCard über onSave Prop übergeben
         // Check if any previous cards are still in editing mode
         const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
         if (unsavedCards.length > 0) {
           setValidationError("Bitte speichern Sie zuerst alle vorherigen Karten."); // Set error message
+          setSaveState("error");
           return; // Prevent saving
         }
         // Clear validation error if all previous cards are saved
@@ -86,13 +93,17 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
         setErrors(newErrors);
         //console.log("Errors:", Object.keys(newErrors).length);
+        
         if (Object.keys(newErrors).length === 0) {
             //console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
         
             //call function in edit.jsx
             if (onSave) {
               onSave(id, formData); // Pass the card ID and form data to the parent function
+              setSaveState("saved");
             }
+        }else{
+            setSaveState("error");
         }
     }
 
@@ -104,7 +115,10 @@ export default function ConverterCard({id, label, parameters, converterType, for
     };
 
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+        <div className={`bg-white shadow-md rounded-lg p-4 mb-4
+            ${saveState === "saved" ? "border-2 border-green-500" : ""} 
+            ${saveState === "error" ? "border-2 border-red-500" : ""}
+            `}>
             {/* Hauptcontainer: linke Parameter 2/3, rechte Buttons 1/3 */}
             {id === 0 ? (
               <>
@@ -211,6 +225,8 @@ export default function ConverterCard({id, label, parameters, converterType, for
                             </button>
                         )}
 
+                        <SaveStatus state={saveState} />
+
                         <div className="flex gap-2 flex-wrap justify-end">
                             {isEditing ? (
                                 <button
@@ -222,7 +238,11 @@ export default function ConverterCard({id, label, parameters, converterType, for
                             ) : (
                                 <button
                                     className="text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
-                                    onClick={() => onEditToggle(id, true)}
+                                    onClick={() => {
+                                        onEditToggle(id, true)
+                                        setSaveState("unsaved");
+                                    }}
+                                    
                                 >
                                     Bearbeiten
                                 </button>
