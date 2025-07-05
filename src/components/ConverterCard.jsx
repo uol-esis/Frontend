@@ -39,8 +39,13 @@ export default function ConverterCard({id, label, parameters, converterType, for
     // formData updaten, wenn initialFormData sich ändert
     useEffect(() => {
       setFormData(initialFormData || {});
-      setSaveState("unsaved");
     }, [initialFormData]);
+
+    useEffect(() => { //useEffect um wieder zu unsaved Status zurück zu kommen
+  if (isEditing) {
+    setSaveState("unsaved");
+  }
+}, [isEditing]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
 
@@ -57,6 +62,8 @@ export default function ConverterCard({id, label, parameters, converterType, for
             ...prevErrors,
             [param]: error,
         }));
+
+        setSaveState("unsaved");
     };
     
     const handleSave = () => { //hier wird nur auf Errors überprüft (alle Pflichtfelder gefüllt...) und dann wird die ID und die FormDaten über onSave an die handleSaveFromCard über onSave Prop übergeben
@@ -88,7 +95,8 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
             if (param.required && (!value || value.toString().trim() === '')) {
             newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
-            } 
+            setSaveState("error");
+            }
         });
 
         setErrors(newErrors);
@@ -102,6 +110,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
               onSave(id, formData); // Pass the card ID and form data to the parent function
               setSaveState("saved");
             }
+            setSaveState("saved");
         }else{
             setSaveState("error");
         }
