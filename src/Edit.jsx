@@ -217,6 +217,17 @@ export default function Edit() {
     }
   }
 
+  const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
+  const saveCardRefs = useRef({});
+
+  const registerFormDataGetter = (cardId, getterFn) => {
+    formDataRefs.current[cardId] = getterFn;
+  };
+
+  const registerSaveFn = (cardId, saveFn) => {
+  saveCardRefs.current[cardId] = saveFn;
+};
+
   const handleSaveFromCard = async (cardId, formData) => {
     console.log(`Data saved from card ${cardId}:`, formData);
 
@@ -277,6 +288,19 @@ export default function Edit() {
       return updatedCards;
     });
   };
+
+   const handleSaveAllCards = async () => {
+    const sortedCards = [...cards.filter((c) => c.id !== 0)].sort((a, b) => a.id - b.id);
+
+    for (const card of sortedCards) {
+      const getFormData = formDataRefs.current[card.id];
+      if (!getFormData) continue;
+
+      const formData = getFormData();
+      await handleSaveFromCard(card.id, formData); // speichert nacheinander
+    }
+  };
+
 
   const handleEditToggle = (cardId, isEditing) => {
     setCards((prevCards) =>
@@ -495,6 +519,12 @@ export default function Edit() {
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
         </div>
+        <button
+        className="mt-4 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded px-6 py-2"
+        onClick={handleSaveAllCards}
+      >
+        Alles speichern
+      </button>
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20 relative">
@@ -514,6 +544,9 @@ export default function Edit() {
               cards={cards}
               onDelete={handleDeleteCard}
               description={card.description}
+              onRegisterFormDataGetter={registerFormDataGetter}
+
+              
             />
           ))}
 

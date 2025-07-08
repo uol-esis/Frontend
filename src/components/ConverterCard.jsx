@@ -6,7 +6,7 @@ import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onDelete, description}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onDelete, description}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
@@ -41,6 +41,14 @@ export default function ConverterCard({id, label, parameters, converterType, for
       setFormData(initialFormData || {});
     }, [initialFormData]);
 
+    useEffect(() => {
+        if (onRegisterFormDataGetter) {
+        onRegisterFormDataGetter(id, () => formData);
+        }
+    }, [formData, id]);
+
+
+
     useEffect(() => { //useEffect um wieder zu unsaved Status zurück zu kommen
   if (isEditing) {
     setSaveState("unsaved");
@@ -68,12 +76,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
     
     const handleSave = () => { //hier wird nur auf Errors überprüft (alle Pflichtfelder gefüllt...) und dann wird die ID und die FormDaten über onSave an die handleSaveFromCard über onSave Prop übergeben
         // Check if any previous cards are still in editing mode
-        const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
+        /*const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
         if (unsavedCards.length > 0) {
           setValidationError("Bitte speichern Sie zuerst alle vorherigen Karten."); // Set error message
           setSaveState("error");
           return; // Prevent saving
-        }
+        } */
         // Clear validation error if all previous cards are saved
         setValidationError("");
 
