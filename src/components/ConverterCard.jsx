@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, {useState, useEffect, useRef, useCallback} from "react";
 import { motion, AnimatePresence } from "framer-motion"; 
 import TableFromJSON from "./../TableFromJSON";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
@@ -6,7 +6,7 @@ import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onDelete, description}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onDelete, description}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
@@ -36,6 +36,29 @@ export default function ConverterCard({id, label, parameters, converterType, for
         }, 100); 
     };
 
+    const handleSave = useCallback(async () => {
+  // validierung + onSave logic
+  let newErrors = {};
+  parameters.forEach(param => {
+    const value = formData[param.apiName];
+    if (param.required && (!value || value.toString().trim() === '')) {
+      newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
+    }
+  });
+
+  setErrors(newErrors);
+
+  if (Object.keys(newErrors).length === 0) {
+    await onSave?.(id, formData);
+    setSaveState("saved");
+    return true;
+  } else {
+    setSaveState("error");
+    return false;
+  }
+}, [formData, parameters, id, onSave]);
+
+
     // formData updaten, wenn initialFormData sich ändert
     useEffect(() => {
       setFormData(initialFormData || {});
@@ -46,6 +69,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
         onRegisterFormDataGetter(id, () => formData);
         }
     }, [formData, id]);
+
+    useEffect(() => {
+  if (onRegisterSaveFn) {
+    onRegisterSaveFn(id, handleSave); // Registrierung
+  }
+}, [handleSave]);
 
 
 
@@ -74,55 +103,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
         setSaveState("unsaved");
     };
     
-    const handleSave = () => { //hier wird nur auf Errors überprüft (alle Pflichtfelder gefüllt...) und dann wird die ID und die FormDaten über onSave an die handleSaveFromCard über onSave Prop übergeben
-        // Check if any previous cards are still in editing mode
-        /*const unsavedCards = cards.filter((card) => card.id < id && card.id !== 0 && card.isEditing);
-        if (unsavedCards.length > 0) {
-          setValidationError("Bitte speichern Sie zuerst alle vorherigen Karten."); // Set error message
-          setSaveState("error");
-          return; // Prevent saving
-        } */
-        // Clear validation error if all previous cards are saved
-        setValidationError("");
 
-        let newErrors = {};
 
-        parameters.forEach(param => {
-            const value = formData[param.apiName];
 
-            /*  
-            if(param.type == "string" && param.required &&  (!value || value.toString().trim() === '') ){
-                formData[param.apiName] = "";
-                return;
-            }
-           */
-            if(converterType == "REPLACE_ENTRIES" && param.apiName == "search" && (!value || value.toString().trim() === '')) {
-                formData[param.apiName] = "";
-                return;
-            } 
-
-            if (param.required && (!value || value.toString().trim() === '')) {
-            newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
-            setSaveState("error");
-            }
-        });
-
-        setErrors(newErrors);
-        //console.log("Errors:", Object.keys(newErrors).length);
-        
-        if (Object.keys(newErrors).length === 0) {
-            //console.log("Gespeicherte Daten:", JSON.stringify(formData, null, 2));
-        
-            //call function in edit.jsx
-            if (onSave) {
-              onSave(id, formData); // Pass the card ID and form data to the parent function
-              setSaveState("saved");
-            }
-            setSaveState("saved");
-        }else{
-            setSaveState("error");
-        }
-    }
+useEffect(() => {
+  onRegisterSaveFn?.(id, handleSave);
+}, [handleSave]);
 
     const handleExpandButton = () => {
         setExpanded(!expanded); //Toggle den expanded State

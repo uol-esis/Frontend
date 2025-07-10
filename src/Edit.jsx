@@ -290,17 +290,16 @@ export default function Edit() {
   };
 
    const handleSaveAllCards = async () => {
-    const sortedCards = [...cards.filter((c) => c.id !== 0)].sort((a, b) => a.id - b.id);
+  const sortedCards = [...cards.filter((c) => c.id !== 0)].sort((a, b) => a.id - b.id);
 
-    for (const card of sortedCards) {
-      const getFormData = formDataRefs.current[card.id];
-      if (!getFormData) continue;
+  for (const card of sortedCards) {
+    const saveFn = saveCardRefs.current[card.id];
+    if (!saveFn) continue;
 
-      const formData = getFormData();
-      await handleSaveFromCard(card.id, formData); // speichert nacheinander
-    }
-  };
-
+    const success = await saveFn(); // wichtig: async/await damit Reihenfolge bleibt
+    if (!success) break; // abbrechen bei Fehler
+  }
+};
 
   const handleEditToggle = (cardId, isEditing) => {
     setCards((prevCards) =>
@@ -545,6 +544,7 @@ export default function Edit() {
               onDelete={handleDeleteCard}
               description={card.description}
               onRegisterFormDataGetter={registerFormDataGetter}
+              onRegisterSaveFn={registerSaveFn}
 
               
             />
