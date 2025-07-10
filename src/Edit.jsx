@@ -529,15 +529,20 @@ const handleSaveUpToCard = async (upToCardId) => {
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
         </div>
-        <button
-        className="mt-4 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded px-6 py-2"
-        onClick={handleSaveAllCards}
-      >
-        Alles speichern
-      </button>
+        
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20 relative">
+        
+          <div className="flex justify-end">
+              <button
+                className="mt-4 text-sm bg-gray-600 hover:bg-indigo-500 text-white rounded px-6 py-2"
+                onClick={handleSaveAllCards}
+              >
+                Alles speichern
+              </button>
+            </div>
+
           {cards.map((card) => (
             console.log("Card:", card),
             <ConverterCard
