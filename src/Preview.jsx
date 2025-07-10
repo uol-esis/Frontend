@@ -3,6 +3,8 @@ import TableFromJSON from "./TableFromJSON";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
+
 import Alert from "./Alert";
 import Popup from "./Popup";
 import HelpDialog from "./Popups/HelpDialog";
@@ -453,10 +455,10 @@ export default function Preview() {
         <div className="flex justify-start w-[35vw]">
           <button
             type="button"
-            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="absolute top-3 left-3 z-10 pb-2"
             onClick={() => navigate("/upload")}
           >
-            Zurück
+            <ArrowLeftCircleIcon className="h-7 w-7 text-gray-600  hover:text-indigo-500" />
           </button>
 
           <button
