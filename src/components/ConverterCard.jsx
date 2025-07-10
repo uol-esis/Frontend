@@ -6,7 +6,7 @@ import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onDelete, description}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
@@ -234,7 +234,7 @@ useEffect(() => {
                             {isEditing ? (
                                 <button
                                     className="text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
-                                    onClick={handleSave}
+                                    onClick={() => onSaveCascade?.(id)}
                                 >
                                     Speichern
                                 </button>

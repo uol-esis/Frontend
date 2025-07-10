@@ -301,6 +301,17 @@ export default function Edit() {
   }
 };
 
+const handleSaveUpToCard = async (upToCardId) => {
+    const sortedCards = [...cards.filter((c) => c.id !== 0 && c.id <= upToCardId)].sort((a, b) => a.id - b.id);
+    for (const card of sortedCards) {
+      const saveFn = saveCardRefs.current[card.id];
+      if (!saveFn) continue;
+
+      const success = await saveFn();
+      if(!success) break;
+    }
+  };
+
   const handleEditToggle = (cardId, isEditing) => {
     setCards((prevCards) =>
       prevCards.map((card) =>
@@ -545,7 +556,7 @@ export default function Edit() {
               description={card.description}
               onRegisterFormDataGetter={registerFormDataGetter}
               onRegisterSaveFn={registerSaveFn}
-
+              onSaveCascade={handleSaveUpToCard}
               
             />
           ))}
