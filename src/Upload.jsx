@@ -204,10 +204,13 @@ function Upload() {
     confirmNameToEditRef.current?.showModal();
   };
 
-  //TODO name is not set
-  const handleConfirmNewSchema = () => {
+  const handleConfirmNewSchema = (newName) => {
+    const schema = {
+      name: newName
+    };
     navigate("/edit", {
       state: {
+        schemaToEdit: schema,
         selectedFile: selectedFile,
       },
     });
@@ -221,7 +224,7 @@ function Upload() {
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
       <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={() => handleConfirmNewSchema()} />
+      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={handleConfirmNewSchema} />
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
