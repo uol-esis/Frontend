@@ -219,35 +219,52 @@ export default function Edit() {
     }
   }
 
+  const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
+  const saveCardRefs = useRef({});
+
+  const registerFormDataGetter = (cardId, getterFn) => {
+    formDataRefs.current[cardId] = getterFn;
+  };
+
+  const registerSaveFn = (cardId, saveFn) => {
+  saveCardRefs.current[cardId] = saveFn;
+};
+
   const handleSaveFromCard = async (cardId, formData) => {
     console.log(`Data saved from card ${cardId}:`, formData);
 
     // Update the cards state with the formData for the saved card
     setCards((prevCards) => {
-      const updatedCards = prevCards.map((card) => {
+      const updatedCards = prevCards.map((card) => { // hier wird dafür gesorft dass ich die Karte und Formdata bekomme und sie nicht mehr im Bearbeitungszustand ist
         if (card.id === cardId) {
+          console.log("Was ist das denn?", card, "Und die FormData?", formData)
+
           return { ...card, formData, isEditing: false };
-        } else if (card.id > cardId) {
+        } else if (card.id > cardId) { //hier wird dafür gesorgt dass die Karten NACH der gespeicherten zurückgesetzt werden
           return { ...card, isEditing: true, preview: null };
         }
         return card;
       });
 
       // Generate the JSON for the saved card and its predecessors
-      const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse();
+      const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse(); //nur aus der aktuellen und denen davor ohne 0 die json bauen!
+      console.log("Die gefilterten Karten: ", filteredCards);
 
       const structures = filteredCards.map((card) => {
-        const inputs = card.parameters.reduce((acc, param) => {
+        const inputs = card.parameters.reduce((acc, param) => { //reduce macht daraus ein Objekt mit allen Parametern
           const apiName = param.apiName;
-          acc[apiName] = getValueFromFormData(param, card.formData);
-          return acc;
+          acc[apiName] = getValueFromFormData(param, card.formData); //getValueFromFormData: aus der formData die Werte extrahieren
+         
+          return acc; //für jede Karte wird ein Objekt mit allen Infos erstellt
         }, {});
+         
 
         return {
           converterType: card.converterType,
           ...inputs,
         };
       });
+      console.log("Die Strukturen sind: ", structures); //
 
       const jsonData = {
         name: "Example Name",
@@ -265,13 +282,36 @@ export default function Edit() {
 
           setCards((latestCards) =>
             latestCards.map((card) =>
-              card.id === cardId ? { ...card, preview: previewData } : card
+              card.id === cardId ? { ...card, preview: previewData } : card //die Preview wird nur bei der aktuellen Karte aktualisiert
             )
           );
         }
       });
       return updatedCards;
     });
+  };
+
+   const handleSaveAllCards = async () => {
+  const sortedCards = [...cards.filter((c) => c.id !== 0)].sort((a, b) => a.id - b.id);
+
+  for (const card of sortedCards) {
+    const saveFn = saveCardRefs.current[card.id];
+    if (!saveFn) continue;
+
+    const success = await saveFn(); // wichtig: async/await damit Reihenfolge bleibt
+    if (!success) break; // abbrechen bei Fehler
+  }
+};
+
+const handleSaveUpToCard = async (upToCardId) => {
+    const sortedCards = [...cards.filter((c) => c.id !== 0 && c.id <= upToCardId)].sort((a, b) => a.id - b.id);
+    for (const card of sortedCards) {
+      const saveFn = saveCardRefs.current[card.id];
+      if (!saveFn) continue;
+
+      const success = await saveFn();
+      if(!success) break;
+    }
   };
 
   const handleEditToggle = (cardId, isEditing) => {
@@ -488,9 +528,20 @@ export default function Edit() {
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
         </div>
+        
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20 relative">
+        
+          <div className="flex justify-end">
+              <button
+                className="mt-4 text-sm bg-gray-600 hover:bg-indigo-500 text-white rounded px-6 py-2"
+                onClick={handleSaveAllCards}
+              >
+                Alles speichern
+              </button>
+            </div>
+
           {cards.map((card) => (
             console.log("Card:", card),
             <ConverterCard
@@ -507,6 +558,10 @@ export default function Edit() {
               cards={cards}
               onDelete={handleDeleteCard}
               description={card.description}
+              onRegisterFormDataGetter={registerFormDataGetter}
+              onRegisterSaveFn={registerSaveFn}
+              onSaveCascade={handleSaveUpToCard}
+              
             />
           ))}
 
