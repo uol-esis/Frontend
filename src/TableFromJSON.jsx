@@ -26,7 +26,8 @@ export default function Table(props) {
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {/* Header row */}
-                  <tr className="bg-gray-100"> {/* Highlight the header row */}
+                  {/* Highlight the header row */}
+                  <tr className="bg-gray-100">
                     <td className="whitespace-nowrap px-3 py-1.5 text-sm bg-white text-gray-500">0</td>
                     {headers.map((header, index) => (
                       <td key={index} className={`whitespace-nowrap py-1.5 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6 ${
