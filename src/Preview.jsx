@@ -87,13 +87,17 @@ export default function Preview() {
 
   const readReports = async () => {
     if(!reports){
-      setExistReports(false);
+      console.log("no reports");
       return;
     }
 
     const array = [];
     await parseReports(reports, array);
-    setExistReports(true);
+
+    if(array.length == 0){
+      setExistReports(false);
+    }else setExistReports(true);
+    
     setReportContent(array);
     
   }

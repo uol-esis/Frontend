@@ -189,16 +189,6 @@ function Upload() {
     navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } }) // or data // Pass data to preview page
   };
 
-  {/* helper functions */ }
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  }
-
-  const handleFileInputClick = () => {
-    fileInputRef.current.click();
-  };
-
-
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
     confirmNameToEditRef.current?.showModal();
@@ -254,7 +244,7 @@ function Upload() {
         </div>
 
         {/* Schemalist and Generate */}
-        <div className={`flex flex-col space-y-6 w-full h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
+        <div className={`flex flex-col space-y-6 w-full h-full `}>
 
           {/* Schemalist*/}
           <div className="relative h-full min-h-0">

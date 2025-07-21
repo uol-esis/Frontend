@@ -7,7 +7,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 export function StackedListDropDown({title , headerTextArray, isImportant}){
 
     const [showAll, setShowAll] = useState(false);
-
+    
     return(
           <div>
             {/* header */}
