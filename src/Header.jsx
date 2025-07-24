@@ -56,10 +56,13 @@ export default function Header() {
     <header className="bg-gray-100 h-[10vh] sticky top-0 z-50">
       <nav aria-label="Global" className="flex w-full h-full items-center justify-between px-4">
         <div className="flex items-center gap-x-12">
-          
+
           <button
               onClick={() => {
                 sessionStorage.removeItem("edit-cards");
+                sessionStorage.removeItem("schemaToEdit");
+                sessionStorage.removeItem("selectedFile");
+
                 window.location.href = "/";
               }}
               className="-m-1.5 p-1.5"
@@ -79,6 +82,9 @@ export default function Header() {
                 onClick={() => {
                   if (item.name !== "Wiki") {
                     sessionStorage.removeItem("edit-cards");
+                    sessionStorage.removeItem("schemaToEdit");
+                    sessionStorage.removeItem("selectedFile");
+
                   }
                  }}
               >
@@ -113,6 +119,9 @@ export default function Header() {
                     onClick={() => {
                   if (item.name !== "Wiki") {
                     sessionStorage.removeItem("edit-cards");
+                    sessionStorage.removeItem("schemaToEdit");
+                    sessionStorage.removeItem("selectedFile");
+
                   }
                  }}
                   />

@@ -17,6 +17,16 @@ export default function Edit() {
   const location = useLocation();
   const { selectedFile, schemaToEdit } = location.state || {}; // Daten von der vorherigen Seite (Upload)
 
+    //damit die Session auch beim Reload die Datei selbst nicht vergisst
+  useEffect(() => {
+    if (selectedFile && schemaToEdit) {
+      sessionStorage.setItem("selectedFile", JSON.stringify(selectedFile));
+      sessionStorage.setItem("schemaToEdit", schemaToEdit);
+    } else {
+      console.warn("selectedFile oder schemaToEdit fehlen");
+    }
+  }, [selectedFile, schemaToEdit]);
+
   //KArten mir Session austatten
     const sessionCards = sessionStorage.getItem("edit-cards");
     const [cards, setCards] = useState(() => {
@@ -385,6 +395,8 @@ export default function Edit() {
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
 
     sessionStorage.removeItem("edit-cards"); //State wieder löschen wenn wir Anwenden
+    sessionStorage.removeItem("schemaToEdit");
+    sessionStorage.removeItem("selectedFile");
 
 
 
