@@ -56,14 +56,18 @@ export default function Header() {
     <header className="bg-gray-100 h-[10vh] sticky top-0 z-50">
       <nav aria-label="Global" className="flex w-full h-full items-center justify-between px-4">
         <div className="flex items-center gap-x-12">
-          <a href="/" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
-            <img
-              alt="Logo"
-              src="logo.png"
-              className="h-8 w-auto"
-            />
-          </a>
+          
+          <button
+              onClick={() => {
+                sessionStorage.removeItem("edit-cards");
+                window.location.href = "/";
+              }}
+              className="-m-1.5 p-1.5"
+            >
+              <span className="sr-only">TH1NK</span>
+              <img alt="Logo" src="logo.png" className="h-8 w-auto" />
+            </button>
+
           <div className="flex gap-x-12">
             {leftNavigation.map((item) => (
               <a
@@ -72,6 +76,11 @@ export default function Header() {
                 target={item.name === 'Metabase' ? '_blank' : '_self'}
                 rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
                 className="text-sm/6 font-semibold text-gray-900 flex items-center hover:scale-105 transition-transform"
+                onClick={() => {
+                  if (item.name !== "Wiki") {
+                    sessionStorage.removeItem("edit-cards");
+                  }
+                 }}
               >
                 {item.name}
                 {item.name === 'Metabase' && (
@@ -101,6 +110,11 @@ export default function Header() {
                     src="einstellungen.svg"
                     alt="Einstellungen"
                     className="inline-block"
+                    onClick={() => {
+                  if (item.name !== "Wiki") {
+                    sessionStorage.removeItem("edit-cards");
+                  }
+                 }}
                   />
                 ) : (
                   item.name

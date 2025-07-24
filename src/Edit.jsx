@@ -31,7 +31,19 @@ export default function Edit() {
     });  
     useAutoSessionSync("edit-cards", cards); //Session speichern --> immer wenn sich Cards ändert
 
-  const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
+      const [cardIdCounter, setCardIdCounter] = useState(() => { //ID an die Session anpassen
+      if (sessionCards) {
+        try {
+          const parsedCards = JSON.parse(sessionCards);
+          const maxId = Math.max(...parsedCards.map(card => card.id), 0);
+          return maxId + 1;
+        } catch (err) {
+          console.warn("Couldn't parse session cards for ID counter:", err);
+        }
+      }
+      return 1;
+    });
+
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
