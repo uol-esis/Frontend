@@ -6,7 +6,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "./ToolTip";
 import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
-
+import { useAutoSessionSync } from "./hooks/editsession";
 
 export default function Edit() {
   
@@ -16,7 +16,21 @@ export default function Edit() {
   const navigate = useNavigate();
   const location = useLocation();
   const { selectedFile, schemaToEdit } = location.state || {}; // Daten von der vorherigen Seite (Upload)
-  const [cards, setCards] = useState([{ id: 0, label: "Start", parameters: [{ name: 'Start' }], isEditing: false }]); //Wir beginnen immer mit der Startcard
+
+  //KArten mir Session austatten
+    const sessionCards = sessionStorage.getItem("edit-cards");
+    const [cards, setCards] = useState(() => {
+      if (sessionCards) {
+        try {
+          return JSON.parse(sessionCards);
+        } catch (err) {
+          console.warn("Session cards could not be parsed:", err);
+        }
+      }
+      return [{ id: 0, label: "Start", parameters: [{ name: "Start" }], isEditing: false }];
+    });  
+    useAutoSessionSync("edit-cards", cards); //Session speichern --> immer wenn sich Cards ändert
+
   const [cardIdCounter, setCardIdCounter] = useState(1); //gewünschter ID State
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
@@ -111,7 +125,7 @@ export default function Edit() {
 
 
   useEffect(() => {
-    if (schemaToEdit) {
+    if (!sessionCards && schemaToEdit) {
       console.log("selectedfile:", selectedFile);
       console.log("Schema to edit:", schemaToEdit);
       initializeCardsFromSchema(schemaToEdit);
@@ -358,6 +372,7 @@ export default function Edit() {
 
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
 
+    sessionStorage.removeItem("edit-cards"); //State wieder löschen wenn wir Anwenden
 
 
 
