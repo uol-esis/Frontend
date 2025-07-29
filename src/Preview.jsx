@@ -121,7 +121,7 @@ export default function Preview() {
   const createDataObject = () => {
     if (!selectedFile) {
       console.error("No file selected");
-      setErrorId(103)
+      setErrorId("103");
       return;
     }
     const formData = new FormData();
@@ -243,7 +243,7 @@ export default function Preview() {
           }
         }catch(error){
           console.error(error);
-          setErrorId("0");
+          parseError(error);
         }
        
       });
@@ -303,6 +303,7 @@ export default function Preview() {
           }
         }catch(error){
           console.error(error);
+          parseError(error);
         }
         
       });
@@ -430,7 +431,7 @@ export default function Preview() {
               
             } catch (error) {
               console.error(error);
-              setErrorId("")
+              parseError(error);
               errorDialogRef.current?.showModal();
               }
           }}

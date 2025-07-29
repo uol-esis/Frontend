@@ -374,7 +374,7 @@ const handleSaveUpToCard = async (upToCardId) => {
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
             console.error(error);
-            parseError(error.message);
+            parseError(error);
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
