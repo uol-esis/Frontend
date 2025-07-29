@@ -393,7 +393,7 @@ export default function Preview() {
         <UploadFinishedPopup dialogRef={uploadFinishedDialogRef} />
 
         <ErrorDialog
-          text={"Upload fehlgeschlagen "}
+          text={"Fehler!"}
           errorId={errorId}
           onConfirm={() => { errorDialogRef.current?.close(); navigate("/"); }}
           dialogRef={errorDialogRef}

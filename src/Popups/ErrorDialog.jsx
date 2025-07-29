@@ -20,6 +20,7 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
             .catch(error => {
                 console.error('Fehler beim Laden oder Verarbeiten:', error);
             });
+        dialogRef.current?.showModal();
     }, [errorId])
 
     return(

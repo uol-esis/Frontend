@@ -1,4 +1,5 @@
 {
+    "100": "TH1 Modul konnte nicht geladen werden",
     "200": "Die Anfrage war erfolgreich.",
     "400": "Es wurde eine fehlerhafte Anfrage an den Server gestellt.",
     "401": "Der Zugriff ist nicht autorisiert.",
