@@ -31,7 +31,7 @@ function Upload() {
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const [confirmNameError, setConfirmNameError] = useState();
-  const [errorId, setErrorId] = useState();
+  const [errorId, setErrorId] = useState("none");
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -106,18 +106,37 @@ function Upload() {
     }
   }, [selectedFile]);
 
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
+
   const getSchemaList = async function () {
     const {api} = await getApiInstance();
     api.getTableStructures((error, response) => {
       if (error) {
         console.error(error);
-        const errorObj = JSON.parse(error.message);
-        setErrorId(errorObj.status);
+        parseError(error);
       } else {
         console.log("Response:", response);
         setSchemaList(response);
       }
     });
+  }
+
+  const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      setErrorId(errorObj.status);
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
   }
 
   {/* Generate a new Schema for the selected File */ }
@@ -129,14 +148,12 @@ function Upload() {
       return;
     }
   
-    const settings = new Th1.TableStructureGenerationSettings();
-    // 
+    const settings = new Th1.TableStructureGenerationSettings(); 
     const callback = function (error, data, response) {
       if (error) {
-        const errorObj = JSON.parse(error.message);
-        setErrorId(errorObj.status);
+        parseError(error);
         console.error(error);
-        //errorDialogRef.current?.showModal();
+        
       } else {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);

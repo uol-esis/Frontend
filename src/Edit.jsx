@@ -7,6 +7,7 @@ import Tooltip from "./ToolTip";
 import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
 import { getApiInstance } from "./hooks/ApiInstance";
+import ErrorDialog from "./Popups/ErrorDialog";
 
 
 export default function Edit() {
@@ -23,12 +24,12 @@ export default function Edit() {
     width: window.innerWidth,
     height: window.innerHeight
   });
+  const [errorId, setErrorId] = useState("none");
 
   const [showConverterListTip, setShowConverterListTip] = useState(false);
   const [showCardListTip, setShowCardListTip] = useState(false);
   const tutorialRef = useRef();
-
-  
+  const errorDialogRef = useRef();
 
   const ExplainerConverterList = (
     <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
@@ -110,6 +111,13 @@ export default function Edit() {
     mdfy: converters.filter((c) => c.category === 'mdfy')
   };
 
+
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
 
   useEffect(() => {
     if (schemaToEdit) {
@@ -221,6 +229,19 @@ export default function Edit() {
 
   const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
   const saveCardRefs = useRef({});
+
+ const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      setErrorId(errorObj.status);
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+  }
 
   const registerFormDataGetter = (cardId, getterFn) => {
     formDataRefs.current[cardId] = getterFn;
@@ -336,6 +357,7 @@ const handleSaveUpToCard = async (upToCardId) => {
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
+      setErrorId("103");
       return;
     }
 
@@ -351,7 +373,8 @@ const handleSaveUpToCard = async (upToCardId) => {
         let opts = { "limit": limit };
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
-            console.error("error" + error)
+            console.error(error);
+            parseError(error.message);
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
@@ -363,6 +386,7 @@ const handleSaveUpToCard = async (upToCardId) => {
       return data;
     } catch (error) {
       console.error("Error during previewConvertTable:", error);
+      setErrorId("105");
       return null;
     }
   };
@@ -388,6 +412,12 @@ const handleSaveUpToCard = async (upToCardId) => {
       };
     });
 
+    if(!schemaToEdit){
+      console.error("schemaToEdit is null");
+      setErrorId("106");
+      return;
+    }
+
     const jsonData = {
       name: schemaToEdit.name,
       structures: structures,
@@ -396,9 +426,6 @@ const handleSaveUpToCard = async (upToCardId) => {
     };
 
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
-
-
-
 
     // Send the final JSON to the server or handle it as needed
     // For now, just navigate back to the home page
@@ -416,6 +443,13 @@ const handleSaveUpToCard = async (upToCardId) => {
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
+
+    <ErrorDialog
+      text={"Fehler!"}
+      errorId={errorId}
+      onConfirm={() => { errorDialogRef.current?.close();}}
+      dialogRef={errorDialogRef}
+    />
 
       {/* Tutorial */}
         <dialog ref={tutorialRef} className="place-self-center shadow-xl backdrop:bg-black/50 p-5">

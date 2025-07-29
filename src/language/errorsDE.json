@@ -1,9 +1,16 @@
 {
-    "100": "TH1 Modul konnte nicht geladen werden",
+    "0": "Es ist ein Fehler aufgetreten :(",
+    "100": "TH1 Modul konnte nicht geladen werden.",
+    "101": "Fehler im Zusammenhang mit der Tabellentransformation.",
+    "102": "Fehler während des Ladevorgangs der Vorschau.",
+    "103": "Keine Datei ausgewählt.",
+    "104": "Upload fehlgeschlagen.",
+    "105": "Fehler beim Laden der Vorschau. Häufige Ursache sind fehlerhafte Eingaben bei den Convertern.",
+    "106": "Keine Tabellentransformation vorhanden.",
     "200": "Die Anfrage war erfolgreich.",
     "400": "Es wurde eine fehlerhafte Anfrage an den Server gestellt.",
     "401": "Der Zugriff ist nicht autorisiert.",
-    "404": "Die angefragten Informationen konnten nicht gefunden werden.",
+    "404": "Die angefragten Informationen konnten nicht geladen werden.",
     "409ConvertTable": "Die Datei existiert bereits in der Datenbank.",
     "409CreateTableStructure": "Der Tabellentransformationsname wird bereits verwendet.",
     "500": "Interner Server Error."
