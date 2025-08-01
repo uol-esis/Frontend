@@ -8,7 +8,7 @@ const keycloak = new Keycloak({
 
 // Configure token expiration handler
 keycloak.onTokenExpired = () => {
-    keycloak.updateToken(30).then((refreshed) => {
+    keycloak.updateToken().then((refreshed) => {
         if (!refreshed) {
             keycloak.login();
         }
