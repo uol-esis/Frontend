@@ -6,4 +6,15 @@ const keycloak = new Keycloak({
     clientId: import.meta.env.VITE_OAUTH_CLIENT_ID,
 });
 
+// Configure token expiration handler
+keycloak.onTokenExpired = () => {
+    keycloak.updateToken().then((refreshed) => {
+        if (!refreshed) {
+            keycloak.login();
+        }
+    }).catch(() => {
+        keycloak.login();
+    });
+};
+
 export default keycloak;
