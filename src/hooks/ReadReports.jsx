@@ -6,10 +6,12 @@ const loadTranslation = async (key, dataName) => {
       throw new Error(response.status);
     }
     const data = await response.json();
+    if(data[key] == null){
+      return key;
+    }
     return data[key];
   } catch (error) {
     console.error(error);
-    return key;
   }
 };
 
@@ -32,7 +34,7 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
       } else {
         //if array contains values
         const translatedKey = await loadTranslation(key, "reportTypeDE");
-        texts = `${translatedKey}: ${value}`;
+        texts += `${translatedKey}: ${value}`;
         array.push({ header: "", text: texts });
       }
 
@@ -54,6 +56,7 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
         } else {
           texts = ` ${translatedKey}: ${value}`;
           array.push({ header: "", text: texts });
+          texts = "";
         }
       }
     }

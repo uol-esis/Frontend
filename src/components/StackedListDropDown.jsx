@@ -1,17 +1,16 @@
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { p } from "framer-motion/client";
 import { useState, useEffect } from "react";
+import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 
 
-export function StackedListDropDown({title , headerTextArray}){
+export function StackedListDropDown({title , headerTextArray, isImportant}){
 
     const [showAll, setShowAll] = useState(false);
-
+    
     return(
-
           <div>
-            
+            {/* header */}
             <div className={`flex justify-between p-1 w-[15vw] text-md/6 font-semibold bg-white text-gray-900 ${showAll ? "" : "border-b-2" } border-t-2 border-l-2 border-r-2 border-solid border-gray-200 rounded-t-md`}>
                 <p className="">
                     {title}
@@ -19,14 +18,20 @@ export function StackedListDropDown({title , headerTextArray}){
                 <button
                     onClick={() => {setShowAll(!showAll)}}
                 >
-                    {showAll ?  
-                        <ChevronUpIcon className="size-5 mt-1 text-gray-600 hover:text-indigo-500"/>  
-                        : <ChevronDownIcon className="size-5 mt-1 text-gray-600 hover:text-indigo-500"/> 
-                    }
-                   
+                    <div className="flex">
+                        
+                        {isImportant ?
+                            <ExclamationTriangleIcon aria-hidden="true" className="size-7 text-yellow-400" />
+                            : null
+                        }
+                        {showAll ?  
+                            <ChevronUpIcon className="size-5 mt-1 text-gray-600 hover:text-indigo-500"/>  
+                            : <ChevronDownIcon className="size-5 mt-1 text-gray-600 hover:text-indigo-500"/> 
+                        }
+                    </div>
                 </button>
-                
             </div>
+            {/* content */}
             {showAll ? 
                 <ul role="list" className="bg-white w-[25vw]  border-2 border-solid border-gray-200 rounded-r-md ">
                     {headerTextArray.length == 0 ? <li>Keine Einträge vorhanden</li> : null}
@@ -42,8 +47,6 @@ export function StackedListDropDown({title , headerTextArray}){
                     ))}
                 </ul> : null
             }
-            
           </div>
-
     );
 }
