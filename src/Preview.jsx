@@ -19,6 +19,7 @@ import { getApiInstance } from "./hooks/ApiInstance";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";
+import Spinner from "./components/Spinner";
 
 export default function Preview() {
 
@@ -116,6 +117,7 @@ export default function Preview() {
     if(currentErrorId == errorId){
       errorDialogRef.current?.showModal();
     }
+    setShowError(true);
   }
 
   const createDataObject = () => {
@@ -188,8 +190,6 @@ export default function Preview() {
     }
 
     const {api} = await getApiInstance();
-
-    try {
       await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
         console.log("selectedFileType: ", selectedFile.type);
@@ -210,10 +210,6 @@ export default function Preview() {
           }
         });
       });
-    } catch (error) {
-      setErrorId("102");
-      console.error("Error during previewConvertTable:", error);
-    }
   };
 
 
@@ -369,15 +365,6 @@ export default function Preview() {
     });
   }
 
-  {/* Show error message after a short timeout */ }
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowError(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div>
@@ -450,10 +437,8 @@ export default function Preview() {
         <div className="flex justify-self-center h-[70vh] ">
 
           <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
-            
             <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
             <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} /> 
-
           </div>
           {/* Table with preview or error message */}
           <div className="flex-1 overflow-auto">
@@ -474,7 +459,12 @@ export default function Preview() {
                   </div>
                   {/*<p className="text-sm">{errorText}</p>*/}
                 </div>
-              ) : null
+              ) : 
+            
+              <div className="flex justify-center mt-[20vh]">
+                <Spinner size={16}/>
+              </div>
+            
             }
           </div>
         </div>

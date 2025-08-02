@@ -12,7 +12,6 @@ import { useAuthGuard } from "./hooks/AuthGuard";
 import { div } from "framer-motion/client";
 import ErrorDialog from "./Popups/ErrorDialog";
 
-
 function Upload() {
 
   const isLoggedIn = useAuthGuard();
@@ -30,8 +29,9 @@ function Upload() {
   const [reports, setReports] = useState(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
-  const [confirmNameError, setConfirmNameError] = useState();
+  const [confirmNameError, setConfirmNameError] = useState("");
   const [errorId, setErrorId] = useState("none");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -40,6 +40,7 @@ function Upload() {
   const confirmNameToPreviewRef = useRef();
   const confirmNameToEditRef = useRef();
   const errorDialogRef = useRef();
+
   const navigate = useNavigate();
 
 
@@ -141,6 +142,7 @@ function Upload() {
 
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
+    setIsLoading(true);
     const {api, Th1} = await getApiInstance();
     if (!api ) {
       console.error("api is not loaded yet.");
@@ -165,9 +167,12 @@ function Upload() {
         setSchemaName(selectedFile.name);
         confirmNameToPreviewRef.current?.showModal();
       }
+      setIsLoading(false);
       console.log(response);
     };
+
     api.generateTableStructure(selectedFile, settings, callback);
+    
   }
 
   const isNameTaken = function (newName) {
@@ -281,7 +286,7 @@ function Upload() {
           {/* Generate */}
           <div className="relative">
             <div className={`${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema} />
+              <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema} isLoading={isLoading} />
             </div>
             <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2 pointer-events-auto"
               style={{ opacity: 1 }}
