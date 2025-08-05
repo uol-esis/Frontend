@@ -7,11 +7,14 @@ import Tooltip from "./ToolTip";
 import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
 import { getApiInstance } from "./hooks/ApiInstance";
+import { useKeycloak } from "@react-keycloak/web";
 
 
 export default function Edit() {
   
   const isLoggedIn = useAuthGuard();
+  const { keycloak, initialized } = useKeycloak();
+
   
   // Liste aller Cards (mit initialer Start-Card)
   const navigate = useNavigate();
@@ -340,7 +343,7 @@ const handleSaveUpToCard = async (upToCardId) => {
       return;
     }
 
-    const {api} = await getApiInstance();
+    const {api} = await getApiInstance(keycloak);
 
     try {
       const data = await new Promise((resolve, reject) => {

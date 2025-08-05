@@ -9,12 +9,12 @@ import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
 import { getApiInstance } from "./hooks/ApiInstance";
 import { useAuthGuard } from "./hooks/AuthGuard";
-import { div } from "framer-motion/client";
-
+import { useKeycloak } from "@react-keycloak/web";
 
 function Upload() {
 
   const isLoggedIn = useAuthGuard();
+  const { keycloak, initialized } = useKeycloak();
   
   const [schemaList, setSchemaList] = useState([
     { name: "Schema 1", description: "Description for Schema 1" },
@@ -104,7 +104,7 @@ function Upload() {
   }, [selectedFile]);
 
   const getSchemaList = async function () {
-    const {api} = await getApiInstance();
+    const {api} = await getApiInstance(keycloak);
     api.getTableStructures((error, response) => {
       if (error) {
         console.error(error);
@@ -117,7 +117,7 @@ function Upload() {
 
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
-    const {api, Th1} = await getApiInstance();
+    const {api, Th1} = await getApiInstance(keycloak);
     if (!api ) {
       console.error("api is not loaded yet.");
       return;

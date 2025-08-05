@@ -19,9 +19,11 @@ import { getApiInstance } from "./hooks/ApiInstance";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";
+import { useKeycloak } from "@react-keycloak/web";
 
 export default function Preview() {
 
+  const { keycloak, initialized } = useKeycloak();
   const isLoggedIn = useAuthGuard();
   const navigate = useNavigate();
   const location = useLocation();
@@ -111,7 +113,7 @@ export default function Preview() {
   {/* Function to set the actual schema */ }
   const setActualSchema = async () => {
     console.log("Setting actual schema...");
-    const {api} = await getApiInstance();
+    const {api} = await getApiInstance(keycloak);
 
     try {
       if (generatedSchema) {
@@ -160,7 +162,7 @@ export default function Preview() {
       return;
     }
 
-    const {api} = await getApiInstance();
+    const {api} = await getApiInstance(keycloak);
 
     try {
       await new Promise((resolve, reject) => {
@@ -190,7 +192,7 @@ export default function Preview() {
 
   {/* Send the converted table to the server, when the preview is good */ }
   const sendTableToServer = async (schemaId) => {
-    const {api} = await getApiInstance();
+    const {api} = await getApiInstance(keycloak);
     return new Promise((resolve, reject) => {
 
       if (schemaId === null) {
@@ -251,7 +253,10 @@ export default function Preview() {
       return null;
     }
     
-    const {api, Th1} = await getApiInstance();
+    const {api, Th1} = await getApiInstance(keycloak);
+    console.log(Object.keys(Th1)); // Was wird hier alles exportiert?
+    console.log(Object.getPrototypeOf(api));
+
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
         if (error) {
@@ -276,7 +281,7 @@ export default function Preview() {
       return null;
     }
     
-    const api = await getApiInstance();
+    const api = await getApiInstance(keycloak);
     return new Promise((resolve, reject) => {
       api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {
@@ -304,7 +309,10 @@ export default function Preview() {
       }
     };
 
-    initialize();
+    if(initialized){
+      initialize();
+    }
+    
 
     const hidePopup = localStorage.getItem("hidePopup");
     if (hidePopup) {
