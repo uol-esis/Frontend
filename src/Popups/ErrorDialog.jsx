@@ -25,7 +25,7 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
     return(
         <dialog  className=" justify-self-center p-5 mt-[20vh] w-[30vw] shadow-md bg-white " ref={dialogRef}>
             <div className="flex flex-col place-items-center p-5 gap-5 bg-white">
-                <img className="h-[15vh] w-[15vw] object-contain" src="public\error.jpg" alt="Upload fehlgeschlagen" />
+                <img className="h-[15vh] w-[15vw] object-contain" src="error.jpg" alt="Upload fehlgeschlagen" />
                 <p className="text-base font-semibold">{text}</p>
                 <p>{errorMsg}</p>
             </div>
