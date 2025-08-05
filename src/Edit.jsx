@@ -189,9 +189,9 @@ export default function Edit() {
     const apiName = param.apiName;
     const field = formData?.[apiName];
     if (param.type === 'string') {
-      if (param.required && (!field || field.trim() === "")) {
+      if (param.required && (!field || field.toString().trim() === "")) {
         return "";
-      } else if (!param.required && (!field || field.trim() === "")) {
+      } else if (!param.required && (!field || field.toString().trim() === "")) {
         return undefined;
       }
       return field;
@@ -200,9 +200,9 @@ export default function Edit() {
       if (typeof field === 'number') {
         return field;
       }
-      if (param.required && (!field || field.trim() === "")) {
+      if (param.required && (!field || field.toString().trim() === "")) {
         return "invalid number";
-      } else if (!param.required && (!field || field.trim() === "")) {
+      } else if (!param.required && (!field || field.toString().trim() === "")) {
         return undefined;
       }
       return field;
@@ -211,12 +211,12 @@ export default function Edit() {
       if (Array.isArray(field)) {
         return field;
       }
-      if (param.required && (!field || field.trim() === "")) {
+      if (param.required && (!field || field.toString().trim() === "")) {
         return [];
-      } else if (!param.required && (!field || field.trim() === "")) {
+      } else if (!param.required && (!field || field.toString().trim() === "")) {
         return undefined;
       }
-      return field.split(',').map(item => item.trim());
+      return field.split(',').map(item => item.toString().trim());
     }
   }
 

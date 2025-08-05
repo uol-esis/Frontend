@@ -41,6 +41,11 @@ export default function ConverterCard({id, label, parameters, converterType, for
   let newErrors = {};
   parameters.forEach(param => {
     const value = formData[param.apiName];
+    //exception for replace entries converter to replace empty cells 
+    if((param.apiName === "search" || param.apiName === "replacement") && value.toString().trim() === ''){
+        return;
+    }
+
     if (param.required && (!value || value.toString().trim() === '')) {
       newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
     }
