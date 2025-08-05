@@ -55,11 +55,11 @@ export default function ConverterCard({id, label, parameters, converterType, for
     return true;
   } else {
     setSaveState("error");
-    setTimeout(() => {
+    setTimeout(() => { //für das Hochspringen zu Fehler
   if (cardRef.current) {
     const rect = cardRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const offset = 100; // in Pixel – z. B. 100px mehr Platz nach oben
+    const offset = 100; 
 
     window.scrollTo({
       top: rect.top + scrollTop - offset,
