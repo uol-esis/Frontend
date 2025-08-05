@@ -39,7 +39,6 @@ function Upload() {
   const confirmNameToEditRef = useRef();
   const navigate = useNavigate();
 
-
   const ExplainerUpload = (
     <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
   )

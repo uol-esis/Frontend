@@ -22,7 +22,7 @@ import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
-
+import Tooltip from "./ToolTip";
 
 export default function Preview() {
 
@@ -46,12 +46,44 @@ export default function Preview() {
     height: window.innerHeight
   });
 
+  const [tipInformation, setTipInformation] = useState(false);
+  const [tipTable, setTipTable] = useState(false);
+  const [tipButtons, setTipButtons] = useState(false);
+
   const helpDialogRef = useRef();
   const uploadDialogRef = useRef();
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
   const decisionDialogRef = useRef();
+
+  const ExplainerInformationText = (
+    <span> 
+      Hier wird die vorher ausgewählte Datei und Tabellentransformation angezeigt. 
+      Falls vorhanden werden außerdem Warnungen bzw. Fehler angezeigt die beim Generieren aufgetreten sind. 
+    </span>
+  )
+
+  const ExplainerTable = (
+    <span> 
+      In diesem Bereich wird die Tabelle nach Anwendung der Tabellentransformation angezeigt. 
+      Es soll überprüft werden, ob die Daten korrekt sind und ob die Tabelle datenbankkonform ist ( 
+      <span 
+        onClick={() => { window.open("/wiki?targetId=database", "_blank");}} 
+        style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
+      >
+        siehe Wiki
+      </span>).
+    </span>
+  )
+
+  const ExplainerButtons = (
+    <span> 
+      Hier kann die Tabellentransformation angepasst werden, dabei kann die Struktur als auch der Inhalt der Tabelle verändert werden. 
+      Außerdem kann die Tabelle hochgeladen werden, damit sie in Metabase zur Visualisierung verfügbar ist.
+    </span>
+  )
+
 
   useEffect(() => {
     if (showSuccessMessage) {
@@ -84,6 +116,16 @@ export default function Preview() {
     }
 
   }, [showSuccessMessage]);
+
+  const TipInformationToTable = function () {
+    setTipInformation(false);
+    setTipTable(true);
+  }
+
+  const TipTableToButtons = function () {
+    setTipTable(false);
+    setTipButtons(true);
+  }
 
   const readReports = async () => {
     if(!reports){
@@ -412,17 +454,23 @@ export default function Preview() {
           dialogRef={errorDialogRef}
         />
 
-        {/* Information text */}
+       
         <div className="flex justify-self-center h-[70vh] ">
-
-          <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
-            
-            <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
-            <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} isImportant={existReports} /> 
-
+        {/* Information text */}
+          <div className="relative">
+            <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
+              <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
+              <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} isImportant={existReports} />
+            </div>
+            <div className="absolute  -top-1/3 translate-y-full translate-x-full z-20">
+              <Tooltip tooltipContent={ExplainerInformationText} onClick={TipInformationToTable} direction={"left"} showTutorial={tipInformation} />
+            </div>
           </div>
           {/* Table with preview or error message */}
-          <div className="flex-1 overflow-auto mt-5">
+          <div className="flex-1 overflow-auto mt-5 relative">
+            <div className="absolute  -top-1/5 translate-y-full translate-x-1/2 z-20 w-150">
+              <Tooltip tooltipContent={ExplainerTable} onClick={TipTableToButtons} direction={"bottom"} showTutorial={tipTable} />
+            </div>
             {
               data.length ? (
                 <TableFromJSON
@@ -446,7 +494,11 @@ export default function Preview() {
         </div>
       </div>
       {/* Buttons */}
-      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
+      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0 ">
+          <div className="absolute w-150 translate-x-full bottom-1/6 z-20">
+              <Tooltip tooltipContent={ExplainerButtons} onClick={() => {setTipInformation(false); setTipTable(false); setTipButtons(false);}} direction={"bottom"} showTutorial={tipButtons} />
+            </div>
+
         <div className="flex justify-start w-[35vw]">
           <button
             type="button"
@@ -460,7 +512,7 @@ export default function Preview() {
             type="button"
             className="absolute top-3 right-3 z-10"
             onClick={() => {
-              helpDialogRef.current?.showModal();
+              setTipInformation(true); setTipTable(false); setTipButtons(false);
             }}
           >
             <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
@@ -473,7 +525,7 @@ export default function Preview() {
             className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
             onClick={handleEditSchema}
           >
-            Schema anpassen
+            Tabellentransformation anpassen
           </button>
           <button
             type="button"
