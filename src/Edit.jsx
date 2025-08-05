@@ -448,10 +448,10 @@ const handleSaveUpToCard = async (upToCardId) => {
       </div>
      
 
-      <div className="flex gap-8">
+      <div className="flex gap-8 px-4">
 
         {/* Linke Spalte: Converter-Buttons */}
-          <div className="flex-1 w-1/5 space-y-2 pl-4 relative">
+        <div className="w-1/5 space-y-2 pl-4 sticky top-30 self-start h-fit">
 
             {/* Hinzufügen-Dropdown */}
         <button
@@ -543,7 +543,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               </button>
             </div>
 
-          {cards.map((card) => (
+          {cards.slice().reverse().map((card) => (
             console.log("Card:", card),
             <ConverterCard
               key={card.id}
