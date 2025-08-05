@@ -414,6 +414,13 @@ const handleSaveUpToCard = async (upToCardId) => {
 
   }
 
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [cards]);
+
+
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
@@ -447,11 +454,12 @@ const handleSaveUpToCard = async (upToCardId) => {
           </button>
       </div>
      
+     
 
       <div className="flex gap-8 px-4">
 
         {/* Linke Spalte: Converter-Buttons */}
-        <div className="w-1/5 space-y-2 pl-4 sticky top-30 self-start h-fit">
+        <div className="w-1/5 space-y-2 pl-4 sticky top-20 self-start h-fit">
 
             {/* Hinzufügen-Dropdown */}
         <button
@@ -565,6 +573,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               
             />
           ))}
+          <div ref={bottomRef} />
 
           <div className="absolute top-0 -translate-y-full z-50"
             onMouseEnter={() => setIsPopupHovered(true)}
