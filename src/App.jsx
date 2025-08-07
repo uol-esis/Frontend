@@ -11,6 +11,8 @@ import './css/App.css'
 import keycloak from "./keycloak"
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import Wiki from './Wiki';
+import Impressum from './Impressum';
+import Datenschutz from './Datenschutz';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -27,6 +29,8 @@ function App() {
           <Route path="/edit" element={<Edit />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/wiki" element={<Wiki />} />
+          <Route path="/impressum" element={<Impressum />} />
+          <Route path="/datenschutz" element={<Datenschutz />} />
         </Routes>
       </Router>
     </ReactKeycloakProvider>
