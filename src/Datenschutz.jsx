@@ -3,9 +3,16 @@ export default function Datenschutz(){
     <main className="p-6 flex justify-center mb-2">
       <div className="bg-white shadow-xl rounded-2xl p-8 max-w-2xl w-full">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Datenschutzerklärung</h1>
+          <p className="text-gray-700 leading-relaxed">
+            Der Schutz Ihrer persönlichen Daten hat für die Stadt Bad Oeynhausen oberste Priorität. 
+            Dieses Prinzip gilt für unser Internetangebot ebenso wie für unsere konventionellen Dienstleistungen.
+
+
+          </p>
+
 
         <section className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">1. Verantwortlicher</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">1. Verantwortliche Stelle</h2>
           <p className="text-gray-700 leading-relaxed">
             Max Mustermann<br />
             Musterstraße 1<br />
