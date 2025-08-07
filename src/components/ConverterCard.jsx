@@ -42,7 +42,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
   parameters.forEach(param => {
     const value = formData[param.apiName];
     //exception for replace entries converter to replace empty cells 
-    if((param.apiName === "search" || param.apiName === "replacement") && value.toString().trim() === ''){
+    if((param.apiName === "search" || param.apiName === "replacement") && !value){
         return;
     }
 

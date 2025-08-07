@@ -211,11 +211,9 @@ export default function Edit() {
       if (Array.isArray(field)) {
         return field;
       }
-      if (param.required && (!field || field.toString().trim() === "")) {
+      if (!field || field.toString().trim() === "") {
         return [];
-      } else if (!param.required && (!field || field.toString().trim() === "")) {
-        return undefined;
-      }
+      } 
       return field.split(',').map(item => item.toString().trim());
     }
   }
@@ -278,6 +276,7 @@ export default function Edit() {
 
       // Call getPreview and update the card with the preview data
       getPreview(jsonData).then((previewData) => {
+        console.log("try to get preview with ", jsonData);
         if (previewData) {
           console.log("Preview Data:", previewData);
 
