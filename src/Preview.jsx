@@ -463,11 +463,12 @@ export default function Preview() {
             
               <div>
                   <div className="flex justify-center mt-[20vh]">
-                    <div className="shrink-0">
-                      <Spinner size={16}/>
+                    <div className="shrink-0 w-16 h-16">
+                     <Spinner/>
                     </div>
                   </div>
-                  </div>
+                </div>
+          
             }
           </div>
         </div>
