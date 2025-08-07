@@ -19,6 +19,7 @@ import { getApiInstance } from "./hooks/ApiInstance";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";
+import Spinner from "./components/Spinner";
 
 export default function Preview() {
 
@@ -33,7 +34,7 @@ export default function Preview() {
   const [allCheck, setAllCheck] = useState(false);
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [errorId, setErrorId] = useState("");
+  const [errorId, setErrorId] = useState("none");
   const [globalSchemaId, setGlobalSchemaId] = useState("");
   const [reportContent, setReportContent] = useState([]);
   const [windowSize, setWindowSize] = useState({
@@ -47,6 +48,13 @@ export default function Preview() {
   const uploadFinishedDialogRef = useRef();
   const errorDialogRef = useRef();
   const decisionDialogRef = useRef();
+
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
 
   useEffect(() => {
     if (showSuccessMessage) {
@@ -98,9 +106,24 @@ export default function Preview() {
     return parseInt(limit);
   }
 
+  const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      setErrorId(errorObj.status);
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+    setShowError(true);
+  }
+
   const createDataObject = () => {
     if (!selectedFile) {
       console.error("No file selected");
+      setErrorId("103");
       return;
     }
     const formData = new FormData();
@@ -125,6 +148,8 @@ export default function Preview() {
           console.log("Requested to get table structure from server");
           api.getTableStructure(selectedSchema.id, (error, data, response) => {
             if (error) {
+              console.error(error);
+              parseError(error);
               reject(error);
             } else {
               console.log("API called to get tableStructure successfully. Returned data: ", data);
@@ -135,6 +160,7 @@ export default function Preview() {
 
         if (!actualSchemaRef.current) {
           console.error("Failed to get actual schema");
+          setErrorId("101");
           return;
         }
         console.log("Using selected schema: ", actualSchemaRef.current);
@@ -143,6 +169,7 @@ export default function Preview() {
       console.log("Actual schema set: ", actualSchemaRef.current);
     } catch (error) {
       console.error("Error during setActualSchema:", error);
+      setErrorId("101");
     }
   };
 
@@ -153,16 +180,16 @@ export default function Preview() {
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
+      setErrorId("103");
       return;
     }
     if (!actualSchemaRef.current) {
       console.error("No actual schema set");
+      setErrorId("101");
       return;
     }
 
     const {api} = await getApiInstance();
-
-    try {
       await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
         console.log("selectedFileType: ", selectedFile.type);
@@ -172,7 +199,8 @@ export default function Preview() {
         let opts = { "limit": limit };
         api.previewConvertTable(selectedFile, actualSchemaRef.current, opts, (error, data, response) => {
           if (error) {
-            console.error("error" + error)
+            console.error(error)
+            parseError(error);
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
@@ -182,9 +210,6 @@ export default function Preview() {
           }
         });
       });
-    } catch (error) {
-      console.error("Error during previewConvertTable:", error);
-    }
   };
 
 
@@ -198,19 +223,25 @@ export default function Preview() {
       }
 
       api.convertTable(schemaId, selectedFile, undefined, (error, data, response) => {
-        if (error) {
-          console.error(error);
-          const errorObj = JSON.parse(error.message);
-          if(errorObj.statusCode == "409"){
-            decisionDialogRef.current?.showModal();
-            resolve("decision");
-          }else{
-            setErrorId(errorObj.status);
-            reject(error);
+        try{
+           if (error) {
+            console.error(error);
+            const errorObj = JSON.parse(error.message);
+            if(errorObj.statusCode == "409"){
+              decisionDialogRef.current?.showModal();
+              resolve("decision");
+            }else{
+              setErrorId(errorObj.status);
+              reject(error);
+            }
+          } else {
+            resolve(data);
           }
-        } else {
-          resolve(data);
+        }catch(error){
+          console.error(error);
+          parseError(error);
         }
+       
       });
     });
   }
@@ -231,10 +262,8 @@ export default function Preview() {
     api.convertTable(schemaId, selectedFile, opts, (error, data, response) => {
       if (error) {
         console.error(error);
-        const errorObj = JSON.parse(error.message);
-        setErrorId(errorObj.status);
+        parseError(error);
         decisionDialogRef.current?.close();
-        errorDialogRef.current?.showModal();
 
       } else {
         decisionDialogRef.current?.close();
@@ -248,24 +277,31 @@ export default function Preview() {
   const sendGeneratedSchemaToServer = async () => {
     if (!generatedSchema) {
       console.error("No generated schema to send");
+      setErrorId("101");
       return null;
     }
     
     const {api, Th1} = await getApiInstance();
     return new Promise((resolve, reject) => {
       api.createTableStructure(generatedSchema, (error, data, response) => {
-        if (error) {
-          const errorObj = JSON.parse(error.message);
-          if(errorObj.status == "409"){
-            setErrorId(errorObj.status + "CreateTableStructure");
-          }else setErrorId(errorObj.status);
-          
-          reject(error);
-        } else {
-          console.log('API called successfully. data: ', data);
-          const id = data; // Assuming `response` contains the ID
-          resolve(id);
+        try{
+          if (error) {
+            const errorObj = JSON.parse(error.message);
+            if(errorObj.status == "409"){
+              setErrorId(errorObj.status + "CreateTableStructure");
+            }else setErrorId(errorObj.status);
+            
+            reject(error);
+          } else {
+            console.log('API called successfully. data: ', data);
+            const id = data; // Assuming `response` contains the ID
+            resolve(id);
+          }
+        }catch(error){
+          console.error(error);
+          parseError(error);
         }
+        
       });
     });
   }
@@ -273,23 +309,29 @@ export default function Preview() {
   const sendEditedSchemaToServer = async () => {
     if (!editedSchema) {
       console.error("No generated schema to send");
+      setErrorId("101");
       return null;
     }
     
     const {api} = await getApiInstance();
     return new Promise((resolve, reject) => {
       api.createTableStructure(editedSchema, (error, data, response) => {
-        if (error) {
-          const errorObj = JSON.parse(error.message);
-          if(errorObj.status == "409"){
-            setErrorId(errorObj.status + "CreateTableStructure");
-          }else setErrorId(errorObj.status);
-          reject(error);
-        } else {
-          console.log('API called successfully. data: ', data);
-          const id = data; // Assuming `response` contains the ID
-          resolve(id);
+        try{
+          if (error) {
+            const errorObj = JSON.parse(error.message);
+            if(errorObj.status == "409"){
+              setErrorId(errorObj.status + "CreateTableStructure");
+            }else setErrorId(errorObj.status);
+            reject(error);
+          } else {
+            console.log('API called successfully. data: ', data);
+            const id = data; // Assuming `response` contains the ID
+            resolve(id);
+          }
+        }catch(error){
+          console.error(error);
         }
+        
       });
     });
   }
@@ -322,15 +364,6 @@ export default function Preview() {
       },
     });
   }
-
-  {/* Show error message after a short timeout */ }
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowError(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     !isLoggedIn ? <div>Not logged in</div>:
@@ -385,6 +418,7 @@ export default function Preview() {
               
             } catch (error) {
               console.error(error);
+              parseError(error);
               errorDialogRef.current?.showModal();
               }
           }}
@@ -393,9 +427,9 @@ export default function Preview() {
         <UploadFinishedPopup dialogRef={uploadFinishedDialogRef} />
 
         <ErrorDialog
-          text={"Upload fehlgeschlagen "}
+          text={"Fehler!"}
           errorId={errorId}
-          onConfirm={() => { errorDialogRef.current?.close(); navigate("/"); }}
+          onConfirm={() => { errorDialogRef.current?.close();}}
           dialogRef={errorDialogRef}
         />
 
@@ -403,10 +437,8 @@ export default function Preview() {
         <div className="flex justify-self-center h-[70vh] ">
 
           <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
-            
             <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
             <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} /> 
-
           </div>
           {/* Table with preview or error message */}
           <div className="flex-1 overflow-auto">
@@ -427,7 +459,16 @@ export default function Preview() {
                   </div>
                   {/*<p className="text-sm">{errorText}</p>*/}
                 </div>
-              ) : null
+              ) : 
+            
+              <div>
+                  <div className="flex justify-center mt-[20vh]">
+                    <div className="shrink-0 w-16 h-16">
+                     <Spinner/>
+                    </div>
+                  </div>
+                </div>
+          
             }
           </div>
         </div>
