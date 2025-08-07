@@ -276,7 +276,7 @@ export default function Preview() {
       return null;
     }
     
-    const api = await getApiInstance();
+    const {api} = await getApiInstance();
     return new Promise((resolve, reject) => {
       api.createTableStructure(editedSchema, (error, data, response) => {
         if (error) {
