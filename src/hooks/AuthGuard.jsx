@@ -1,5 +1,4 @@
 import { useKeycloak } from "@react-keycloak/web";
-import keycloak from "../keycloak";
 import { useEffect } from "react";
 
 export const useAuthGuard = () => {
@@ -14,4 +13,3 @@ export const useAuthGuard = () => {
 
   return isLoggedIn;
 };
-  
