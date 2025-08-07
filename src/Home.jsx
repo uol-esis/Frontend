@@ -33,7 +33,7 @@ function Home() {
           <button
             type="button"
             className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => window.location.href = import.meta.env.VITE_METABASE_ENDPOINT}
+            onClick={() => window.open(import.meta.env.VITE_METABASE_ENDPOINT, '_blank')}
           >
             <div className="flex items-center justify-center g-3">
               Visualisierung
