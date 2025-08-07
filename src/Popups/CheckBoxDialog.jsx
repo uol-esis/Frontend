@@ -1,9 +1,19 @@
 import CheckBox from "/src/CheckBox";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 
 export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onConfirm }) {
-    return (
+    return ( 
       <dialog ref={dialogRef} className="self-center justify-self-end shadow-md bg-gray-100">
-        <div>
+        <div className="relative">
+           <button
+            type="button"
+            className="absolute top-5 right-3  z-10"
+            onClick={() => {
+              window.open("/wiki?targetId=database", "_blank");
+            }}
+          >
+            <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
+          </button>
           <CheckBox setAllCheck={setAllCheck} />
           <button
             type="button"

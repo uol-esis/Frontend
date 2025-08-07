@@ -41,7 +41,7 @@ export default function CheckBox({setAllCheck}) {
     <fieldset>
       <legend className="sr-only">Notifications</legend>
       <div className="flex flex-col p-5 space-y-5 text-left">
-        <p className="text-base text-gray-700">
+        <p className="text-base text-gray-700 w-120">
           Überprüfe vor dem Hochladen, ob die folgenden Eigenschaften <br /> auf die Tabelle zutreffen:
         </p>
 
