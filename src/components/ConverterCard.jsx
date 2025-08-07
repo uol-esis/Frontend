@@ -11,6 +11,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
     const [validationError, setValidationError] = useState(""); // State for validation error message
+    const cardRef = useRef(null);
 
     const closeTimeoutRef = useRef(null);
     const [showTutorial, setShowTutorial] = useState(false);
@@ -59,6 +60,19 @@ export default function ConverterCard({id, label, parameters, converterType, for
     return true;
   } else {
     setSaveState("error");
+    setTimeout(() => { //für das Hochspringen zu Fehler
+  if (cardRef.current) {
+    const rect = cardRef.current.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const offset = 100; 
+
+    window.scrollTo({
+      top: rect.top + scrollTop - offset,
+      behavior: 'smooth'
+    });
+  }
+}, 100);
+
     return false;
   }
 }, [formData, parameters, id, onSave]);
@@ -123,14 +137,14 @@ useEffect(() => {
     };
 
     return (
-        <div className={`bg-white shadow-md rounded-lg p-4 mb-4
+        <div ref={cardRef} className={`bg-white shadow-md rounded-lg p-4 mb-4
             ${saveState === "saved" ? "border-2 border-green-500" : ""} 
             ${saveState === "error" ? "border-2 border-red-500" : ""}
             `}>
             {/* Hauptcontainer: linke Parameter 2/3, rechte Buttons 1/3 */}
             {id === 0 ? (
               <>
-               <h2 className="text-xl font-semibold text-gray-700 text-center">Start</h2>
+               <h2 className="text-xl font-semibold text-gray-700 text-center">Originaltabelle</h2>
                 <div className="flex justify-end">
 
                     {/* Buttons-Bereich rechts für Start-Card */}
