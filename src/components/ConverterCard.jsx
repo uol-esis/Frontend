@@ -139,7 +139,7 @@ useEffect(() => {
             {/* Hauptcontainer: linke Parameter 2/3, rechte Buttons 1/3 */}
             {id === 0 ? (
               <>
-               <h2 className="text-xl font-semibold text-gray-700 text-center">Start</h2>
+               <h2 className="text-xl font-semibold text-gray-700 text-center">Originaltabelle</h2>
                 <div className="flex justify-end">
 
                     {/* Buttons-Bereich rechts für Start-Card */}
