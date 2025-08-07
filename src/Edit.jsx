@@ -415,10 +415,19 @@ const handleSaveUpToCard = async (upToCardId) => {
   }
 
   const bottomRef = useRef(null);
+  const prevCardCountRef = useRef(cards.length);
 
   useEffect(() => {
+    const prevCount = prevCardCountRef.current; 
+    const currentCount = cards.length;
+
+  // Nur scrollen, wenn die Anzahl der Karten gestiegen ist
+  if (currentCount > prevCount) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [cards]);
+  }
+
+  prevCardCountRef.current = currentCount;
+  }, [cards.length]);
 
 
   return (
