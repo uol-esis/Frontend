@@ -70,7 +70,7 @@ export default function Preview() {
       Es soll überprüft werden, ob die Daten korrekt sind und ob die Tabelle datenbankkonform ist ( 
       <span 
         onClick={() => { window.open("/wiki?targetId=database", "_blank");}} 
-        style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
+        className="text-blue-400 underline cursor-pointer"
       >
         siehe Wiki
       </span>).
@@ -462,13 +462,13 @@ export default function Preview() {
               <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
               <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} isImportant={existReports} />
             </div>
-            <div className="absolute  -top-1/3 translate-y-full translate-x-full z-20">
+            <div className="absolute  top-0 left-full z-20">
               <Tooltip tooltipContent={ExplainerInformationText} onClick={TipInformationToTable} direction={"left"} showTutorial={tipInformation} />
             </div>
           </div>
           {/* Table with preview or error message */}
           <div className="flex-1 overflow-auto mt-5 relative">
-            <div className="absolute  -top-1/5 translate-y-full translate-x-1/2 z-20 w-150">
+            <div className="absolute  top-1/5 left-1/4 z-20 w-150">
               <Tooltip tooltipContent={ExplainerTable} onClick={TipTableToButtons} direction={"bottom"} showTutorial={tipTable} />
             </div>
             {
@@ -495,7 +495,7 @@ export default function Preview() {
       </div>
       {/* Buttons */}
       <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0 ">
-          <div className="absolute w-150 translate-x-full bottom-1/6 z-20">
+          <div className="absolute w-150 left-1/3 bottom-1/6 z-20">
               <Tooltip tooltipContent={ExplainerButtons} onClick={() => {setTipInformation(false); setTipTable(false); setTipButtons(false);}} direction={"bottom"} showTutorial={tipButtons} />
             </div>
 
