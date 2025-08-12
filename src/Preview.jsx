@@ -3,6 +3,8 @@ import TableFromJSON from "./TableFromJSON";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
+import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
+
 import Alert from "./Alert";
 import Popup from "./Popup";
 import HelpDialog from "./Popups/HelpDialog";
@@ -19,6 +21,8 @@ import { getApiInstance } from "./hooks/ApiInstance";
 import { StackedListDropDown } from "./components/StackedListDropDown";
 import { parseReports } from "./hooks/ReadReports";
 import DecisionDialog from "./Popups/DecisionDialog";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import Tooltip from "./ToolTip";
 import Spinner from "./components/Spinner";
 
 export default function Preview() {
@@ -37,10 +41,15 @@ export default function Preview() {
   const [errorId, setErrorId] = useState("none");
   const [globalSchemaId, setGlobalSchemaId] = useState("");
   const [reportContent, setReportContent] = useState([]);
+  const [existReports, setExistReports] = useState(false);
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight
   });
+
+  const [tipInformation, setTipInformation] = useState(false);
+  const [tipTable, setTipTable] = useState(false);
+  const [tipButtons, setTipButtons] = useState(false);
 
   const helpDialogRef = useRef();
   const uploadDialogRef = useRef();
@@ -49,19 +58,39 @@ export default function Preview() {
   const errorDialogRef = useRef();
   const decisionDialogRef = useRef();
 
-  useEffect(() => {
-      if(errorId == "none"){
-        return;
-      }
-      errorDialogRef.current?.showModal();
-    }, [errorId]);
+  const ExplainerInformationText = (
+    <span> 
+      Hier wird die vorher ausgewählte Datei und Tabellentransformation angezeigt. 
+      Falls vorhanden werden außerdem Warnungen bzw. Fehler angezeigt die beim Generieren aufgetreten sind. 
+    </span>
+  )
+
+  const ExplainerTable = (
+    <span> 
+      In diesem Bereich wird die Tabelle nach Anwendung der Tabellentransformation angezeigt. 
+      Es soll überprüft werden, ob die Daten korrekt sind und ob die Tabelle datenbankkonform ist ( 
+      <span 
+        onClick={() => { window.open("/wiki?targetId=database", "_blank");}} 
+        className="text-blue-400 underline cursor-pointer"
+      >
+        siehe Wiki
+      </span>).
+    </span>
+  )
+
+  const ExplainerButtons = (
+    <span> 
+      Hier kann die Tabellentransformation angepasst werden, dabei kann die Struktur als auch der Inhalt der Tabelle verändert werden. 
+      Außerdem kann die Tabelle hochgeladen werden, damit sie in Metabase zur Visualisierung verfügbar ist.
+    </span>
+  )
 
   useEffect(() => {
     if (showSuccessMessage) {
       setShowPPup(true);
     }
-
   }, [showSuccessMessage]);
+
   const previewText = [
     {
       header: "Thema (Work in Progress)",
@@ -88,13 +117,29 @@ export default function Preview() {
 
   }, [showSuccessMessage]);
 
+  const TipInformationToTable = function () {
+    setTipInformation(false);
+    setTipTable(true);
+  }
+
+  const TipTableToButtons = function () {
+    setTipTable(false);
+    setTipButtons(true);
+  }
+
   const readReports = async () => {
     if(!reports){
+      console.log("no reports");
       return;
     }
 
     const array = [];
     await parseReports(reports, array);
+
+    if(array.length == 0){
+      setExistReports(false);
+    }else setExistReports(true);
+    
     setReportContent(array);
     
   }
@@ -102,7 +147,7 @@ export default function Preview() {
   const computeTablelimit = () => {
     let limit = windowSize.height;
     limit = limit * 0.75 - 36; // 75% of screen - header row
-    limit = limit / 32.4 - 2; // / row height - puffer
+    limit = limit / 32.4 - 3; // / row height - puffer
     return parseInt(limit);
   }
 
@@ -365,9 +410,41 @@ export default function Preview() {
     });
   }
 
+  const handleCheckBoxConfirm = async () =>{
+    let schemaId = null;
+    checkboxDialogRef.current?.close();
+    try {
+      if (generatedSchema) {
+        schemaId = await sendGeneratedSchemaToServer();
+      } else if (editedSchema) {
+        schemaId = await sendEditedSchemaToServer();
+      }
+      setGlobalSchemaId(schemaId)
+      const result = await sendTableToServer(schemaId);
+      if(result == "decision"){
+        decisionDialogRef.current?.showModal();
+      }else{
+        uploadFinishedDialogRef.current?.showModal();
+      }
+      
+    } catch (error) {
+      console.error(error);
+      errorDialogRef.current?.showModal();
+      }
+  }
+
+  {/* Show error message after a short timeout */ }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowError(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     !isLoggedIn ? <div>Not logged in</div>:
-    <div>
+    <div className="relative">
       {/*Text and table */}
       <div className="flex flex-col h-[75vh]">
 
@@ -399,29 +476,7 @@ export default function Preview() {
           dialogRef={checkboxDialogRef}
           allCheck={allCheck}
           setAllCheck={setAllCheck}
-          onConfirm={async () => {
-            let schemaId = null;
-            checkboxDialogRef.current?.close();
-            try {
-              if (generatedSchema) {
-                schemaId = await sendGeneratedSchemaToServer();
-              } else if (editedSchema) {
-                schemaId = await sendEditedSchemaToServer();
-              }
-              setGlobalSchemaId(schemaId)
-              const result = await sendTableToServer(schemaId);
-              if(result == "decision"){
-                decisionDialogRef.current?.showModal();
-              }else{
-                uploadFinishedDialogRef.current?.showModal();
-              }
-              
-            } catch (error) {
-              console.error(error);
-              parseError(error);
-              errorDialogRef.current?.showModal();
-              }
-          }}
+          onConfirm={handleCheckBoxConfirm}
         />
 
         <UploadFinishedPopup dialogRef={uploadFinishedDialogRef} />
@@ -433,15 +488,23 @@ export default function Preview() {
           dialogRef={errorDialogRef}
         />
 
-        {/* Information text */}
+       
         <div className="flex justify-self-center h-[70vh] ">
-
-          <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
-            <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
-            <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} /> 
+        {/* Information text */}
+          <div className="relative">
+            <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
+              <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
+              <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} isImportant={existReports} />
+            </div>
+            <div className="absolute  top-0 left-full z-20">
+              <Tooltip tooltipContent={ExplainerInformationText} onClick={TipInformationToTable} direction={"left"} showTutorial={tipInformation} />
+            </div>
           </div>
           {/* Table with preview or error message */}
-          <div className="flex-1 overflow-auto">
+          <div className="flex-1 overflow-auto mt-5 relative">
+            <div className="absolute  top-1/5 left-1/4 z-20 w-150">
+              <Tooltip tooltipContent={ExplainerTable} onClick={TipTableToButtons} direction={"bottom"} showTutorial={tipTable} />
+            </div>
             {
               data.length ? (
                 <TableFromJSON
@@ -474,24 +537,28 @@ export default function Preview() {
         </div>
       </div>
       {/* Buttons */}
-      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0">
+      <div className="flex flex-row px-[5vw] w-full py-[2vh] flex-shrink-0 ">
+          <div className="absolute w-150 left-1/3 bottom-1/6 z-20">
+              <Tooltip tooltipContent={ExplainerButtons} onClick={() => {setTipInformation(false); setTipTable(false); setTipButtons(false);}} direction={"bottom"} showTutorial={tipButtons} />
+            </div>
+
         <div className="flex justify-start w-[35vw]">
           <button
             type="button"
-            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="absolute top-3 left-3 z-10 pb-2"
             onClick={() => navigate("/upload")}
           >
-            Zurück
+            <ArrowLeftCircleIcon className="h-7 w-7 text-gray-600  hover:text-indigo-500" />
           </button>
 
           <button
             type="button"
-            className="ml-[5vw] rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="absolute top-3 right-3 z-10"
             onClick={() => {
-              helpDialogRef.current?.showModal();
+              setTipInformation(true); setTipTable(false); setTipButtons(false);
             }}
           >
-            Hilfe
+            <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
           </button>
         </div>
 
@@ -501,7 +568,7 @@ export default function Preview() {
             className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
             onClick={handleEditSchema}
           >
-            Schema anpassen
+            Tabellentransformation anpassen
           </button>
           <button
             type="button"

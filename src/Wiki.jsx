@@ -1,11 +1,17 @@
 import { div } from "framer-motion/client";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Sidebar from "./Sidebar";
 import InfoCard from "./components/InfoCard";
+import {useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 export default function Wiki() {
 
+    const [searchParams] = useSearchParams();
+    const targetId = searchParams.get("targetId");
+
     const introductionRef = useRef();
+    const databaseRef = useRef();
     const addColNameRef = useRef();
     const fillEmptyRowRef = useRef();
     const fillEmptyColref = useRef();
@@ -25,6 +31,28 @@ export default function Wiki() {
     const metabaseVisualisierungRef = useRef();
     const metabaseJoinRef = useRef();
 
+    const [enlargedImage, setEnlargedImage] = useState(null);
+
+    const refsMap = {
+    "database": databaseRef,
+  };
+
+    useEffect(() => {
+        if (targetId && refsMap[targetId]) {
+            scrollToWithOffset(refsMap[targetId]);
+        }
+    }, [targetId]);
+
+    //clickable picture
+    const renderImage = (src, alt) => (
+        <img
+        src={src}
+        alt={alt}
+        className="my-4 mx-auto cursor-pointer"
+        onClick={() => setEnlargedImage(src)}
+        />
+    );
+
     const [windowSize, setWindowSize] = useState({
         width: window.innerWidth,
         height: window.innerHeight
@@ -33,6 +61,7 @@ export default function Wiki() {
 
     const navigation = [
         { name: 'Einleitung', href: introductionRef },
+        { name: 'Datenbankkonforme Daten', href: databaseRef },
         {
             name: 'Converter', href: '#', children: [
                 { name: 'Gruppenüberschrift entfernen', href: removeGroupedHeaderRef },
@@ -94,6 +123,122 @@ export default function Wiki() {
                         Start- und Endreihe. Im Folgenden werden alle Funktionen aufgelistet und deren Funktionweise genauer erklärt.
 
                     </p>
+                </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* database info */}
+                <section ref={databaseRef}>
+                    <h2 className="text font-semibold text-lg mt-5"> Datenbankkonforme Daten </h2>
+                    <h1 className="text-lg font-semibold mb-4">
+                        Warum und wie Sie Excel-Tabellen optimieren müssen
+                    </h1>
+                    <p className="mb-4 text-left pl-5">
+                        Diese Anwendung verarbeitet Ihre Excel-Tabellen, um Daten in eine
+                        Datenbank zu importieren. Häufig sind diese Tabellen jedoch sehr
+                        verschachtelt oder unstrukturiert. Damit unsere Software die Daten
+                        richtig lesen und verarbeiten kann, müssen die Tabellen in ein
+                        „maschinenlesbares“ und „datenbankkonformes“ Format gebracht werden.
+                    </p>
+
+                    <h2 className="text-xl font-semibold mb-2">
+                        1. Was bedeutet „maschinenlesbar“ und „datenbankkonform“?
+                    </h2>
+                    <p className="mb-4 text-left pl-5">
+                        <strong>Maschinenlesbar:</strong> Daten sind so formatiert, dass
+                        Computer sie problemlos verstehen und verarbeiten können – in klaren,
+                        getrennten Spalten und Zeilen.
+                    </p>
+                    <div className="mb-4 text-left pl-5">
+                        <strong>Datenbankkonform:</strong> Die Struktur entspricht den
+                        Anforderungen einer Datenbank:
+                        <ul className="list-disc ml-6">
+                            <li>
+                                Jede Spalte enthält nur eine Art von Information (z. B. nur Namen,
+                                nur Zahlen).
+                            </li>
+                            <li>Überschriften stehen eindeutig in der ersten Zeile.</li>
+                            <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
+                        </ul>
+                    </div>
+                    {renderImage("/Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
+                    <p className="text-center text-sm mb-6">
+                        Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.
+                    </p>
+
+                    
+                    <h2 className="text-xl font-semibold mb-2">
+                        2. Wie sollte eine optimierte Tabelle aussehen?
+                    </h2>
+                    <ul className="list-disc ml-6 mb-4 text-left pl-5">
+                        <li>
+                        <strong>Klare Überschriften:</strong> Jede Spalte hat eine eindeutige
+                        Überschrift.
+                        </li>
+                        <li>
+                        <strong>Einheitliche Datenformate:</strong> Alle Werte in einer Spalte
+                        sind gleich formatiert.
+                        </li>
+                        <li>
+                        <strong>Keine zusammengeführten Zellen:</strong> Jede Zelle steht für
+                        sich.
+                        </li>
+                        <li>
+                        <strong>Flache Struktur:</strong> Eine Überschriftenzeile, gefolgt von den
+                        Daten.
+                        </li>
+                    </ul>
+                    {renderImage("/Verschachtelung3.png", "Optimierte Tabelle")}
+                    <p className="text-center text-sm mb-6">
+                        Bild: Optimierte Tabelle mit klaren Überschriften, einheitlichen Daten und
+                        ohne verschachtelte Zellen.
+                    </p>
+
+                    
+
+                    <h2 className="text-xl font-semibold mb-2 text-left pl-5">
+                        Zusammenfassung
+                    </h2>
+                    <ul className="list-disc ml-6 mb-4 text-left pl-5">
+                        <li>
+                        <strong>Warum:</strong> Damit unsere App die Excel-Daten fehlerfrei
+                        verarbeiten kann.
+                        </li>
+                        <li>
+                        <strong>Was:</strong> Die Tabelle muss klar strukturierte, einheitliche
+                        Daten enthalten.
+                        </li>
+                        <li>
+                        <strong>Wie:</strong> Durch Auflösen zusammengeführter Zellen, klare
+                        Überschriften und einheitliche Formatierung.
+                        </li>
+                    </ul>
+
+                    <p className="mb-4 text-left pl-5">
+                        Mit diesen Schritten werden Ihre Tabellen optimal für den Import
+                        vorbereitet. Sollten Sie Fragen haben oder Unterstützung benötigen,
+                        wenden Sie sich bitte an unseren Support!
+                    </p>
+                    
+                    {/* make pictures bigger */}
+                    {enlargedImage && (
+                    <div
+                        className="fixed inset-0 flex items-center justify-center bg-transparent"
+                        onClick={() => setEnlargedImage(null)}
+                        >
+                        <div
+                            className="w-2/3 relative shadow-lg"
+                            onClick={(e) => e.stopPropagation()} // Verhindert, dass Klicks im Container das Schließen auslösen
+                        >
+                            <img
+                            src={enlargedImage}
+                            alt="Vergrößert"
+                            className="w-full h-auto object-contain"
+                            />
+                        </div>
+                    </div>
+                    )}
+    
                 </section>
 
                 <div className="mt-6 border-1 border-gray-200"></div>
