@@ -197,10 +197,8 @@ export default function Edit() {
     const apiName = param.apiName;
     const field = formData?.[apiName];
     if (param.type === 'string') {
-      if (param.required && (!field || field.toString().trim() === "")) {
+      if (!field || field.toString().trim() === "") {
         return "";
-      } else if (!param.required && (!field || field.toString().trim() === "")) {
-        return undefined;
       }
       return field;
     }
