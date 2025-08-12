@@ -55,8 +55,9 @@ export default function UploadComponent({setFile, setValid}){
 
     {/* helper functions */ }
     const handleFileChange = (event) => {
-        console.log("change file");
+        console.log("change file ");
         setSelectedFile(event.target.files[0]);
+
     }
 
     const handleFileInputClick = () => {

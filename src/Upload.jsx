@@ -10,7 +10,7 @@ import Tooltip from "./ToolTip";
 import { getApiInstance } from "./hooks/ApiInstance";
 import { useAuthGuard } from "./hooks/AuthGuard";
 import { div } from "framer-motion/client";
-
+import ErrorDialog from "./Popups/ErrorDialog";
 
 function Upload() {
 
@@ -29,7 +29,9 @@ function Upload() {
   const [reports, setReports] = useState(null);
   const [isValidFile, setIsValidFile] = useState(false);
   const fileInputRef = useRef(null); // Reference for the hidden input element
-  const [confirmNameError, setConfirmNameError] = useState();
+  const [confirmNameError, setConfirmNameError] = useState("");
+  const [errorId, setErrorId] = useState("none");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -37,6 +39,8 @@ function Upload() {
 
   const confirmNameToPreviewRef = useRef();
   const confirmNameToEditRef = useRef();
+  const errorDialogRef = useRef();
+
   const navigate = useNavigate();
 
   const ExplainerUpload = (
@@ -102,11 +106,19 @@ function Upload() {
     }
   }, [selectedFile]);
 
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
+
   const getSchemaList = async function () {
     const {api} = await getApiInstance();
     api.getTableStructures((error, response) => {
       if (error) {
         console.error(error);
+        parseError(error);
       } else {
         console.log("Response:", response);
         setSchemaList(response);
@@ -114,19 +126,35 @@ function Upload() {
     });
   }
 
+  const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      setErrorId(errorObj.status);
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+  }
+
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
+    setIsLoading(true);
     const {api, Th1} = await getApiInstance();
     if (!api ) {
       console.error("api is not loaded yet.");
+      setErrorId(100);
       return;
     }
   
-    const settings = new Th1.TableStructureGenerationSettings();
-    // 
+    const settings = new Th1.TableStructureGenerationSettings(); 
     const callback = function (error, data, response) {
       if (error) {
+        parseError(error);
         console.error(error);
+        
       } else {
         console.log('API called successfully to generate a schema.');
         console.log("Selected file:", selectedFile);
@@ -138,9 +166,12 @@ function Upload() {
         setSchemaName(selectedFile.name);
         confirmNameToPreviewRef.current?.showModal();
       }
+      setIsLoading(false);
       console.log(response);
     };
+
     api.generateTableStructure(selectedFile, settings, callback);
+    
   }
 
   const isNameTaken = function (newName) {
@@ -192,6 +223,12 @@ function Upload() {
       {/* Popup */}
       <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
       <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={handleConfirmNewSchema} />
+      <ErrorDialog
+        text={"Fehler!"}
+        errorId={errorId}
+        onConfirm={() => { errorDialogRef.current?.close(); }}
+        dialogRef={errorDialogRef}
+      />
 
       {/* Go back and Tutorial */}
       <div className="flex justify-between">
@@ -241,7 +278,7 @@ function Upload() {
           {/* Generate */}
           <div className="relative">
             <div className={`${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema} />
+              <GenerateSchemaComponent fileIsValid={isValidFile} onGenerate={generateNewSchema} isLoading={isLoading} />
             </div>
             <div className="absolute left-1/2 top-0 -translate-y-full -translate-x-1/2 pointer-events-auto"
               style={{ opacity: 1 }}

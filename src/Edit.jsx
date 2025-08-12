@@ -7,6 +7,7 @@ import Tooltip from "./ToolTip";
 import keycloak from "./keycloak";
 import { ApiClient, DefaultApi } from "th1";
 import { getApiInstance } from "./hooks/ApiInstance";
+import ErrorDialog from "./Popups/ErrorDialog";
 
 
 export default function Edit() {
@@ -23,12 +24,12 @@ export default function Edit() {
     width: window.innerWidth,
     height: window.innerHeight
   });
+  const [errorId, setErrorId] = useState("none");
 
   const [showConverterListTip, setShowConverterListTip] = useState(false);
   const [showCardListTip, setShowCardListTip] = useState(false);
   const tutorialRef = useRef();
-
-  
+  const errorDialogRef = useRef();
 
   const ExplainerConverterList = (
     <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
@@ -77,7 +78,7 @@ export default function Edit() {
       description:'Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.' }, //FillEmptyRows
     {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
       description: 'Diese Funktion füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.' }, //FillEmptyColumns
-    {label: 'Spalten entfernen (nach Index) ', catergory:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
+    {label: 'Spalten entfernen (nach Index) ', category:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
       description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
     {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
       description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
@@ -87,7 +88,7 @@ export default function Edit() {
       description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
     {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
       description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
-    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
+    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
       description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.'}, //ReplaceEntries
     {label: 'Zeile aufteilen ', category: 'mdfy', params: [{name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_ROW', 
       description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt.'}, //SplitRow
@@ -111,6 +112,13 @@ export default function Edit() {
     mdfy: converters.filter((c) => c.category === 'mdfy')
   };
 
+
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
 
   useEffect(() => {
     if (schemaToEdit) {
@@ -189,9 +197,9 @@ export default function Edit() {
     const apiName = param.apiName;
     const field = formData?.[apiName];
     if (param.type === 'string') {
-      if (param.required && (!field || field.trim() === "")) {
+      if (param.required && (!field || field.toString().trim() === "")) {
         return "";
-      } else if (!param.required && (!field || field.trim() === "")) {
+      } else if (!param.required && (!field || field.toString().trim() === "")) {
         return undefined;
       }
       return field;
@@ -200,9 +208,9 @@ export default function Edit() {
       if (typeof field === 'number') {
         return field;
       }
-      if (param.required && (!field || field.trim() === "")) {
+      if (param.required && (!field || field.toString().trim() === "")) {
         return "invalid number";
-      } else if (!param.required && (!field || field.trim() === "")) {
+      } else if (!param.required && (!field || field.toString().trim() === "")) {
         return undefined;
       }
       return field;
@@ -211,17 +219,29 @@ export default function Edit() {
       if (Array.isArray(field)) {
         return field;
       }
-      if (param.required && (!field || field.trim() === "")) {
+      if (!field || field.toString().trim() === ""){
+        console.log("return empty array");
         return [];
-      } else if (!param.required && (!field || field.trim() === "")) {
-        return undefined;
-      }
-      return field.split(',').map(item => item.trim());
+      } 
+      return field.split(',').map(item => item.toString().trim());
     }
   }
 
   const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
   const saveCardRefs = useRef({});
+
+ const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      setErrorId(errorObj.status);
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+  }
 
   const registerFormDataGetter = (cardId, getterFn) => {
     formDataRefs.current[cardId] = getterFn;
@@ -278,6 +298,7 @@ export default function Edit() {
 
       // Call getPreview and update the card with the preview data
       getPreview(jsonData).then((previewData) => {
+        console.log("try to get preview with ", jsonData);
         if (previewData) {
           console.log("Preview Data:", previewData);
 
@@ -337,6 +358,7 @@ const handleSaveUpToCard = async (upToCardId) => {
     console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
+      setErrorId("103");
       return;
     }
 
@@ -352,7 +374,8 @@ const handleSaveUpToCard = async (upToCardId) => {
         let opts = { "limit": limit };
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
-            console.error("error" + error)
+            console.error(error);
+            parseError(error);
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
@@ -364,6 +387,7 @@ const handleSaveUpToCard = async (upToCardId) => {
       return data;
     } catch (error) {
       console.error("Error during previewConvertTable:", error);
+      setErrorId("105");
       return null;
     }
   };
@@ -389,6 +413,12 @@ const handleSaveUpToCard = async (upToCardId) => {
       };
     });
 
+    if(!schemaToEdit){
+      console.error("schemaToEdit is null");
+      setErrorId("106");
+      return;
+    }
+
     const jsonData = {
       name: schemaToEdit.name,
       structures: structures,
@@ -397,9 +427,6 @@ const handleSaveUpToCard = async (upToCardId) => {
     };
 
     console.log("Final JSON to send:", JSON.stringify(jsonData, null, 2));
-
-
-
 
     // Send the final JSON to the server or handle it as needed
     // For now, just navigate back to the home page
@@ -414,9 +441,32 @@ const handleSaveUpToCard = async (upToCardId) => {
 
   }
 
+  const bottomRef = useRef(null);
+  const prevCardCountRef = useRef(cards.length);
+
+  useEffect(() => {
+    const prevCount = prevCardCountRef.current; 
+    const currentCount = cards.length;
+
+  // Nur scrollen, wenn die Anzahl der Karten gestiegen ist
+  if (currentCount > prevCount) {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
+  prevCardCountRef.current = currentCount;
+  }, [cards.length]);
+
+
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
+
+    <ErrorDialog
+      text={"Fehler!"}
+      errorId={errorId}
+      onConfirm={() => { errorDialogRef.current?.close();}}
+      dialogRef={errorDialogRef}
+    />
 
       {/* Tutorial */}
         <dialog ref={tutorialRef} className="place-self-center shadow-xl backdrop:bg-black/50 p-5">
@@ -447,11 +497,12 @@ const handleSaveUpToCard = async (upToCardId) => {
           </button>
       </div>
      
+     
 
-      <div className="flex gap-8">
+      <div className="flex gap-8 px-4">
 
         {/* Linke Spalte: Converter-Buttons */}
-          <div className="flex-1 w-1/5 space-y-2 pl-4 relative">
+        <div className="w-1/5 space-y-2 pl-4 sticky top-20 self-start h-fit">
 
             {/* Hinzufügen-Dropdown */}
         <button
@@ -543,7 +594,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               </button>
             </div>
 
-          {cards.map((card) => (
+          {cards.slice().reverse().map((card) => (
             console.log("Card:", card),
             <ConverterCard
               key={card.id}
@@ -565,6 +616,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               
             />
           ))}
+          <div ref={bottomRef} />
 
           <div className="absolute top-0 -translate-y-full z-50"
             onMouseEnter={() => setIsPopupHovered(true)}
