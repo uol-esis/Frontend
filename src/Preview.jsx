@@ -85,14 +85,6 @@ export default function Preview() {
     </span>
   )
 
-
-  useEffect(() => {
-      if(errorId == "none"){
-        return;
-      }
-      errorDialogRef.current?.showModal();
-    }, [errorId]);
-
   useEffect(() => {
     if (showSuccessMessage) {
       setShowPPup(true);
