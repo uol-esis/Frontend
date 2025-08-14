@@ -209,13 +209,27 @@ useEffect(() => {
                             {showOptional && optionalParameters.map(param => (
                                 <div key={param.apiName} className="flex flex-col">
                                     <label className="text-sm font-medium mb-1">{param.name}</label>
-                                    <input
-                                        type={param.type === "number" ? "number" : "text"}
+                                    {param.Type === "boolean" ? 
+                                        <input
+                                            type="checkbox"
+                                            checked={checked}
+                                            onChange={(e) => setChecked(e.target.checked)}
+                                        />
+                                    :(
+                                        <input
+                                        type={param.type === "number"
+                                                ? "number"
+                                                : param.type === "boolean"
+                                                    ? "checkbox"
+                                                    : "text"
+                                            }
                                         value={formData[param.apiName] || ""}
                                         onChange={e => handleInputChange(param.apiName, e.target.value)}
                                         readOnly={!isEditing}
                                         className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                     />
+                                    )}
+                                    
                                     {errors[param.apiName] && (
                                         <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
                                     )}
