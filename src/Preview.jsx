@@ -4,7 +4,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { ApiClient, DefaultApi } from "th1";
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
-
 import Alert from "./Alert";
 import Popup from "./Popup";
 import HelpDialog from "./Popups/HelpDialog";

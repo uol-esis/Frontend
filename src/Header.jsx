@@ -2,6 +2,12 @@
 
 import React, { useState, useRef } from 'react';
 import { href } from 'react-router-dom';
+import { useKeycloak } from '@react-keycloak/web';
+import { useAuthGuard } from './hooks/AuthGuard';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronUpIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from "react-router-dom";
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 // Navigation items for the left section
 const leftNavigation = [
@@ -12,48 +18,15 @@ const leftNavigation = [
 
 // Navigation items for the right section
 const rightNavigation = [
-  { name: 'Einstellungen', href: '#', onClick: null },
-  { name: 'User', href: '#', onClick: null },
-  { name: 'Login', href: '/login' },
+  { name: 'Login', href: '/login', onClick: null },
 ];
 
 export default function Header() {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
-
-  const [settingsPopupPos, setSettingsPopupPos] = useState({ top: 0, right: 0 });
-  const [userPopupPos, setUserPopupPos] = useState({ top: 0, right: 0 });
-
-  const settingsPopupRef = useRef(null);
-  const userPopupRef = useRef(null);
-
-  function openSettingsPopup(event) {
-    event.preventDefault();
-    const rect = event.target.getBoundingClientRect();
-    setSettingsPopupPos({ top: rect.bottom + 5, right: 0 });
-    setIsSettingsOpen(true);
-  }
-
-  function openUserPopup(event) {
-    event.preventDefault();
-    const rect = event.target.getBoundingClientRect();
-    setUserPopupPos({ top: rect.bottom + 5, right: 0 });
-    setIsUserOpen(true);
-  }
-
-  function closeSettingsPopup() {
-    setIsSettingsOpen(false);
-  }
-
-  function closeUserPopup() {
-    setIsUserOpen(false);
-  }
-
-  rightNavigation[0].onClick = openSettingsPopup;
-  rightNavigation[1].onClick = openUserPopup;
+  const { keycloak, initialized } = useKeycloak();
 
   return (
-    <header className="bg-gray-100 h-[10vh] sticky top-0 z-50">
+    <header className="bg-gray-100 h-[10vh] sticky top-0 z-50 relative">
       <nav aria-label="Global" className="flex w-full h-full items-center justify-between px-4">
         <div className="flex items-center gap-x-12">
           <a href="/" className="-m-1.5 p-1.5">
@@ -91,48 +64,54 @@ export default function Header() {
               {index === 2 && (
                 <span className="border-l border-gray-400 h-6 mx-2"></span>
               )}
-              <a
-                href={item.href}
-                onClick={item.onClick}
-                className={`text-sm/6 font-semibold hover:scale-105 transition-transform ${item.name === 'Login' ? 'text-blue-500' : 'text-gray-900'}`}
-              >
-                {item.name === 'Einstellungen' ? (
-                  <img
-                    src="einstellungen.svg"
-                    alt="Einstellungen"
-                    className="inline-block"
-                  />
+
+              {item.name === 'Login' ? (
+                keycloak.authenticated ? (
+                  <button
+                    type='button'
+                    className='text-black hover:text-blue-500'
+                    onClick={() => { setIsUserOpen(!isUserOpen); }}
+                  >
+                    <div className='flex gap-1'>
+                      {/* show username if logged in */}
+                      <UserCircleIcon className='size-8'/>
+                    </div>
+
+                  </button>
                 ) : (
-                  item.name
-                )}
-              </a>
+                  <button
+                    type='button'
+                    className='text-black hover:text-blue-500'
+                    onClick={() => { keycloak.login() }}
+                  >
+                    Log in
+                  </button>
+
+                )
+              ) : (
+                item.name
+              )}
+
             </React.Fragment>
           ))}
         </div>
       </nav>
-      {isSettingsOpen && (
-        <div
-          ref={settingsPopupRef}
-          id="settings-popup"
-          style={{ top: settingsPopupPos.top, right: settingsPopupPos.right }}
-          className="absolute bg-white shadow-lg rounded-lg p-4"
-        >
-          <h2>Hier kommen die Einstellungen hin</h2>
-          <button onClick={closeSettingsPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
-            Schließen
-          </button>
-        </div>
-      )}
       {isUserOpen && (
         <div
-          ref={userPopupRef}
           id="user-popup"
-          style={{ top: userPopupPos.top, right: userPopupPos.right }}
-          className="absolute bg-white shadow-lg rounded-lg p-4"
+          className="flex flex-col gap-4 absolute bg-white shadow-lg rounded-lg p-4 absolute right-0"
         >
-          <h2>Hier kommt der User hin</h2>
-          <button onClick={closeUserPopup} className="mt-4 bg-blue-500 text-white p-2 rounded">
-            Schließen
+        <div className='flex flex-col gap-2'>
+          <p>Angemeldet als:</p>
+          <p className='text-gray-500'>{keycloak.tokenParsed?.preferred_username}</p>
+        </div>
+          
+
+          <button
+            onClick={() => { keycloak.logout(); window.location.href = "/"; }}
+            className=" p-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Logout
           </button>
         </div>
       )}

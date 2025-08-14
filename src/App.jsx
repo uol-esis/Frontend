@@ -8,17 +8,17 @@ import Feedback from './Feedback';
 import Edit from "./Edit";
 import { useEffect } from "react";
 import './css/App.css'
-import keycloak from "./keycloak"
 import { ReactKeycloakProvider, useKeycloak } from "@react-keycloak/web";
 import Wiki from './Wiki';
 import Impressum from './Impressum';
 import Datenschutz from './Datenschutz';
+import Header from './Header';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <ReactKeycloakProvider authClient={keycloak}>
+    
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -33,7 +33,7 @@ function App() {
           <Route path="/datenschutz" element={<Datenschutz />} />
         </Routes>
       </Router>
-    </ReactKeycloakProvider>
+    
   );
 }
 
