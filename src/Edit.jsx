@@ -112,13 +112,27 @@ export default function Edit() {
     mdfy: converters.filter((c) => c.category === 'mdfy')
   };
 
+  const collapseAllCards = () => {
+  setCards(prevCards =>
+    prevCards.map(card => ({ ...card, isExpanded: false }))
+  );
+};
+
 
   useEffect(() => {
-      if(errorId == "none"){
-        return;
-      }
-      errorDialogRef.current?.showModal();
-    }, [errorId]);
+  if (errorId === "none") {
+    return;
+  }
+
+  // Alle Karten einklappen
+  collapseAllCards();
+
+  // Danach den Fehlerdialog öffnen
+  errorDialogRef.current?.showModal();
+}, [errorId]);
+
+
+    
 
   useEffect(() => {
     if (schemaToEdit) {
