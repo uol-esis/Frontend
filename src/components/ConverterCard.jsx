@@ -38,43 +38,42 @@ export default function ConverterCard({id, label, parameters, converterType, for
     };
 
     const handleSave = useCallback(async () => {
-  // validierung + onSave logic
-  let newErrors = {};
-  parameters.forEach(param => {
-    const value = formData[param.apiName];
-    //exception for replace entries converter to replace empty cells 
-    if((param.apiName === "search" || param.apiName === "replacement") && !value){
-        return;
-    }
+    // validierung + onSave logic
+    let newErrors = {};
+    parameters.forEach(param => {
+        const value = formData[param.apiName];
+        //exception for replace entries converter to replace empty cells 
+        if((param.apiName === "search" || param.apiName === "replacement") && !value){
+                return;
+        }
 
-    if (param.required && (!value || value.toString().trim() === '')) {
-      newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
-    }
-  });
-
-  setErrors(newErrors);
-
-  if (Object.keys(newErrors).length === 0) {
-    await onSave?.(id, formData);
-    setSaveState("saved");
-    return true;
-  } else {
-    setSaveState("error");
-    setTimeout(() => { //für das Hochspringen zu Fehler
-  if (cardRef.current) {
-    const rect = cardRef.current.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const offset = 100; 
-
-    window.scrollTo({
-      top: rect.top + scrollTop - offset,
-      behavior: 'smooth'
+        if (param.required && (!value || value.toString().trim() === '')) {
+            newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
+        }
     });
-  }
-}, 100);
 
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+        setSaveState("saved");
+        await onSave?.(id, formData);
+        return true;
+    }
+
+    // Scrollen wirklich nur bei Fehlern
+    setSaveState("error");
+    setTimeout(() => {
+        if (cardRef.current) {
+            const rect = cardRef.current.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const offset = 100;
+            window.scrollTo({
+                top: rect.top + scrollTop - offset,
+                behavior: 'smooth'
+            });
+        }
+    }, 200);
     return false;
-  }
 }, [formData, parameters, id, onSave]);
 
 
