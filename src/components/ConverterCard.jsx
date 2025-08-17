@@ -4,6 +4,7 @@ import TableFromJSON from "./../TableFromJSON";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
+import SelectionMenu from "./SelectionMenu";
 
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description}) {
@@ -22,6 +23,23 @@ export default function ConverterCard({id, label, parameters, converterType, for
     const optionalParameters = parameters.filter(param => !param.required);
 
     const [saveState, setSaveState] = useState("unsaved"); //für die visuelle Rückgabe des Speicherzustands
+
+   const [checkBoxStates, setCheckBoxStates] = useState([false, false, false]);
+   const [categoryStates, setCategoryStates] = useState(["", "", ""]);
+
+    const changeCheckBoxState = (index, name) => {
+        const newStates = [...checkBoxStates];
+        newStates[index] = !newStates[index];
+        setCheckBoxStates(newStates);
+        handleInputChange(name, newStates[index]);
+    };
+
+    const changeCategoryState = (index, value, apiName) => {
+        const newStates = [...categoryStates];
+        newStates[index] = value;
+        setCategoryStates(newStates);
+        handleInputChange(apiName, newStates[index]);
+    };
 
     const openPopup = () => {
         if (closeTimeoutRef.current) {
@@ -42,8 +60,13 @@ export default function ConverterCard({id, label, parameters, converterType, for
   let newErrors = {};
   parameters.forEach(param => {
     const value = formData[param.apiName];
+    console.log("on save value " + value);
     //exception for replace entries converter to replace empty cells 
     if((param.apiName === "search" || param.apiName === "replacement") && !value){
+        return;
+    }
+
+    if(param.type === "boolean" || param.type === "enum"){
         return;
     }
 
@@ -105,8 +128,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
 
-       
-
+        console.log(param + " " + value);
         let error = "";
 
         setFormData((prevData) => ({
@@ -193,6 +215,29 @@ useEffect(() => {
                                     <label className="text-sm font-medium mb-1">
                                         {param.name}{param.required && <span className="text-red-500"> *</span>}
                                     </label>
+                        
+                                    {param.type === "enum" ? (
+                                        <SelectionMenu
+                                        label={param.name}
+                                        setCategory={changeCategoryState}
+                                        optionNames={param.options}
+                                        optionValues={param.values}
+                                        index={param.index}
+                                        apiName={param.apiName}
+                                        isEditing={isEditing}
+                                    />
+                                    ):(
+                                    
+                                    param.type === "boolean" ? 
+                                        <input
+                                            type="checkbox"
+                                            checked={checkBoxStates[param.index]}
+                                            onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                            disabled={!isEditing}
+                                            className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                                        />
+                                    :(
+                                
                                     <input
                                         type={param.type === "number" ? "number" : "text"}
                                         required={param.required}
@@ -201,6 +246,7 @@ useEffect(() => {
                                         readOnly={!isEditing}
                                         className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                     />
+                                    ))}
                                     {errors[param.apiName] && (
                                         <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
                                     )}
@@ -209,19 +255,29 @@ useEffect(() => {
                             {showOptional && optionalParameters.map(param => (
                                 <div key={param.apiName} className="flex flex-col">
                                     <label className="text-sm font-medium mb-1">{param.name}</label>
-                                    {param.Type === "boolean" ? 
+                                    {
+                                    param.type === "enum" ? 
+                                        <SelectionMenu
+                                        label={param.name}
+                                        setCategory={changeCategoryState}
+                                        optionNames={param.options}
+                                        optionValues={param.values}
+                                        index={param.index}
+                                        apiName={param.apiName}
+                                        isEditing={isEditing}
+                                    />
+                                    :
+                                    param.type === "boolean" ? 
                                         <input
                                             type="checkbox"
-                                            checked={checked}
-                                            onChange={(e) => setChecked(e.target.checked)}
+                                            checked={checkBoxStates[param.index]}
+                                            onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                            disabled={!isEditing}
+                                            className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                         />
                                     :(
                                         <input
-                                        type={param.type === "number"
-                                                ? "number"
-                                                : param.type === "boolean"
-                                                    ? "checkbox"
-                                                    : "text"
+                                        type={param.type === "number"? "number": "text"
                                             }
                                         value={formData[param.apiName] || ""}
                                         onChange={e => handleInputChange(param.apiName, e.target.value)}
