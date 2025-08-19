@@ -26,10 +26,14 @@ export default function Edit() {
   });
   const [errorId, setErrorId] = useState("none");
 
+  const [collapseAllSignal, setCollapseAllSignal] = useState(0);
+
   const [showConverterListTip, setShowConverterListTip] = useState(false);
   const [showCardListTip, setShowCardListTip] = useState(false);
   const tutorialRef = useRef();
   const errorDialogRef = useRef();
+
+  const [cardAdded, setCardAdded] = useState(false); //für das Unterbinden des initalen Scrollings
 
   const ExplainerConverterList = (
     <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
@@ -57,6 +61,7 @@ export default function Edit() {
     const newCard = {id: cardIdCounter, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true, description: description}; //Neue Card mit ID, label, Parametern, und converterType
     setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
     setCardIdCounter(cardIdCounter + 1);
+    setCardAdded(true); // Karte wurde hinzugefügt
   }
 
   const handleDeleteCard = (idToDelete) => {
@@ -311,6 +316,7 @@ export default function Edit() {
       });
       return updatedCards;
     });
+    setCollapseAllSignal(s => s+1)
   };
 
    const handleSaveAllCards = async () => {
@@ -444,17 +450,13 @@ const handleSaveUpToCard = async (upToCardId) => {
   const bottomRef = useRef(null);
   const prevCardCountRef = useRef(cards.length);
 
-  useEffect(() => {
-    const prevCount = prevCardCountRef.current; 
-    const currentCount = cards.length;
-
-  // Nur scrollen, wenn die Anzahl der Karten gestiegen ist
-  if (currentCount > prevCount) {
+useEffect(() => {
+  if (cardAdded) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setCardAdded(false); // zurücksetzen
   }
-
-  prevCardCountRef.current = currentCount;
-  }, [cards.length]);
+  // prevCardCountRef.current = cards.length; // nicht mehr nötig
+}, [cards.length, cardAdded]);
 
 
   return (
@@ -613,6 +615,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               onRegisterFormDataGetter={registerFormDataGetter}
               onRegisterSaveFn={registerSaveFn}
               onSaveCascade={handleSaveUpToCard}
+              collapseAllSignal={collapseAllSignal}
               
             />
           ))}
