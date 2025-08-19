@@ -26,6 +26,8 @@ export default function Edit() {
   });
   const [errorId, setErrorId] = useState("none");
 
+  const [collapseAllSignal, setCollapseAllSignal] = useState(0);
+
   const [showConverterListTip, setShowConverterListTip] = useState(false);
   const [showCardListTip, setShowCardListTip] = useState(false);
   const tutorialRef = useRef();
@@ -325,6 +327,7 @@ export default function Edit() {
       });
       return updatedCards;
     });
+    setCollapseAllSignal(s => s+1)
   };
 
    const handleSaveAllCards = async () => {
@@ -627,6 +630,7 @@ const handleSaveUpToCard = async (upToCardId) => {
               onRegisterFormDataGetter={registerFormDataGetter}
               onRegisterSaveFn={registerSaveFn}
               onSaveCascade={handleSaveUpToCard}
+              collapseAllSignal={collapseAllSignal}
               
             />
           ))}

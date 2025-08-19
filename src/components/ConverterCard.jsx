@@ -6,7 +6,7 @@ import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description, collapseAllSignal}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
@@ -81,6 +81,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
     useEffect(() => {
       setFormData(initialFormData || {});
     }, [initialFormData]);
+
+    useEffect(() => {
+        if (typeof collapseAllSignal !== "undefined") {
+            setExpanded(false)
+        }
+    }, [collapseAllSignal]);
 
     useEffect(() => {
         if (onRegisterFormDataGetter) {
