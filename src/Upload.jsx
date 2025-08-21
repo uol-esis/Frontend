@@ -170,7 +170,7 @@ function Upload() {
       console.log(response);
     };
 
-    api.generateTableStructure(selectedFile, settings, callback);
+    api.generateTableStructure(selectedFile, settings, {}, callback);
     
   }
 

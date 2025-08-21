@@ -60,7 +60,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
   let newErrors = {};
   parameters.forEach(param => {
     const value = formData[param.apiName];
-    console.log("on save value " + value);
     //exception for replace entries converter to replace empty cells 
     if((param.apiName === "search" || param.apiName === "replacement") && !value){
         return;
@@ -128,7 +127,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
 
-        console.log(param + " " + value);
         let error = "";
 
         setFormData((prevData) => ({
@@ -222,6 +220,7 @@ useEffect(() => {
                                         setCategory={changeCategoryState}
                                         optionNames={param.options}
                                         optionValues={param.values}
+                                        selectedValue={formData[param.apiName]}
                                         index={param.index}
                                         apiName={param.apiName}
                                         isEditing={isEditing}
@@ -231,7 +230,7 @@ useEffect(() => {
                                     param.type === "boolean" ? 
                                         <input
                                             type="checkbox"
-                                            checked={checkBoxStates[param.index]}
+                                            checked={formData[param.apiName]}
                                             onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
                                             disabled={!isEditing}
                                             className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
