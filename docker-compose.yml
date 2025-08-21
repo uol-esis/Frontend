@@ -2,6 +2,7 @@ name: th1-frontend
 services:
   frontend:
     container_name: frontend
+    restart: unless-stopped
     build:
       context: .
       args:

@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react"
 import keycloak from "../keycloak";
 
-let apiInstancePromise = null;
-
 export async function getApiInstance() {
-  if (apiInstancePromise) return apiInstancePromise;
-
-  apiInstancePromise = (async () => {
+  return (async () => {
     const module = await import('th1');
 
     const client = new module.ApiClient(import.meta.env.VITE_API_ENDPOINT);
@@ -23,6 +19,5 @@ export async function getApiInstance() {
     return { api, Th1: module };
   })();
 
-  return apiInstancePromise;
 }
 

@@ -7,7 +7,7 @@ import { SaveStatus } from "./saveStateCC";
 import SelectionMenu from "./SelectionMenu";
 
 
-export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description}) {
+export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description, collapseAllSignal}) {
     const [formData, setFormData] = useState(initialFormData || {});
     const [errors, setErrors] = useState({}); //Fehlerstate
     const [expanded, setExpanded] = useState(id===0); //hier ist der State, welcher später Dropdown öffnet, noch nicht implementiert
@@ -69,34 +69,33 @@ export default function ConverterCard({id, label, parameters, converterType, for
         return;
     }
 
-    if (param.required && (!value || value.toString().trim() === '')) {
-      newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
-    }
-  });
-
-  setErrors(newErrors);
-
-  if (Object.keys(newErrors).length === 0) {
-    await onSave?.(id, formData);
-    setSaveState("saved");
-    return true;
-  } else {
-    setSaveState("error");
-    setTimeout(() => { //für das Hochspringen zu Fehler
-  if (cardRef.current) {
-    const rect = cardRef.current.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const offset = 100; 
-
-    window.scrollTo({
-      top: rect.top + scrollTop - offset,
-      behavior: 'smooth'
+        if (param.required && (!value || value.toString().trim() === '')) {
+            newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
+        }
     });
-  }
-}, 100);
 
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+        setSaveState("saved");
+        await onSave?.(id, formData);
+        return true;
+    }
+
+    // Scrollen wirklich nur bei Fehlern
+    setSaveState("error");
+    setTimeout(() => {
+        if (cardRef.current) {
+            const rect = cardRef.current.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const offset = 100;
+            window.scrollTo({
+                top: rect.top + scrollTop - offset,
+                behavior: 'smooth'
+            });
+        }
+    }, 200);
     return false;
-  }
 }, [formData, parameters, id, onSave]);
 
 
@@ -104,6 +103,12 @@ export default function ConverterCard({id, label, parameters, converterType, for
     useEffect(() => {
       setFormData(initialFormData || {});
     }, [initialFormData]);
+
+    useEffect(() => {
+        if (typeof collapseAllSignal !== "undefined") {
+            setExpanded(false)
+        }
+    }, [collapseAllSignal]);
 
     useEffect(() => {
         if (onRegisterFormDataGetter) {
