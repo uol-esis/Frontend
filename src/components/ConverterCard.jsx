@@ -4,6 +4,7 @@ import TableFromJSON from "./../TableFromJSON";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
+import SelectionMenu from "./SelectionMenu";
 
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description, collapseAllSignal}) {
@@ -23,6 +24,23 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const [saveState, setSaveState] = useState("unsaved"); //für die visuelle Rückgabe des Speicherzustands
 
+   const [checkBoxStates, setCheckBoxStates] = useState([false, false, false]);
+   const [categoryStates, setCategoryStates] = useState(["", "", ""]);
+
+    const changeCheckBoxState = (index, name) => {
+        const newStates = [...checkBoxStates];
+        newStates[index] = !newStates[index];
+        setCheckBoxStates(newStates);
+        handleInputChange(name, newStates[index]);
+    };
+
+    const changeCategoryState = (index, value, apiName) => {
+        const newStates = [...categoryStates];
+        newStates[index] = value;
+        setCategoryStates(newStates);
+        handleInputChange(apiName, newStates[index]);
+    };
+
     const openPopup = () => {
         if (closeTimeoutRef.current) {
             clearTimeout(closeTimeoutRef.current);
@@ -38,14 +56,18 @@ export default function ConverterCard({id, label, parameters, converterType, for
     };
 
     const handleSave = useCallback(async () => {
-    // validierung + onSave logic
-    let newErrors = {};
-    parameters.forEach(param => {
-        const value = formData[param.apiName];
-        //exception for replace entries converter to replace empty cells 
-        if((param.apiName === "search" || param.apiName === "replacement") && !value){
-                return;
-        }
+  // validierung + onSave logic
+  let newErrors = {};
+  parameters.forEach(param => {
+    const value = formData[param.apiName];
+    //exception for replace entries converter to replace empty cells 
+    if((param.apiName === "search" || param.apiName === "replacement") && !value){
+        return;
+    }
+
+    if(param.type === "boolean" || param.type === "enum"){
+        return;
+    }
 
         if (param.required && (!value || value.toString().trim() === '')) {
             newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
@@ -109,8 +131,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
 }, [isEditing]);
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
-
-       
 
         let error = "";
 
@@ -198,6 +218,32 @@ useEffect(() => {
                                     <label className="text-sm font-medium mb-1">
                                         {param.name}{param.required && <span className="text-red-500"> *</span>}
                                     </label>
+                        
+                                    {param.type === "enum" ? (
+                                        <SelectionMenu
+                                        label={param.name}
+                                        setCategory={changeCategoryState}
+                                        optionNames={param.options}
+                                        optionValues={param.values}
+                                        selectedValue={formData[param.apiName]}
+                                        index={param.index}
+                                        apiName={param.apiName}
+                                        isEditing={isEditing}
+                                    />
+                                    ):(
+                                    
+                                    param.type === "boolean" ? 
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                checked={formData[param.apiName]}
+                                                onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                                disabled={!isEditing}
+                                                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                                            />
+                                        </div>
+                                    :(
+                                
                                     <input
                                         type={param.type === "number" ? "number" : "text"}
                                         required={param.required}
@@ -206,6 +252,7 @@ useEffect(() => {
                                         readOnly={!isEditing}
                                         className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                     />
+                                    ))}
                                     {errors[param.apiName] && (
                                         <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
                                     )}
@@ -214,13 +261,37 @@ useEffect(() => {
                             {showOptional && optionalParameters.map(param => (
                                 <div key={param.apiName} className="flex flex-col">
                                     <label className="text-sm font-medium mb-1">{param.name}</label>
-                                    <input
-                                        type={param.type === "number" ? "number" : "text"}
+                                    {
+                                    param.type === "enum" ? 
+                                        <SelectionMenu
+                                        label={param.name}
+                                        setCategory={changeCategoryState}
+                                        optionNames={param.options}
+                                        optionValues={param.values}
+                                        index={param.index}
+                                        apiName={param.apiName}
+                                        isEditing={isEditing}
+                                    />
+                                    :
+                                    param.type === "boolean" ? 
+                                        <input
+                                            type="checkbox"
+                                            checked={checkBoxStates[param.index]}
+                                            onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                            disabled={!isEditing}
+                                            className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                                        />
+                                    :(
+                                        <input
+                                        type={param.type === "number"? "number": "text"
+                                            }
                                         value={formData[param.apiName] || ""}
                                         onChange={e => handleInputChange(param.apiName, e.target.value)}
                                         readOnly={!isEditing}
                                         className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                     />
+                                    )}
+                                    
                                     {errors[param.apiName] && (
                                         <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
                                     )}
