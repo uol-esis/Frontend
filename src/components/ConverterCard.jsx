@@ -228,13 +228,15 @@ useEffect(() => {
                                     ):(
                                     
                                     param.type === "boolean" ? 
-                                        <input
-                                            type="checkbox"
-                                            checked={formData[param.apiName]}
-                                            onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
-                                            disabled={!isEditing}
-                                            className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
-                                        />
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                checked={formData[param.apiName]}
+                                                onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                                disabled={!isEditing}
+                                                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                                            />
+                                        </div>
                                     :(
                                 
                                     <input
