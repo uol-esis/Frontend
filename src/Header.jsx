@@ -74,7 +74,7 @@ export default function Header() {
                   >
                     <div className='flex gap-1'>
                       {/* show username if logged in */}
-                      <UserCircleIcon className='size-8'/>
+                      <UserCircleIcon className='size-8' />
                     </div>
 
                   </button>
@@ -101,16 +101,18 @@ export default function Header() {
           id="user-popup"
           className="flex flex-col gap-4 absolute bg-white shadow-lg rounded-lg p-4 absolute right-0"
         >
-        <div className='flex flex-col gap-2'>
-          <p>Angemeldet als:</p>
-          <p className='text-gray-500'>{keycloak.tokenParsed?.preferred_username}</p>
-        </div>
-          
+          <div className='flex flex-col gap-2'>
+            <p>Angemeldet als:</p>
+            <p className='text-gray-500'>{keycloak.tokenParsed?.preferred_username}</p>
+          </div>
+
 
           <button
-            onClick={() => { keycloak.logout({
+            onClick={() => {
+              keycloak.logout({
                 redirectUri: window.location.origin
-              }); }}
+              });
+            }}
             className=" p-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Logout
