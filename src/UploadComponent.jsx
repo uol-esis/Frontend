@@ -125,7 +125,7 @@ export default function UploadComponent({setFile, setValid}){
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="mt-2 block text-sm font-semibold text-gray-900">Datei hochladen</span>
+                <span className="mt-2 block text-sm font-semibold text-gray-900">Upload File</span>
               </>
             )}
           </button>
@@ -134,11 +134,11 @@ export default function UploadComponent({setFile, setValid}){
             onClick={handleFileInputClick}
             className="mt-4 rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
           >
-            Dateien durchsuchen
+            Browse files
           </button>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
           {selectedFile && (
-            <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>
+            <p className="mt-2 text-sm text-gray-700">Selected File: {selectedFile.name}</p>
           )}
         </div>
       </div>

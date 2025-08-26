@@ -21,7 +21,7 @@ export default function UploadDialog({ dialogRef, dontShowAgain, setDontShowAgai
                 checked={dontShowAgain}
                 onChange={() => setDontShowAgain(!dontShowAgain)}
               />
-              <span className="m-4">Tutorial das nächste Mal nicht mehr anzeigen</span>
+              <span className="m-4">Do not show tutorial next time</span>
             </label>
             
           </div>
@@ -33,7 +33,7 @@ export default function UploadDialog({ dialogRef, dontShowAgain, setDontShowAgai
                 nextDialogRef.current?.showModal();
               }}
             >
-              Weiter
+              Next
             </button>
         
       </dialog>

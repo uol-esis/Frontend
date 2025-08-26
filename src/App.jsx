@@ -4,7 +4,6 @@ import Home from "./Home";
 import Upload from "./Upload";
 import Preview from "./Preview";
 import WorkInProgress from "./WorkInProgress";
-import Feedback from './Feedback';
 import Edit from "./Edit";
 import { useEffect } from "react";
 import './css/App.css'
@@ -27,7 +26,6 @@ function App() {
           <Route path="/wip" element={<WorkInProgress />} />
           <Route path="/secured" element={<SecuredContent />} />
           <Route path="/edit" element={<Edit />} />
-          <Route path="/feedback" element={<Feedback />} />
           <Route path="/wiki" element={<Wiki />} />
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />

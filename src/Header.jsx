@@ -1,19 +1,13 @@
 'use client'
 
 import React, { useState, useRef } from 'react';
-import { href } from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
-import { useAuthGuard } from './hooks/AuthGuard';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { ChevronUpIcon } from '@heroicons/react/24/outline';
-import { useNavigate } from "react-router-dom";
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 // Navigation items for the left section
 const leftNavigation = [
-  { name: 'Wiki', href: '/wiki' },
+  { name: 'Docs', href: '/wiki' },
   { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
-  { name: 'Feedback', href: '/feedback' },
 ];
 
 // Navigation items for the right section

@@ -59,32 +59,26 @@ export default function Wiki() {
     });
 
 
-    const navigation = [
-        { name: 'Einleitung', href: introductionRef },
-        { name: 'Datenbankkonforme Daten', href: databaseRef },
-        {
-            name: 'Converter', href: '#', children: [
-                { name: 'Gruppenüberschrift entfernen', href: removeGroupedHeaderRef },
-                { name: 'Leere Zeilen ausfüllen', href: fillEmptyRowRef },
-                { name: 'Leere Spalte ausfüllen', href: fillEmptyColref },
-                { name: 'Spalte entfernen (nach Index)', href: removeColRef },
-                { name: 'Zeile entfernen (nach Index)', href: removeRowRef },
-                { name: 'Spalteüberschriften hinzufügen', href: addColNameRef },
-                { name: 'Fußzeile entfernen', href: removeFooterRef },
-                { name: 'Kopfzeile entfernen', href: removeHeaderRef },
-                { name: 'Einträge ersetzen', href: replaceEntriesRef },
-                { name: 'Zeile aufteilen', href: splitRowRef },
-                { name: 'Ungültige Zeilen entfernen', href: removeInvalidRowsRef },
-                { name: 'Nachträglich Spalten entfernen', href: removeTrailingColRef },
-            ]},
-        {name: 'Metabase', href: '#', children: [
-                { name: 'Einstieg', href: metabaseEinstiegRef},
-                { name: 'Daten filtern', href: metabaseFilterRef},
-                { name: 'Daten zusammenfassen', href: metabaseSummaryRef},
-                { name: 'Visualisierung erstellen', href: metabaseVisualisierungRef},
-                { name: 'Unterschiedliche Tabellen verbinden', href: metabaseJoinRef},
-            ]},
-    ]
+            const navigation = [
+            { name: 'Introduction', href: introductionRef },
+            { name: 'Database-compliant Data', href: databaseRef },
+            {
+                name: 'Converters', href: '#', children: [
+                    { name: 'Remove grouped headers', href: removeGroupedHeaderRef },
+                    { name: 'Fill empty rows', href: fillEmptyRowRef },
+                    { name: 'Fill empty columns', href: fillEmptyColref },
+                    { name: 'Remove column (by index)', href: removeColRef },
+                    { name: 'Remove row (by index)', href: removeRowRef },
+                    { name: 'Add column headers', href: addColNameRef },
+                    { name: 'Remove footer', href: removeFooterRef },
+                    { name: 'Remove header', href: removeHeaderRef },
+                    { name: 'Replace entries', href: replaceEntriesRef },
+                    { name: 'Split row', href: splitRowRef },
+                    { name: 'Remove invalid rows', href: removeInvalidRowsRef },
+                    { name: 'Remove trailing columns', href: removeTrailingColRef },
+                ]
+            },
+        ]
 
     const scrollToWithOffset = (ref, offset = window.innerHeight * 0.15) => {
         const element = ref.current;
@@ -109,115 +103,94 @@ export default function Wiki() {
             <section className="flex flex-col ml-[15vw] mb-[5vh] p-5">
 
                 {/* Introduction */}
-                <section ref={introductionRef}>
-                    <h2 className="text font-semibold text-lg"> Einleitung </h2>
-                    <p> Work in Progress! </p>
-                </section>
+                
 
                 <section className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Funktionen / Converter</h2>
-                    <p>
-                        Funktionen werden in der Ansicht "Tabellentransformation bearbeiten" verwendent.
-                        Eine Funktion entspricht einem Bearbeitungsschritt, der auf die Tabelle angwendet wird.
-                        Damit dieser Bearbeitungsschritt korrekt durchgeführt wird, braucht jede Funktion verschiedene Informationen, beispielsweise
-                        Start- und Endreihe. Im Folgenden werden alle Funktionen aufgelistet und deren Funktionweise genauer erklärt.
-
-                    </p>
+                <h2 className="text font-semibold text-lg">Functions / Converters</h2>
+                <p>
+                    Functions are used in the "Edit Table Transformation" view.  
+                    A function corresponds to a processing step that is applied to the table.  
+                    For this processing step to be executed correctly, each function requires various information, for example, start and end row.  
+                    Below, all functions are listed and their operation is explained in more detail.
+                </p>
                 </section>
+
 
                 <div className="mt-6 border-1 border-gray-200"></div>
 
                 {/* database info */}
                 <section ref={databaseRef}>
-                    <h2 className="text font-semibold text-lg mt-5"> Datenbankkonforme Daten </h2>
+                    <h2 className="text font-semibold text-lg mt-5"> Database-compliant Data </h2>
                     <h1 className="text-lg font-semibold mb-4">
-                        Warum und wie Sie Excel-Tabellen optimieren müssen
+                        Why and how you need to optimize Excel tables
                     </h1>
                     <p className="mb-4 text-left pl-5">
-                        Diese Anwendung verarbeitet Ihre Excel-Tabellen, um Daten in eine
-                        Datenbank zu importieren. Häufig sind diese Tabellen jedoch sehr
-                        verschachtelt oder unstrukturiert. Damit unsere Software die Daten
-                        richtig lesen und verarbeiten kann, müssen die Tabellen in ein
-                        „maschinenlesbares“ und „datenbankkonformes“ Format gebracht werden.
+                        This application processes your Excel files to import data into a database. Often these tables are nested or unstructured. For our software to correctly read and process the data, the tables must be converted into a "machine-readable" and "database-compliant" format.
                     </p>
 
                     <h2 className="text-xl font-semibold mb-2">
-                        1. Was bedeutet „maschinenlesbar“ und „datenbankkonform“?
+                        1. What does "machine-readable" and "database-compliant" mean?
                     </h2>
                     <p className="mb-4 text-left pl-5">
-                        <strong>Maschinenlesbar:</strong> Daten sind so formatiert, dass
-                        Computer sie problemlos verstehen und verarbeiten können – in klaren,
-                        getrennten Spalten und Zeilen.
+                        <strong>Machine-readable:</strong> Data is formatted so that computers can easily understand and process it — in clear, separate columns and rows.
                     </p>
                     <div className="mb-4 text-left pl-5">
-                        <strong>Datenbankkonform:</strong> Die Struktur entspricht den
-                        Anforderungen einer Datenbank:
+                        <strong>Database-compliant:</strong> The structure matches the requirements of a database:
                         <ul className="list-disc ml-6">
                             <li>
-                                Jede Spalte enthält nur eine Art von Information (z. B. nur Namen,
-                                nur Zahlen).
+                                Each column contains only one type of information (e.g. only names, only numbers).
                             </li>
-                            <li>Überschriften stehen eindeutig in der ersten Zeile.</li>
-                            <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
+                            <li>Headings are clearly in the first row.</li>
+                            <li>No nested or merged cells.</li>
                         </ul>
                     </div>
-                    {renderImage("/Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
+                    {renderImage("/Verschachtelung1.png", "Comparison: unstructured vs optimized table")}
                     <p className="text-center text-sm mb-6">
-                        Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.
+                        Image: Top – Nested table; Bottom – Optimized, clear structure.
                     </p>
 
                     
                     <h2 className="text-xl font-semibold mb-2">
-                        2. Wie sollte eine optimierte Tabelle aussehen?
+                        2. How should an optimized table look?
                     </h2>
                     <ul className="list-disc ml-6 mb-4 text-left pl-5">
                         <li>
-                        <strong>Klare Überschriften:</strong> Jede Spalte hat eine eindeutige
-                        Überschrift.
+                        <strong>Clear headings:</strong> Each column has an unambiguous header.
                         </li>
                         <li>
-                        <strong>Einheitliche Datenformate:</strong> Alle Werte in einer Spalte
-                        sind gleich formatiert.
+                        <strong>Consistent data formats:</strong> All values in a column use the same format.
                         </li>
                         <li>
-                        <strong>Keine zusammengeführten Zellen:</strong> Jede Zelle steht für
-                        sich.
+                        <strong>No merged cells:</strong> Each cell stands on its own.
                         </li>
                         <li>
-                        <strong>Flache Struktur:</strong> Eine Überschriftenzeile, gefolgt von den
-                        Daten.
+                        <strong>Flat structure:</strong> One header row followed by the data rows.
                         </li>
                     </ul>
-                    {renderImage("/Verschachtelung3.png", "Optimierte Tabelle")}
+                    {renderImage("/Verschachtelung3.png", "Optimized table")}
                     <p className="text-center text-sm mb-6">
-                        Bild: Optimierte Tabelle mit klaren Überschriften, einheitlichen Daten und
-                        ohne verschachtelte Zellen.
+                        Image: Optimized table with clear headers, consistent data and no nested cells.
                     </p>
 
                     
 
                     <h2 className="text-xl font-semibold mb-2 text-left pl-5">
-                        Zusammenfassung
+                        Summary
                     </h2>
                     <ul className="list-disc ml-6 mb-4 text-left pl-5">
                         <li>
-                        <strong>Warum:</strong> Damit unsere App die Excel-Daten fehlerfrei
-                        verarbeiten kann.
+                        <strong>Why:</strong> So our app can process Excel data without errors.
                         </li>
                         <li>
-                        <strong>Was:</strong> Die Tabelle muss klar strukturierte, einheitliche
-                        Daten enthalten.
+                        <strong>What:</strong> The table must contain clearly structured, consistent data.
                         </li>
                         <li>
-                        <strong>Wie:</strong> Durch Auflösen zusammengeführter Zellen, klare
-                        Überschriften und einheitliche Formatierung.
+                        <strong>How:</strong> By unmerging cells, using clear headers and consistent formatting.
                         </li>
                     </ul>
 
                     <p className="mb-4 text-left pl-5">
-                        Mit diesen Schritten werden Ihre Tabellen optimal für den Import
-                        vorbereitet. Sollten Sie Fragen haben oder Unterstützung benötigen,
-                        wenden Sie sich bitte an unseren Support!
+                        With these steps your tables will be prepared optimally for import. If you have questions or need support, please contact our support team.
                     </p>
                     
                     {/* make pictures bigger */}
@@ -228,11 +201,11 @@ export default function Wiki() {
                         >
                         <div
                             className="w-2/3 relative shadow-lg"
-                            onClick={(e) => e.stopPropagation()} // Verhindert, dass Klicks im Container das Schließen auslösen
+                            onClick={(e) => e.stopPropagation()} // prevent clicks inside the container from closing
                         >
                             <img
                             src={enlargedImage}
-                            alt="Vergrößert"
+                            alt="Enlarged"
                             className="w-full h-auto object-contain"
                             />
                         </div>
@@ -245,49 +218,40 @@ export default function Wiki() {
 
                 {/* remove grouped header */}
                 <section ref={removeGroupedHeaderRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" > Gruppenüberschrift entfernen</h2>
+                    <h2 className="text font-semibold text-lg" > Remove grouped header</h2>
                     <p>
-                        Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden.
-                        Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig,
-                        da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist
+                        This converter can unfold nested headers in the header row and within columns. You must specify the rows and columns where the nesting occurs. This is necessary because the database cannot contain nested structures and requires a flat layout.
                     </p>
                     <div className="p-4">
                         <InfoCard
                             text={
-                                "- Vorher muss der Converter \"Leere Zeilen ausfüllen\" angewendet werden, damit keine leeren Einträge in den Verschachtelungen auftreten \n" +
-                                "- Wenn in den Spalten keine Verschachtelungen auftreten, dann kann beim Spaltenindex 0 eingetragen werden \n" +
-                                "- Am Ende müssen die Spaltennamen mit dem Converter \"Spaltenüberschriften hinzufügen\" angepasst werden"
+                                "- Before using this, apply the 'Fill empty rows' converter so there are no empty entries within the nested headers\n" +
+                                "- If there are no nested headers within columns, you can enter column index 0\n" +
+                                "- Finally, adjust the column names using the 'Add column headers' converter"
                             } />
                     </div>
 
                     {/* example 1 */}
-                    <p className="text-left font-semibold mt-4">Beispiel 1: Verschachtelten Header auflösen</p>
+                    <p className="text-left font-semibold mt-4">Example 1: Unfold nested header</p>
                     <p className="text-left">
-                        Vorher muss der Converter "Leere Zeilen ausfüllen" angewendet werden, damit keine leeren Einträge in den Verschachtelungen auftreten.
-                        Zuerst müssen die beiden Zeilen, in der die Verschachtelung auftritt angegeben werden, also Zeile 1 und 2.
-                        Dies muss bei Zeilennummer eingetragen werden. Da keine Verschachtelungen innerhalb der Spalten vorzufinden
-                        sind kann bei Spaltennummer 0 eingetragen werden. Die nächsten beiden Angaben beziehen sich auf die Daten.
-                        Es muss der Beginn der tatsächlichen Daten angegeben werden, in diesem Fall ist Stadtviertel eigentlich eine eigene Spalte,
-                        also fangen die Daten bei Zeile 1 Spalte 3 an (bei dem Eintrag 35).
-                        Wie am Ende zu sehen ist, sind nun die Spaltennamen undefined, diese müssen mit dem Converter "Spaltenüberschriften hinzufügen"
-                        hinzugefügt werden.
+                        Beforehand, apply the "Fill empty rows" converter so there are no empty entries within nested headers. First specify the two rows where the nesting occurs (rows 1 and 2). Enter these in the row numbers field. Since there are no nested headers within the columns, you can enter column number 0. The next two values refer to the data: you must indicate where the actual data starts. In this case, "Stadtviertel" is actually its own column, so the data starts at row 1 column 3 (at the value 35). As shown at the end, the column names are now undefined and must be added with the "Add column headers" converter.
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/removeGroupedHeaderParameter1.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <figcaption className="font-semibold p-4">Before </figcaption>
                             <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard1.png" alt="" />
 
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <figcaption className="font-semibold p-4"> After</figcaption>
                             <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew1.png" alt="" />
 
                         </figure>
@@ -295,23 +259,15 @@ export default function Wiki() {
                     </div>
 
                     {/* example 2 */}
-                    <p className="text-left font-semibold mt-4">Beispiel 2: Verschachtelten Header und Spalten auflösen</p>
+                    <p className="text-left font-semibold mt-4">Example 2: Unfold nested header and columns</p>
                     <p className="text-left">
-                        Vorher muss der Converter "Leere Zeilen ausfüllen" mit Wert 0 und der Converter
-                        "Leere Spalten ausfüllen" mit dem Wert 0,1 angewendet werden.
-                        Bei diesem Beispiel sind nun auch Verschachtelungen innerhalb der Spalten. Dies erkennt
-                        man daran, das innerhalb einer Spalte verschiedenen Überschriften stehen, z.B. in Spalte 0
-                        sind die Überschriften: Geschlecht, 13 Altersgruppen und Sozialräume.
-                        Eigentlich sollte es nur eine Überschrift pro Spalte geben. Deswegen muss nun bei Spaltennummern die Spalten
-                        0, 1 und 2 angegeben werden. Die verschachtelten Zeilen sind 0 und 1, diese werden bei Zeilennummern eingetragen und
-                        die tatsächlichen Daten beginnen bei Zeile 3 und Spalte 3. Dies wird bei Startzeile und Startspalte eingetragen.
-                        Zum Schluss muss wieder mit dem Converter "Spaltenüberschriften hinzufügen" die Spaltennamen ergänzt werden.
+                        First apply the "Fill empty rows" converter with value 0 and the "Fill empty columns" converter with values 0,1. In this example there are also nested headers within columns. You can see this when different headers appear inside a single column, for example in column 0 the headers are: gender, 13 age groups and social areas. Ideally there should be only one header per column. Therefore enter column numbers 0, 1 and 2. The nested rows are 0 and 1; enter these in the row numbers field and the actual data begins at row 3 column 3 (start row and start column fields). Finally add the column names using the "Add column headers" converter.
 
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/removeGroupedHeaderParameter2.png" alt="" />
                         </figure>
 
@@ -319,13 +275,13 @@ export default function Wiki() {
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <figcaption className="font-semibold p-4">Before </figcaption>
                             <img className=" object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderStandard2.png" alt="" />
 
                         </figure>
 
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <figcaption className="font-semibold p-4"> After</figcaption>
                             <img className="object-contain w-[35vw]" src="wikiAssets/removeGroupedHeaderNew2.png" alt="" />
 
                         </figure>
@@ -337,16 +293,14 @@ export default function Wiki() {
 
                 {/* fill empty row */}
                 <section ref={fillEmptyRowRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Leere Zeilen ausfüllen</h2>
+                    <h2 className="text font-semibold text-lg" >Fill empty rows</h2>
                     <p>
-                        Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.
+                        Use the "Fill empty rows" function when you want to replace empty cells in a specified row with values that are to the left of the empty cells.
                     </p>
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left font-semibold mt-4">Example:</p>
                     <p className="text-left">
-                        Die folgende Tabelle enthält zum Beispiel eine leere Zelle rechts von "Leistungen".
-                        Um die Tabelle weiter bearbeiten zu können wie z. B. die Kopfzeile zu ändern,
-                        müssen wir in der Zeile alle Zellen gefüllt haben. <br /> <br />
-                        Wir geben für die Zeilennummer Zeile 1 an, da sich hier die leere Zelle rechts von "Leistungen" befindet.
+                        The following table contains an empty cell to the right of "Leistungen". To continue processing the table, for example to change the header, all cells in the row must be filled. <br /> <br />
+                        We enter row number 1 because the empty cell to the right of "Leistungen" is located there.
                     </p>
                     <div className="flex justify-center">
                         <figure>
@@ -356,11 +310,11 @@ export default function Wiki() {
                     </div>
                     <div className="flex justify-around p-4">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Vorher </figcaption>
+                            <figcaption className="font-semibold p-4"> Before </figcaption>
                             <img className="object-contain" src="wikiAssets/FillEmptyRow.png" alt="fill empty row" />
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher </figcaption>
+                            <figcaption className="font-semibold p-4"> After </figcaption>
                             <img className=" object-contain" src="wikiAssets/FillEmptyRow_Result.png" alt="fill empty row" />
                         </figure>
                     </div>
@@ -371,15 +325,13 @@ export default function Wiki() {
 
                 {/* fill empty column */}
                 <section ref={fillEmptyColref} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Leere Spalten ausfüllen</h2>
+                    <h2 className="text font-semibold text-lg" >Fill empty columns</h2>
                     <p>
-                        Die Funktion "Leere Spalten ausfüllen" operiert von der Funktionsweise wie die Funktion "Leere Zeilen ausfüllen" bezogen auf Spalten. Sie füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.
+                        The "Fill empty columns" function operates similarly to "Fill empty rows" but applies to columns. It fills empty cells in the specified column with values that are above the empty cells.
                     </p>
-                    <p className="text-left font-semibold mt-4">Beispiel: </p>
-                    <p className="text-left"> In der folgenden Tabelle sehen wir eine fiktive Auflistung von Familien mit der
-                        Anzahl in ihr lebender schulpflichtiger Kinder, in einem bestimmten Stadtteil wohnend. Wir wollen nun die Stadtteile
-                        in der Spalte "Stadtteil" auffüllen. <br /> <br />
-                        Wir geben die Spalte 0 an, da "Stadtteil" die erste Spalte von links ist.
+                    <p className="text-left font-semibold mt-4">Example: </p>
+                    <p className="text-left"> In the following table we have a fictional list of families and the number of school-age children living in a specific district. We want to fill the district names in the "Stadtteil" column. <br /> <br />
+                        We enter column 0 because "Stadtteil" is the first column from the left.
                     </p>
                     <div className="mt-5 flex justify-center">
                         <figure>
@@ -389,11 +341,11 @@ export default function Wiki() {
                     </div>
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold">Vorher </figcaption>
+                            <figcaption className="font-semibold">Before </figcaption>
                             <img className="h-[40vh] object-contain" src="wikiAssets/FillEmptyColumn.png" alt="fill empty column" />
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold"> Nachher</figcaption>
+                            <figcaption className="font-semibold"> After</figcaption>
                             <img className="h-[40vh] object-contain" src="wikiAssets/FillEmptyColumn_Result.png" alt="fill empty column" />
                         </figure>
                     </div>
@@ -404,16 +356,13 @@ export default function Wiki() {
 
                 {/* remove column */}
                 <section ref={removeColRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Spalte entfernen (nach Index)</h2>
+                    <h2 className="text font-semibold text-lg" >Remove column (by index)</h2>
                     <p>
-                        Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird.
-                        Bei der Angabe ist zu beachten, das die Spalte "Index" nicht mitgezählt wird und danach die Zählung bei 0 beginnt.
-                        Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander
-                        getrennt werden.
+                        This function can remove one or more columns by specifying their indices. Note that the "Index" column itself is not counted and the numbering starts at 0 afterwards. If you want to delete multiple columns, separate the numbers with commas and no spaces.
                     </p>
-                    <p className="text-left font-semibold mt-4">Beispiel: </p>
+                    <p className="text-left font-semibold mt-4">Example: </p>
                     <p className="text-left">
-                        Wir wollen im folgenden Beispiel die Spalte "Stadtviertel" am Anfang der Tabelle löschen.
+                        In the following example we want to delete the "Stadtviertel" column at the beginning of the table.
 
                     </p>
                     <div className="flex justify-center">
@@ -423,11 +372,11 @@ export default function Wiki() {
                     </div>
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold"> Vorher </figcaption>
+                            <figcaption className="font-semibold"> Before </figcaption>
                             <img className=" object-contain" src="/wikiAssets/standardTable.png" alt="remove Column" />
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold"> Nachher</figcaption>
+                            <figcaption className="font-semibold"> After</figcaption>
                             <img className=" object-contain" src="/wikiAssets/RemoveColumn_Result.png" alt="remove Column" />
                         </figure>
                     </div>
@@ -438,14 +387,14 @@ export default function Wiki() {
 
                 {/* remove row */}
                 <section ref={removeRowRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Zeile entfernen (nach Index)</h2>
+                    <h2 className="text font-semibold text-lg" >Remove row (by index)</h2>
                     <p>
-                        Wenn Sie eine oder mehrere Zeilen gleichzeitig löschen möchten, können Sie dies mit der Funktion "Zeile entfernen (nach Index)" verwenden. Für die Zählung der Zeilen können Sie die Angaben in der Spalte "Index" nutzen. Bitte beachten Sie, dass die Kopfzeile Zeile 0 darstellt.
+                        Use "Remove row (by index)" when you want to delete one or more rows at once. You can use the values in the "Index" column to determine row numbers. Note that the header row is row 0.
                         
                     </p>
-                    <p className="text-left font-semibold mt-4">Beispiel: </p>
+                    <p className="text-left font-semibold mt-4">Example: </p>
                     <p className="text-left">
-                        Hier wollen wir Zeile 1 und 2 löschen.
+                        Here we want to delete rows 1 and 2.
                     </p>
                     <div className="mt-5 flex justify-center">
                         <figure>
@@ -455,11 +404,11 @@ export default function Wiki() {
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold"> Vorher </figcaption>
+                            <figcaption className="font-semibold"> Before </figcaption>
                             <img className="object-contain" src="wikiAssets/standardTable.png" alt="remove row" />
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold"> Nachher</figcaption>
+                            <figcaption className="font-semibold"> After</figcaption>
                             <img className="object-contain" src="wikiAssets/RemoveRow_Result.png" alt="remove row" />
                         </figure>
                     </div>
@@ -470,42 +419,39 @@ export default function Wiki() {
 
                 {/* add column name */}
                 <section ref={addColNameRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" > Spaltenüberschriften hinzufügen</h2>
+                    <h2 className="text font-semibold text-lg" > Add column headers</h2>
                     <p>
-                        Mithilfe dieses Converters können die Spaltennamen verändert werden.
-                        Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet,
-                        der zweite Name auf die zweite Spalte und so weiter.
+                        This converter allows you to change the column names. The names are separated by commas: the first name applies to the first column, the second name to the second column, and so on.
 
                     </p>
                     <div className="p-4">
                         <InfoCard
                             text={
-                                "- Die Aufzählung der Spaltennamen ohne Leerzeichen schreiben, denn diese werden als Unterstrich angezeigt\n- undefined bedeutet, das für die Spalte kein Name vergeben wurde"
+                                "- Write the list of column names without spaces, as spaces are shown as underscores\n- 'undefined' means no name was assigned for that column"
                             } />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel: "Undefined" zu "Anzahl" ändern</p>
+                    <p className="text-left font-semibold mt-4">Example: change "Undefined" to "Anzahl" (Count)</p>
                     <p className="text-left">
-                        Da die letzte Spalte undefined ist, also kein Name vergeben wurde, taucht dieser nicht in der Auflistung auf.
-                        Also kann der neue Spaltenname "Anzahl" am Ende der Aufzählung hinzugefügt werden.
+                        Since the last column is undefined (no name assigned), it does not appear in the listing. You can therefore add the new column name "Anzahl" at the end of the list.
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/addHeaderNameParameter.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <figcaption className="font-semibold p-4">Before </figcaption>
                             <img className=" object-contain w-[35vw]" src="wikiAssets/addHeaderNameStandard.png" alt="" />
 
                         </figure>
 
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <figcaption className="font-semibold p-4"> After</figcaption>
                             <img className="object-contain w-[35vw]" src="wikiAssets/addHeaderNameNew.png" alt="" />
 
                         </figure>
@@ -517,24 +463,21 @@ export default function Wiki() {
 
                 {/* remove footer */}
                 <section ref={removeFooterRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Fußzeile entfernen</h2>
+                    <h2 className="text font-semibold text-lg" >Remove footer</h2>
                     <p>
-                        Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt.
-                        Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.
-                        Für die korrekte Verarbeitung der Daten wird nur die Tabelle benötigt. Andernfalls werden die Textzeilen als Daten angesehen
-                        und in die Tabelle geschrieben.
+                        This converter removes the section below the actual data. This separates the table from any metadata text and ensures correct display. Only the table is required for correct data processing; otherwise text lines below the table would be interpreted as data.
 
                     </p>
                     <div className="p-4">
                         <InfoCard
                             text={
-                                "Dieser Converter funktioniert automatisch und es müssen keine weiteren Angaben gemacht werden"
+                                "This converter works automatically and requires no further input"
                             } />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
-                    <p className="text-left">Bei dieser Tabelle wird der Text unter der Tabelle entfernt, also Zeile 80 und 81</p>
-                    <img className="mt-5 object-contain" src="wikiAssets/removeFooter.png" alt="Kopfzeile entfernen Bild" />
+                    <p className="text-left font-semibold mt-4">Example:</p>
+                    <p className="text-left">In this table, the text below the table (rows 80 and 81) is removed.</p>
+                    <img className="mt-5 object-contain" src="wikiAssets/removeFooter.png" alt="Remove footer example" />
 
                 </section>
 
@@ -542,24 +485,21 @@ export default function Wiki() {
 
                 {/* remove header */}
                 <section ref={removeHeaderRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Kopfzeile entfernen</h2>
+                    <h2 className="text font-semibold text-lg" >Remove header</h2>
                     <p>
-                        Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt.
-                        Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.
-                        Für die korrekte Verarbeitung der Daten wird nur die Tabelle benötigt. Andernfalls werden die Textzeilen als Daten angesehen
-                        und in die Tabelle geschrieben.
+                        This converter removes the section above the actual data. This separates the table from any metadata text and ensures correct display. Only the table is required for correct data processing; otherwise text lines above the table would be interpreted as data.
 
                     </p>
                     <div className="p-4">
                         <InfoCard
                             text={
-                                "Dieser Converter funktioniert automatisch und es müssen keine weiteren Angaben gemacht werden"
+                                "This converter works automatically and requires no further input"
                             } />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
-                    <p className="text-left">Bei dieser Tabelle werden der Text über der Tabelle, also Zeile 3 bis 7</p>
-                    <img className="mt-5 object-contain" src="wikiAssets/removeHeader.png" alt="Kopfzeile entfernen Bild" />
+                    <p className="text-left font-semibold mt-4">Example:</p>
+                    <p className="text-left">In this table the text above the table (rows 3 to 7) is removed.</p>
+                    <img className="mt-5 object-contain" src="wikiAssets/removeHeader.png" alt="Remove header example" />
 
                 </section>
 
@@ -567,37 +507,36 @@ export default function Wiki() {
 
                 {/* replace entries */}
                 <section ref={replaceEntriesRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Einträge ersetzen </h2>
+                    <h2 className="text font-semibold text-lg" >Replace entries </h2>
                     <p>
-                        Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren.
-                        Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.
+                        This converter can replace individual entries in the table to correct, for example, incorrect values. The entire table is searched for the search term and every occurrence is replaced with the "Replace with" value.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Wenn der Suchbegriff mehrfach vorkommt, so werden alle Vorkommen durch den neuen Wert ersetzt"}
+                            text={"If the search term occurs multiple times, all occurrences will be replaced with the new value"}
                         />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel: "Stadtviertel" durch "Stadtteil" ersetzt</p>
+                    <p className="text-left font-semibold mt-4">Example: Replace "Stadtviertel" with "Stadtteil"</p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/replaceEntriesParameter.png" alt="" />
                         </figure>
                     </div>
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="wikiAssets/standardTable.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4">Before </figcaption>
+                            <img className=" object-contain" src="wikiAssets/standardTable.png" alt="before replace" />
 
                         </figure>
 
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="wikiAssets/replaceEntriesTable.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4"> After</figcaption>
+                            <img className="object-contain" src="wikiAssets/replaceEntriesTable.png" alt="after replace" />
 
                         </figure>
 
@@ -608,29 +547,25 @@ export default function Wiki() {
 
                 {/* split row */}
                 <section ref={splitRowRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Zeile aufteilen </h2>
+                    <h2 className="text font-semibold text-lg" >Split row </h2>
                     <p>
-                        Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig,
-                        wenn sich in einer Zelle mehrere Werte befinden. In der Datenbank darf in jeder Zelle, allerdings nur ein Wert stehen, deswegen müssen die
-                        Werte auf mehrere Zeilen aufgeteilt werden.
+                        When this converter is applied, the entries in the specified column are split into multiple rows. This is necessary when multiple values are contained in a single cell. In the database each cell may only contain one value, so such values must be split across multiple rows.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Im Standardfall werden die Einträge nach einem Zeilenumbruch aufgeteilt"}
+                            text={"By default entries are split at line breaks"}
                         />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left font-semibold mt-4">Example:</p>
                     <p className="text-left">
-                        In der Spalte "Fallantragsbezeichnung" befinden sich in einer Zelle mehrerer Einträge,
-                        diese sollen in separate Zeilen angegeben werden.
-                        Dafür muss der Index der entsprechenden Spalte angegeben werden.
+                        The column "Fallantragsbezeichnung" contains several entries in one cell; these should be listed in separate rows. You must specify the index of the corresponding column.
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/splitRowParameter.png" alt="" />
                         </figure>
 
@@ -638,14 +573,14 @@ export default function Wiki() {
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="wikiAssets/splitRowStandard.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4">Before </figcaption>
+                            <img className=" object-contain" src="wikiAssets/splitRowStandard.png" alt="before split" />
 
                         </figure>
 
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="wikiAssets/splitRowNew.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4"> After</figcaption>
+                            <img className="object-contain" src="wikiAssets/splitRowNew.png" alt="after split" />
 
                         </figure>
                     </div>
@@ -656,32 +591,27 @@ export default function Wiki() {
 
                 {/* remove invalid rows */}
                 <section ref={removeInvalidRowsRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Ungültige Zeilen entfernen </h2>
+                    <h2 className="text font-semibold text-lg" >Remove invalid rows </h2>
                     <p>
-                        Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens
-                        eine leere Zelle in dieser Zeile befindet. Dies kann dazu verwendet werden,
-                        nur vollständige Zeilen für die Visualisierung zu verwenden.
+                        This converter removes invalid rows. By default a row is considered invalid if it contains at least one empty cell. This can be used to keep only complete rows for visualization.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"- Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. \n " +
-                                " - Komplett leere Zeilen werden immer gelöscht"}
+                            text={"- The threshold specifies how many entries in a row must be filled correctly so that it is not deleted.\n - Completely empty rows are always deleted"}
                         />
                     </div>
 
 
 
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left font-semibold mt-4">Example:</p>
                     <p className="text-left">
-                        Wird der Threshold auf 1 gesetzt, so werden alle Zeilen mit mehr als einer korrekt befüllten Zelle behalten.
-                        Dadurch wird Zeile 2 gelöscht , weil die Anzahl der korrekten Einträge
-                        kleiner gleich dem Threshold ist. Die komplett leere Zeile wird immer gelöscht.
+                        If the threshold is set to 1, all rows with more than one correctly filled cell are kept. Row 2 is therefore deleted because the number of correct entries is less than or equal to the threshold. Completely empty rows are always deleted.
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <figcaption className="font-semibold p-4"> Parameters </figcaption>
                             <img className="mt-5 object-contain" src="wikiAssets/removeInvalidRowParameter.png" alt="" />
                         </figure>
 
@@ -689,13 +619,13 @@ export default function Wiki() {
 
                     <div className="flex justify-around p-4 ">
                         <figure>
-                            <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="wikiAssets/removeInvalidRowStandard.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4">Before </figcaption>
+                            <img className=" object-contain" src="wikiAssets/removeInvalidRowStandard.png" alt="before remove invalid rows" />
 
                         </figure>
                         <figure>
-                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="wikiAssets/removeInvalidRowNew.png" alt="remove Column" />
+                            <figcaption className="font-semibold p-4"> After</figcaption>
+                            <img className="object-contain" src="wikiAssets/removeInvalidRowNew.png" alt="after remove invalid rows" />
 
                         </figure>
                     </div>
@@ -705,15 +635,14 @@ export default function Wiki() {
 
                 {/* remove invalid columns at the end */}
                 <section ref={removeTrailingColRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Nachträglich Spalten entfernen </h2>
+                    <h2 className="text font-semibold text-lg" >Remove trailing columns </h2>
                     <p>
-                        Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle
-                        leer sind, so werden diese entfernt.
+                        This converter removes columns at the end of the table. For example, if the last two columns are empty, they will be removed.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Es müssen keine weiteren Angaben gemacht werden"}
+                            text={"No further input is required"}
                         />
                     </div>
 
@@ -724,32 +653,32 @@ export default function Wiki() {
 
                 <section className="mt-10">
                     <h1 className="text font-bold text-lg" ref={metabaseRef}>Metabase</h1>
-                    <h2 className="text font-semibold text-lg" ref={metabaseEinstiegRef} >Einstieg finden</h2>
-                    <p className="text-left font-semibold mt-4">Welche Bereiche hat Metabase?</p>
-                    Nach der Weiterleitung zu Metabase starten Sie auf der Übersichtsseite der Modelle. Erstellen Sie oben rechts mit dem Button "Neu" und dann "Modell" ein Modell mit den Daten, die Sie gerne bearbeiten oder analysieren wollen.<br />
-                        <br /> Ein Modell ist eine Ansicht bestimmter Daten, quasi eine Kopie. Dies hat den Vorteil, dass Sie nicht direkt mit den "Orignialdaten" in der Datenbank arbeiten und diese in ihrer ursprünglichen Form bleiben.
-                        <br /> Sie haben links noch die Bereiche "Datenbanken" und "Metrik". Im Bereich "Datenbanken" haben Sie Einsicht in alle Tabellen, die sich in der Datenbank befinden. Im Bereich "Metrik" können Sie Indizes oder Key Performance Indicators (kurz KPIs) erstellen und einsehen. Diese können unter anderem in Dashboards eingebunden werden.
+                    <h2 className="text font-semibold text-lg" ref={metabaseEinstiegRef} >Getting started</h2>
+                    <p className="text-left font-semibold mt-4">What areas does Metabase have?</p>
+                    After redirecting to Metabase you start on the overview page of models. Create a new model at the top right with the "New" button and then "Model" using the data you want to edit or analyze.<br />
+                        <br /> A model is a view of specific data, essentially a copy. This has the advantage that you do not work directly with the original database data and they remain in their original form.
+                        <br /> You also have the areas "Databases" and "Metrics" on the left. In "Databases" you can view all tables in the database. In "Metrics" you can create and view indices or Key Performance Indicators (KPIs). These can be included in dashboards, among other things.
 
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-1.png" alt="Bereiche" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-1.png" alt="Areas" />
                         </figure>
                     </div>
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4">Was kann ich tun?</p>
-                    Sobald Sie ein neues Modell erstellt und eine Datei ausgewählt haben, erscheinen die Daten. Es gibt zwei wichtige Funktionsbereiche: Oben rechts mit den Bearbeitungsmöglichkeiten der Daten wie Filtern, Zusammenfassen und mehr. Mit dem Button unten links gelangt man zu Visualisierungsoptionen.
+                    <p className="text-left font-semibold mt-4">What can I do?</p>
+                    Once you have created a new model and selected a file, the data appears. There are two important functional areas: the data editing options at the top right such as filtering, summarizing and more, and the visualization options via the button at the bottom left.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-2.png" alt="Funktionsbereiche" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-2.png" alt="Function areas" />
                         </figure>
                     </div>
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4" ref={metabaseFilterRef}>Wie filtere ich eine Tabelle?</p>
-                    Wollen Sie die Tabelle nach bestimmten Eigenschaften filtern, wählen Sie den Filter-Button aus und wählen Sie zwischen den Spalten der Tabelle.
+                    <p className="text-left font-semibold mt-4" ref={metabaseFilterRef}>How do I filter a table?</p>
+                    If you want to filter the table by specific properties, choose the filter button and select columns from the table.
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-3.png" alt="Filter" />
@@ -758,110 +687,108 @@ export default function Wiki() {
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4" ref={metabaseSummaryRef}>Wie fasse ich einzelne Werte in der Tabelle zusammen?</p>
-                    Wollen Sie Werte kumulieren oder ähnliches, wählen Sie den Zusammenfassung-Button aus und wählen Sie eine Funktion und eine Gruppierung. Eine Funktion sagt aus, was mit den Werten passieren soll wie zum Beispiel bei Summe die Summe aller relevanten Zellen oder bei Anzahl die Häufigkeit der Zellen mit demselben Inhalt. Die Gruppierung sagt aus, welche Spalte ausschlaggebend ist.
+                    <p className="text-left font-semibold mt-4" ref={metabaseSummaryRef}>How do I summarize values in the table?</p>
+                    If you want to aggregate values, choose the summarize button and select a function and a grouping. A function specifies what should be done with the values, for example sum for the sum of relevant cells or count for the frequency of cells with the same content. The grouping specifies which column is used for grouping.
 
                     <div className="p-5">
-                        Schritt 1:
+                        Step 1:
                     </div>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4.png" alt="Zusammenfassen" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4.png" alt="Summarize" />
                         </figure>
                     </div>
                         <div className="p-4">
                             <InfoCard
-                                text={"Bitte beachten Sie: Haben Sie eine Zusammenfassung ausgewählt und wollen diese wieder löschen, müssen Sie erst die Gruppierung rausnehmen und dann die Funktion entfernen."}
+                                text={"Please note: If you have selected a summary and want to remove it, you must first remove the grouping and then remove the function."}
                             />
                         </div>
                     <div className="p-5">
-                        Schritt 2:
+                        Step 2:
                     </div>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4a.png" alt="Zusammenfassen" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-4a.png" alt="Summarize" />
                         </figure>
                     </div>
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4" ref={metabaseVisualisierungRef}>Wie visualisiere ich eine Tabelle?</p>
+                    <p className="text-left font-semibold mt-4" ref={metabaseVisualisierungRef}>How do I visualize a table?</p>
 
                     <div className="p-5">
-                        Wenn Sie Daten grafisch darstellen wollen, klicken Sie den Button "Visualisierung" und wählen eine Art der Darstellung. Mit dem runden Icon "Tabelle" gelangen Sie wieder zur Ursprungsform zurück.
-                        Sie können jederzeit Daten filtern, zusammenfassen oder die Darstellungsform ändern. Gleitet der Cursor über eines der Darstellungsicons, erscheint ein kleines Rädchen für weitere Einstellungen der Grafik.
+                        If you want to display data graphically, click the "Visualization" button and choose a display type. Use the round "Table" icon to return to the original table. You can always filter, summarize or change the display type. When hovering over a visualization icon a small gear appears for additional settings.
                     </div>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-5.png" alt="Visualisierung" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-5.png" alt="Visualization" />
                         </figure>
                     </div>
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4">Wie lege ich die Daten über eine Karte?</p>
+                    <p className="text-left font-semibold mt-4">How do I place data on a map?</p>
                     <div className="p-5">
-                        Wenn Sie Ihre Daten über eine Stadtkarte von Ulm legen wollen, nutzen Sie die Darstellungsform "Karte" und wählen Ihre Karte in den Einstellungen aus.
+                        If you want to display your data on a city map of Ulm, choose the "Map" visualization and select your map in the settings.
                     </div>
 
                     <div className="p-5">
-                        Schritt 1:
+                        Step 1:
                     </div>
                         <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6.png" alt="Karte" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6.png" alt="Map" />
                         </figure>
                     </div>
 
                     <div className="p-5">
-                        Schritt 2:
+                        Step 2:
                     </div>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6a.png" alt="Karte" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6a.png" alt="Map" />
                         </figure>
                     </div>
 
                     <div className="p-5">
-                        Ergebnis:
+                        Result:
                     </div>
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6b.png" alt="Karte" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-6b.png" alt="Map result" />
                         </figure>
                     </div>
 
                     <div className="mt-6 border-1 border-gray-200"></div>
 
-                    <p className="text-left font-semibold mt-4" ref={metabaseJoinRef}>Wie kann ich unterschiedliche Tabellen miteinander verbinden?</p>
+                    <p className="text-left font-semibold mt-4" ref={metabaseJoinRef}>How can I join different tables?</p>
 
                     <div className="p-5">
-                    Sie haben unterschiedliche Tabellen, die Sie miteinander verbinden wollen. Im Fachjargon nennt man das "Tabellen joinen". Dies dient dazu, die Tabelle i. d. Regel zu erweitern. Voraussetzung dafür ist das Vorhandensein einer gemeinsamen Spalte. Es muss in beiden Tabellen, die man joinen möchte, eine Spalte geben, in der die Werte von der Bedeutung und der Schreibweise übereinstimmen.
+                    You have different tables you want to join. In technical terms this is called "joining" tables. This usually serves to enrich a table. The prerequisite is a common column. Both tables must contain a column where the values match in meaning and spelling.
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
-                    Wir wollen herausfinden, wie die Altersverteilung der Bürger über die Sozialräume aussieht. Uns liegen folgende Tabellen vor.
+                    <p className="text-left font-semibold mt-4">Example:</p>
+                    We want to find out the age distribution of citizens across social areas. We have the following tables.
                         <div className="flex justify-around p-4 ">
                             <figure>
-                                <figcaption className="font-semibold p-4">Tabelle 1: Anzahl der Bürger eines Alters und Geschlechts pro Stadtviertel</figcaption>
-                                <img className=" object-contain" src="wikiAssets/metabase/Einstieg-7a.png" alt="Tabelle1" />
+                                <figcaption className="font-semibold p-4">Table 1: Number of citizens by age and gender per district</figcaption>
+                                <img className=" object-contain" src="wikiAssets/metabase/Einstieg-7a.png" alt="Table1" />
                             </figure>
                             <figure>
-                                <figcaption className="font-semibold p-4">Tabelle 2: Zuordnung der Straßen zu Stadtvierteln, -teilen und Sozialräumen</figcaption>
-                                <img className="object-contain" src="wikiAssets/metabase/Einstieg-7aa.png" alt="Tabelle2" />
+                                <figcaption className="font-semibold p-4">Table 2: Assignment of streets to districts, parts and social areas</figcaption>
+                                <img className="object-contain" src="wikiAssets/metabase/Einstieg-7aa.png" alt="Table2" />
                             </figure>
                         </div>
                     <div className="p-4">
                         <InfoCard
-                            text={"Wenn Sie in eines der rechteckigen Elemente klicken, erscheint rechts oben über dem Element ein kleines x zum Löschen des Elements." +
-                                "Das Dreieck neben einem Element zeigt die Tabelle. Wurde in dem Element eine Funktion angewandt, zeigt das Dreieck die Tabelle nach Ausführung der Funktion an. In unserem Fall zum Beispiel das Joinen der beiden Tabellen."}
+                            text={"When you click on one of the rectangular elements, a small x appears at the top right to delete the element. The triangle next to an element shows the table. If a function has been applied, the triangle shows the table after execution of the function. In our example this is the joined table."}
                         />
                     </div>
 
                     <div className="p-5">
-                    Schritt 1:
+                    Step 1:
                     </div>
-                    Wir starten mit der Bearbeitung, indem wir mit der Funktion "Daten verknüpfen" die beiden Tabellen über die Spalte "Stadtviertel" miteinander verschneiden. Dies bedeutet, dass wir den Zeilen in Tabelle 1 die Werte zuordnen, die in Tabelle 2 das gleiche Stadtviertel haben.
+                    We start editing by using the "Join data" function to intersect the two tables via the "Stadtviertel" column. This assigns values from table 2 to rows in table 1 that have the same district.
                     <div className="flex justify-center">
                         <figure>
                             <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7b.png" alt="Join" />
@@ -869,9 +796,9 @@ export default function Wiki() {
                     </div>
                         <div className="p-4">
                             <InfoCard
-                                text={"Bitte beachten Sie: Die Werte in den beiden Spalten müssen jeweils gleich geschrieben werden. Werte wie Str. und Straße werden nicht als gleich definiert."}/>
+                                text={"Please note: The values in both columns must be spelled exactly the same. Abbreviations like 'Str.' and 'Straße' are not treated as equal."}/>
                         </div>
-                    Um die gewünschte Information zu erhalten, müssen wir die gejointe Tabelle nach der Summe der Anzahl der Bürger auswerten, gruppiert nach Alter und Sozialräumen, und darstellen.
+                    To obtain the desired information, aggregate the joined table by the sum of the number of citizens grouped by age and social areas and visualize it.
                         <div className="flex justify-center">
                             <figure>
                                 <img className="h-[45vh] object-contain" src="wikiAssets/metabase/Einstieg-7c.png" alt="Join" />
@@ -879,12 +806,12 @@ export default function Wiki() {
                         </div>
 
                     <div className="p-5">
-                        Schritt 2:
+                        Step 2:
                     </div>
-                    Nachdem Sie das Modell gespeichert haben, können Sie die Daten visualisieren. Für diese Information eignet sich eine Flächendarstellung, da sich hier die Altersverteilung gut über eine Linie anzeigen lässt, die an die Baumstruktur bei der Ansicht von demografischen Verteilungen erinnert. Außerdem lassen sich die Flächen übereinander legen, sodass die unterschiedlichen Sozialräume gleichzeitig vergleichbar sind.
+                    After saving the model, you can visualize the data. For this information an area chart is suitable because it shows age distribution well as lines and allows stacking different social areas for comparison.
                     <div className="flex justify-center">
                         <figure>
-                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7d.png" alt="Join" />
+                            <img className="h-[70vh] object-contain" src="wikiAssets/metabase/Einstieg-7d.png" alt="Join visualization" />
                         </figure>
                     </div>
                 </section>

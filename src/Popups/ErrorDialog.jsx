@@ -10,7 +10,7 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
         fetch(`src/language/${locale}.json`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Netzwerkfehler: ' + response.status);
+                    throw new Error('Network error: ' + response.status);
                 }
                 return response.json();
             })
@@ -18,16 +18,16 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
                 setErrorMsg(data[errorId]);
             })
             .catch(error => {
-                console.error('Fehler beim Laden oder Verarbeiten:', error);
+                console.error('Error loading or processing:', error);
             });
     }, [errorId])
 
     return(
         <dialog  className=" justify-self-center p-5 mt-[20vh] w-[30vw] shadow-md bg-white " ref={dialogRef}>
             <div className="flex flex-col place-items-center p-5 gap-5 bg-white">
-                <img className="h-[15vh] w-[15vw] object-contain" src="error.jpg" alt="Upload fehlgeschlagen" />
+                <img className="h-[15vh] w-[15vw] object-contain" src="error.jpg" alt="Upload failed" />
                 <p className="text-base font-semibold">{text}</p>
-                <p className="text-base font-semibold">Fehlercode {errorId}</p>
+                <p className="text-base font-semibold">Error Code {errorId}</p>
                 <p>{errorMsg}</p>
             </div>
             <button

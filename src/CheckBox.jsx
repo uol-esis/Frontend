@@ -42,7 +42,7 @@ export default function CheckBox({setAllCheck}) {
       <legend className="sr-only">Notifications</legend>
       <div className="flex flex-col p-5 space-y-5 text-left">
         <p className="text-base text-gray-700 w-120">
-          Überprüfe vor dem Hochladen, ob die folgenden Eigenschaften <br /> auf die Tabelle zutreffen:
+          Before uploading, check if the following properties <br /> apply to the table:
         </p>
 
        {/*CheckBox 1*/}
@@ -57,10 +57,10 @@ export default function CheckBox({setAllCheck}) {
             </div>
             <div className="text-sm">
               <label className="block font-medium text-gray-900">
-                Klare Überschriften
+                Clear headers
               </label>
               <p className="text-gray-500">
-              Jede Spalte hat eine eindeutige Überschrift.
+              Each column has a unique header.
               </p>
             </div>
           </div>
@@ -77,10 +77,10 @@ export default function CheckBox({setAllCheck}) {
             </div>
             <div className="text-sm">
               <label className="block font-medium text-gray-900">
-              Einheitliche Datenformate 
+              Consistent data formats 
               </label>
               <p className="text-gray-500">
-              Alle Werte in einer Spalte sind gleich formatiert.
+              All values in a column are formatted consistently.
               </p>
             </div>
           </div>
@@ -97,10 +97,10 @@ export default function CheckBox({setAllCheck}) {
             </div>
             <div className="text-sm">
               <label className="block font-medium text-gray-900">
-              Keine zusammengeführten Zellen 
+              No merged cells. 
               </label>
               <p className="text-gray-500">
-              Jede Zelle steht für sich.
+              Each cell stands alone.
               </p>
             </div>
           </div>
@@ -117,10 +117,10 @@ export default function CheckBox({setAllCheck}) {
             </div>
             <div className="text-sm">
               <label className="block font-medium text-gray-900">
-              Flache Struktur 
+              Flat structure
               </label>
               <p className="text-gray-500">
-              Eine Überschriftenzeile, gefolgt von den Daten.
+              One header row, followed by the data.
               </p>
             </div>
           </div>
@@ -137,10 +137,10 @@ export default function CheckBox({setAllCheck}) {
             </div>
             <div className="text-sm">
               <label className="block font-medium text-gray-900">
-              Vollständige Daten
+              Complete data
               </label>
               <p className="text-gray-500">
-              Keine komplett leeren Zeilen.
+              No completely empty rows.
               </p>
             </div>
           </div>

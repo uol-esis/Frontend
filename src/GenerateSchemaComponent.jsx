@@ -11,7 +11,7 @@ export default function GenerateSchemaComponent({onGenerate , fileIsValid, isLoa
 
     return(
         <div className="p-2 bg-white shadow rounded-[10px]">
-            <h2 className="text-xl font-bold mb-2">Automatisch neue Tabellentransformation erstellen</h2>
+            <h2 className="text-xl font-bold mb-2">Automatically create new table transformation</h2>
             <button
               type="button"
               onClick={() => {onGenerate();}}
@@ -26,7 +26,7 @@ export default function GenerateSchemaComponent({onGenerate , fileIsValid, isLoa
                   <Spinner size={6}/>
                 </div>
               : 
-                <p>Generierung</p> 
+                <p>Generation</p> 
               }
               
             </button>

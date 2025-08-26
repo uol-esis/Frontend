@@ -25,94 +25,75 @@ export default function Popup(){
               style={{ maxHeight: "60vh" }}
             >
               <h1 className="text-2xl font-bold mb-4">
-                Warum und wie Sie Excel-Tabellen optimieren müssen
+                Why and How You Need to Optimize Excel Tables
               </h1>
               <p className="mb-4 text-left pl-5">
-                Diese Anwendung verarbeitet Ihre Excel-Tabellen, um Daten in eine
-                Datenbank zu importieren. Häufig sind diese Tabellen jedoch sehr
-                verschachtelt oder unstrukturiert. Damit unsere Software die Daten
-                richtig lesen und verarbeiten kann, müssen die Tabellen in ein
-                „maschinenlesbares“ und „datenbankkonformes“ Format gebracht werden.
+                This application processes your Excel tables to import data into a database. However, these tables are often highly nested or unstructured. 
+                To allow our software to correctly read and process the data, tables must be converted into a “machine-readable” and “database-compliant” format.
               </p>
 
               <h2 className="text-xl font-semibold mb-2">
-                1. Was bedeutet „maschinenlesbar“ und „datenbankkonform“?
+                1. What does “machine-readable” and “database-compliant” mean?
               </h2>
               <p className="mb-4 text-left pl-5">
-                <strong>Maschinenlesbar:</strong> Daten sind so formatiert, dass
-                Computer sie problemlos verstehen und verarbeiten können – in klaren,
-                getrennten Spalten und Zeilen.
+                <strong>Machine-readable:</strong> Data is formatted so that computers can easily understand and process it — in clear, separate columns and rows.
               </p>
               <div className="mb-4 text-left pl-5">
-                <strong>Datenbankkonform:</strong> Die Struktur entspricht den
-                Anforderungen einer Datenbank:
+                <strong>Database-compliant:</strong> The structure meets the requirements of a database:
                 <ul className="list-disc ml-6">
                   <li>
-                    Jede Spalte enthält nur eine Art von Information (z. B. nur Namen,
-                    nur Zahlen).
+                    Each column contains only one type of information (e.g., only names, only numbers).
                   </li>
-                  <li>Überschriften stehen eindeutig in der ersten Zeile.</li>
-                  <li>Keine verschachtelten oder zusammengeführten Zellen.</li>
+                  <li>Headers are clearly in the first row.</li>
+                  <li>No nested or merged cells.</li>
                 </ul>
               </div>
-              {renderImage("/Verschachtelung1.png", "Vergleich unstrukturierte vs. optimierte Tabelle")}
+              {renderImage("/Verschachtelung1.png", "Comparison: unstructured vs. optimized table")}
               <p className="text-center text-sm mb-6">
-                Bild: Oben – Verschachtelte Tabelle; Unten – Optimierte, klare Struktur.
+                Image: Top – Nested table; Bottom – Optimized, clear structure.
               </p>
 
-              
               <h2 className="text-xl font-semibold mb-2">
-                2. Wie sollte eine optimierte Tabelle aussehen?
+                2. How should an optimized table look?
               </h2>
               <ul className="list-disc ml-6 mb-4 text-left pl-5">
                 <li>
-                  <strong>Klare Überschriften:</strong> Jede Spalte hat eine eindeutige
-                  Überschrift.
+                  <strong>Clear headers:</strong> Each column has a unique header.
                 </li>
                 <li>
-                  <strong>Einheitliche Datenformate:</strong> Alle Werte in einer Spalte
-                  sind gleich formatiert.
+                  <strong>Uniform data formats:</strong> All values in a column are consistently formatted.
                 </li>
                 <li>
-                  <strong>Keine zusammengeführten Zellen:</strong> Jede Zelle steht für
-                  sich.
+                  <strong>No merged cells:</strong> Each cell stands alone.
                 </li>
                 <li>
-                  <strong>Flache Struktur:</strong> Eine Überschriftenzeile, gefolgt von den
-                  Daten.
+                  <strong>Flat structure:</strong> One header row followed by the data.
                 </li>
               </ul>
-              {renderImage("/Verschachtelung3.png", "Optimierte Tabelle")}
+              {renderImage("/Verschachtelung3.png", "Optimized table")}
               <p className="text-center text-sm mb-6">
-                Bild: Optimierte Tabelle mit klaren Überschriften, einheitlichen Daten und
-                ohne verschachtelte Zellen.
+                Image: Optimized table with clear headers, uniform data, and no nested cells.
               </p>
 
-              
-
               <h2 className="text-xl font-semibold mb-2 text-left pl-5">
-                Zusammenfassung
+                Summary
               </h2>
               <ul className="list-disc ml-6 mb-4 text-left pl-5">
                 <li>
-                  <strong>Warum:</strong> Damit unsere App die Excel-Daten fehlerfrei
-                  verarbeiten kann.
+                  <strong>Why:</strong> So that our app can process Excel data without errors.
                 </li>
                 <li>
-                  <strong>Was:</strong> Die Tabelle muss klar strukturierte, einheitliche
-                  Daten enthalten.
+                  <strong>What:</strong> The table must contain clearly structured, uniform data.
                 </li>
                 <li>
-                  <strong>Wie:</strong> Durch Auflösen zusammengeführter Zellen, klare
-                  Überschriften und einheitliche Formatierung.
+                  <strong>How:</strong> By unmerging cells, using clear headers, and applying consistent formatting.
                 </li>
               </ul>
 
               <p className="mb-4 text-left pl-5">
-                Mit diesen Schritten werden Ihre Tabellen optimal für den Import
-                vorbereitet. Sollten Sie Fragen haben oder Unterstützung benötigen,
-                wenden Sie sich bitte an unseren Support!
+                These steps will prepare your tables optimally for import. If you have questions or need assistance, please contact our support team!
               </p>
+
             </div>
           </div>
         

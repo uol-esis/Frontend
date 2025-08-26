@@ -20,7 +20,7 @@ export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onCon
             className="p-5 m-5 rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             onClick={() => dialogRef.current?.close()}
           >
-            Zurück
+            Back
           </button>
           <button
             type="button"
@@ -30,7 +30,7 @@ export default function CheckboxDialog({ dialogRef, allCheck, setAllCheck, onCon
             disabled={!allCheck}
             onClick={onConfirm}
           >
-            Hochladen
+            Upload
           </button>
         </div>
       </dialog>

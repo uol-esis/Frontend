@@ -70,7 +70,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
     }
 
         if (param.required && (!value || value.toString().trim() === '')) {
-            newErrors[param.apiName] = 'Dieses Feld ist erforderlich.';
+            newErrors[param.apiName] = 'This field is required.';
         }
     });
 
@@ -169,7 +169,7 @@ useEffect(() => {
             {/* Hauptcontainer: linke Parameter 2/3, rechte Buttons 1/3 */}
             {id === 0 ? (
               <>
-               <h2 className="text-xl font-semibold text-gray-700 text-center">Originaltabelle</h2>
+               <h2 className="text-xl font-semibold text-gray-700 text-center">Original table</h2>
                 <div className="flex justify-end">
 
                     {/* Buttons-Bereich rechts für Start-Card */}
@@ -178,7 +178,7 @@ useEffect(() => {
                             onClick={() => setExpanded(!expanded)}
                             className="text-xs text-gray-600 hover:text-indigo-500"
                         >
-                            {expanded ? "Ergebnis einklappen ▲" : "Ergebnis ausklappen ▼"}
+                            {expanded ? "Collapse result ▲" : "Expand result ▼"}
                         </button>
                     </div>
                 </>
@@ -208,7 +208,7 @@ useEffect(() => {
                       {/* Userbenachrichtigung wenn es keine required Parameter  */}
                         {requiredParameters.length === 0 && (
                           <p className="text-sm italic text-gray-500 mb-4 pl-20">
-                            Dieser Converter funktioniert automatisch – Sie müssen keine Pflichtfelder ausfüllen, haben aber die Möglichkeit optionale Parameter anzugeben.
+                                This converter works automatically – you don’t need to fill in any required fields, but you have the option to provide optional parameters.
                           </p>
                         )}
 
@@ -331,7 +331,7 @@ useEffect(() => {
                                     className="text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                                     onClick={() => onSaveCascade?.(id)}
                                 >
-                                    Speichern
+                                    Save
                                 </button>
                             ) : (
                                 <button
@@ -342,7 +342,7 @@ useEffect(() => {
                                     }}
                                     
                                 >
-                                    Bearbeiten
+                                    Edit
                                 </button>
                             )}
                             <button

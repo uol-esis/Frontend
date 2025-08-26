@@ -34,7 +34,7 @@ export function StackedListDropDown({title , headerTextArray, isImportant}){
             {/* content */}
             {showAll ? 
                 <ul role="list" className="bg-white w-[25vw]  border-2 border-solid border-gray-200 rounded-r-md ">
-                    {headerTextArray.length == 0 ? <li>Keine Einträge vorhanden</li> : null}
+                    {headerTextArray.length == 0 ? <li>No entries available</li> : null}
                     {headerTextArray.map((item, index) => (
                         <li key={item.header + item.text} className={` ${item.header ? "p-3 mt-3 " : "p-1 ml-3" } ${index != 0 && item.header ? " border-t-2 border-gray-200 ": ""} `}>
                         <div className={`flex items-center  `}>

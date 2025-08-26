@@ -36,14 +36,12 @@ export default function Edit() {
   const [cardAdded, setCardAdded] = useState(false); //für das Unterbinden des initalen Scrollings
 
   const ExplainerConverterList = (
-    <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
+    <span>Here are all the converters that can be applied to the table. A converter is an editing step that is applied to the table.</span>
   )
 
   const ExplainerCardList = (
     <span> 
-      Hier werden alle ausgewählten Converter angezeigt. Der neuste Converter wird immer ganz oben angezeigt und 
-      alle vorherigen Converter werden darunter angezeigt. Die Reihenfolg der Converter ist wichtig, da sie logisch voneinander abhängig sind. Deswegen
-      müssen alle Converter gespeichert werden, damit der aktuellste Converter angewendet werden kann.
+      All selected converters are displayed here. The newest converter is always shown at the top, and all previous converters are displayed below. The order of the converters is important because they are logically dependent on each other. Therefore, all converters must be saved for the most recent converter to be applied.
       </span>
   )
 
@@ -77,36 +75,37 @@ export default function Edit() {
   };
 
   const converters = [
-    {label: 'Gruppenüberschriften entfernen ', category: 'rmv', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
-      description:'Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden. Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig, da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist. Ein ausführliches Beispiel ist im Wiki zu finden.' }, //RemoveGroupedHeader
-    {label: 'Leere Zeilen ausfüllen ', category: 'add', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW', 
-      description:'Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.' }, //FillEmptyRows
-    {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
-      description: 'Diese Funktion füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.' }, //FillEmptyColumns
-    {label: 'Spalten entfernen (nach Index) ', category:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
-      description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
-    {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
-      description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME',
-      description: 'Mithilfe dieses Converters können die Spaltennamen verändert werden. Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet, der zweite Name auf die zweite Spalte und so weiter.'}, //AddHeaderNames
-    {label: 'Fußzeile entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
-      description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
-    {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
-      description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
-    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
-      description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.'}, //ReplaceEntries
-    {label: 'Zellen aufteilen ', category: 'mdfy', params: [{name:"Aufteilen in Spalten oder Zeilen" ,type:"enum", required:true, options:["Zeile", "Spalte"], values:["row", "column"], index:0, apiName: "mode"}, {name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_CELL', 
-      description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen oder Spalten aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt. Im Feld Delimiter kann ein anderes Trennzeichen eingegeben werden. Für ein Leerzeichen muss nichts beim Delimiter eingegeben werden.'}, //SplitRow
-    {label: 'Ungültige Zeilen entfernen ', category: 'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
-      description: 'Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
-    {label: 'Nachträgliche Spalten entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMN',
-      description: 'Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle leer sind, so werden diese entfernt.'}, //RemoveTrailingColumns
-     {label: 'Spalten am Anfang entfernen ', category:'rmv', params: [{name:'Blocklist', type: 'array', apiName: 'blocklist'}], converterType: 'REMOVE_LEADING_COLUMN',
-      description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
-      {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalten entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
-      description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder, ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
+    {label: 'Remove grouped headers', category: 'rmv', params: [ {name: 'Row number', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Column number', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Start row', type: 'number', required: false, apiName: 'startRow'}, {name: 'Start column', type: 'number', required: false, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
+      description:'This converter resolves nested headers in the table and columns. The rows and columns containing the nested headers must be specified. This is necessary because the database requires a flat structure. A detailed example can be found in the Wiki.' },
+    {label: 'Fill empty rows', category: 'add', params: [{name: 'Row number', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW', 
+      description:'Use the "Fill empty rows" function to replace empty cells in the specified row with values from the cells to the left of the empty ones.' },
+    {label: 'Fill empty columns', category: 'add', params: [{name: 'Column number', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
+      description: 'This function fills empty cells in the specified column with values from the cells above the empty ones.' },
+    {label: 'Remove columns (by index)', category:'rmv', params: [{name: 'Column numbers', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
+      description:'This function can remove one or more columns by specifying their index. Multiple columns should be separated by commas without spaces.'},
+    {label: 'Remove rows (by index)', category: 'rmv', params: [{name: 'Row numbers', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
+      description: 'This function can remove one or more rows by specifying their index. Multiple rows should be separated by commas without spaces.'},
+    {label: 'Add column headers', category: 'add', params: [{name: 'Header list (comma-separated)', type: 'array', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME',
+      description: 'This converter can modify column names. Names are separated by commas: the first name applies to the first column, the second to the second, and so on.'},
+    {label: 'Remove footer', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
+      description:'Removes the section below the actual data. This separates the table from metadata and ensures correct display.'},
+    {label: 'Remove header',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
+      description: 'Removes the section above the actual data. This separates the table from metadata and ensures correct display.'},
+    {label: 'Replace entries', category: 'mdfy', params: [ {name: 'Search term', type: 'string', required: true, apiName: 'search'}, {name: 'Replace with', type: 'string', required: true, apiName: 'replacement'},{name: 'Start row', type: 'number', required: false, apiName: 'startRow'}, {name: 'Search in columns', type: 'array', required: true, apiName: 'columnIndex'}, {name:'End row', type: 'number', required: false, apiName: 'endRow'}, {name: 'End column', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
+      description: 'This converter can replace individual entries in the table, for example to correct errors. The table is searched for the search term and replaced with the "Replace with" value.'},
+    {label: 'Split cells', category: 'mdfy', params: [{name:"Split into rows or columns" ,type:"enum", required:true, options:["Row", "Column"], values:["row", "column"], index:0, apiName: "mode"}, {name:'Column index', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Delimiter', type: 'string', required: false, apiName: 'delimiter'}, {name:'Start row', type: 'number', required: false, apiName: 'startRow'}, {name:'End row', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_CELL', 
+      description: 'This converter splits entries in the specified column into multiple rows or columns. This is necessary if a cell contains multiple values. By default, values are split at line breaks. A different delimiter can be specified in the "Delimiter" field. Leave empty for a space.'},
+    {label: 'Remove invalid rows', category: 'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
+      description: 'Removes invalid rows. By default, a row is considered invalid if it contains at least one empty cell. Threshold determines how many entries must be filled for the row to be kept. Completely empty rows are always removed.'},
+    {label: 'Remove trailing columns', category:'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type:'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMN',
+      description: 'Removes columns at the end of the table. For example, if the last two columns are empty, they are removed.'},
+    {label: 'Remove leading columns', category:'rmv', params: [{name:'Blocklist', type:'array', apiName: 'blocklist'}], converterType: 'REMOVE_LEADING_COLUMN',
+      description: 'Removes invalid columns at the beginning of the table. By default, columns with empty cells are considered invalid. Additional values can be added via the blocklist.'},
+    {label: 'Remove row or column by keyword', category:'rmv', params: [{name:'Keywords', type: 'array', required:true, apiName: 'keywords'}, {name:'Remove rows', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Remove columns', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Ignore case', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Match type', type: 'enum', required: true, options:["Contains keyword", "Exact match"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
+      description: 'Removes rows and/or columns containing a specific keyword. The search can be refined by case sensitivity or by requiring an exact match.'},
     // add more...
-  ];
+];
+
 
   //Converter dropdown
   const [openCategory, setOpenCategory]=useState(null);
@@ -270,13 +269,11 @@ export default function Edit() {
 };
 
   const handleSaveFromCard = async (cardId, formData) => {
-    console.log(`Data saved from card ${cardId}:`, formData);
 
     // Update the cards state with the formData for the saved card
     setCards((prevCards) => {
       const updatedCards = prevCards.map((card) => { // hier wird dafür gesorft dass ich die Karte und Formdata bekomme und sie nicht mehr im Bearbeitungszustand ist
         if (card.id === cardId) {
-          console.log("Was ist das denn?", card, "Und die FormData?", formData)
 
           return { ...card, formData, isEditing: false };
         } else if (card.id > cardId) { //hier wird dafür gesorgt dass die Karten NACH der gespeicherten zurückgesetzt werden
@@ -287,7 +284,6 @@ export default function Edit() {
 
       // Generate the JSON for the saved card and its predecessors
       const filteredCards = updatedCards.filter((card) => card.id <= cardId && card.id !== 0).reverse(); //nur aus der aktuellen und denen davor ohne 0 die json bauen!
-      console.log("Die gefilterten Karten: ", filteredCards);
 
       const structures = filteredCards.map((card) => {
         const inputs = card.parameters.reduce((acc, param) => { //reduce macht daraus ein Objekt mit allen Parametern
@@ -303,7 +299,6 @@ export default function Edit() {
           ...inputs,
         };
       });
-      console.log("Die Strukturen sind: ", structures); //
 
       const jsonData = {
         name: "Example Name",
@@ -312,13 +307,10 @@ export default function Edit() {
         endColumn: null,
       };
 
-      console.log("Generated JSON:", JSON.stringify(jsonData, null, 2));
 
       // Call getPreview and update the card with the preview data
       getPreview(jsonData).then((previewData) => {
-        console.log("try to get preview with ", jsonData);
         if (previewData) {
-          console.log("Preview Data:", previewData);
 
           setCards((latestCards) =>
             latestCards.map((card) =>
@@ -416,7 +408,7 @@ const handleSaveUpToCard = async (upToCardId) => {
     // Check if any card is still in editing mode
     const unsavedCards = cards.filter((card) => card.isEditing);
     if (unsavedCards.length > 0) {
-      alert("Bitte speichern Sie zuerst alle Karten.");
+      alert("Please save all cards first.");
       return; // Prevent proceeding if there are unsaved cards
     }
 
@@ -477,7 +469,7 @@ useEffect(() => {
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
 
     <ErrorDialog
-      text={"Fehler!"}
+      text={"Error!"}
       errorId={errorId}
       onConfirm={() => { errorDialogRef.current?.close();}}
       dialogRef={errorDialogRef}
@@ -524,7 +516,7 @@ useEffect(() => {
           onClick={() => setIsAddOpen(!isAddOpen)}
           className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-indigo-500 text-white rounded-lg shadow transition-colors"
         >
-          <span>Converter zum Hinzufügen</span>
+          <span>Converters for adding</span>
           {isAddOpen ? "▲" : "▼" }
         </button>
         {isAddOpen && (
@@ -548,7 +540,7 @@ useEffect(() => {
           onClick={() => setIsRmvOpen(!isRmvOpen)}
           className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow transition-colors"
         >
-          <span>Converter zum Entfernen</span>
+          <span>Converters for removing</span>
           {isRmvOpen ? "▲" : "▼"}
         </button>
         {isRmvOpen && (
@@ -571,7 +563,7 @@ useEffect(() => {
           onClick={() => setIsMdfyOpen(!isMdfyOpen)}
           className="w-full flex justify-between items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow transition-colors"
           >
-            <span>Converter zum Bearbeiten</span>
+            <span>Converters for editing</span>
             {isMdfyOpen ? "▲" : "▼"}
           </button>
           {isMdfyOpen && (
@@ -591,7 +583,7 @@ useEffect(() => {
           )}
 
           
-            <div className=" absolute top-0 translate-x-full z-50">
+            <div className=" absolute top-0 translate-x-full z-100">
             <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
           </div>
         </div>
@@ -605,7 +597,7 @@ useEffect(() => {
                 className="mt-4 text-sm bg-gray-600 hover:bg-indigo-500 text-white rounded px-6 py-2"
                 onClick={handleSaveAllCards}
               >
-                Alles speichern
+                Save all
               </button>
             </div>
 
@@ -646,7 +638,7 @@ useEffect(() => {
         <button
           className="fixed bottom-10 right-4 bg-gray-600 hover:bg-indigo-500 text-white px-2 py-2 mb-2 rounded shadow "
           onClick={handleEditComplete}
-        >Anwenden</button>
+        >Apply</button>
 
       </div>
     </div>

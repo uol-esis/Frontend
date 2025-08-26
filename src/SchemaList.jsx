@@ -41,32 +41,16 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
 
     return(
         <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
-            <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
+            <h2 className="text-xl font-bold mb-2">Use existing table transformation</h2>
             <div className="flex flex-row justify-between mb-2">
               {/* Dropdown-Menü für Thema */}
-              <Menu as="div" className="relative inline-block text-left">
-                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400">
-                  Thema
-                  <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
-                </MenuButton>
-                <MenuItems className="absolute left-0 z-10 w-56 max-h-[200px] rounded-md bg-white overflow-auto shadow-lg ring-1 ring-black/5">
-                  <div className="py-1">
-                    {themaList.map((thema, index) => (
-                      <MenuItem key={index}>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          {thema}
-                        </a>
-                      </MenuItem>
-                    ))}
-                  </div>
-                </MenuItems>
-              </Menu>
+             
               {/* Search */}
               <label className="flex w-full items-center gap-2 border border-gray-200 bg-white px-2">
                 <input
                   type="text"
                   className="grow p-1"
-                  placeholder="Suche..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -117,7 +101,7 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
                 }`}
                 disabled={!selectedFile || !selectedSchema}
               >
-                Weiter
+                Next
               </button>
             </div>
           </div>

@@ -44,16 +44,16 @@ function Upload() {
   const navigate = useNavigate();
 
   const ExplainerUpload = (
-    <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
-  )
+  <span>First, a file must be selected to upload. Only Excel or CSV files can be selected.</span>
+)
 
-  const ExplainerSchemalist = (
-    <span> Nach dem eine Datei ausgewählt wurde, kann diese in eine bestehende Tabellentransformation geladen werden oder eine Neue erstellt werden.</span>
-  )
+const ExplainerSchemalist = (
+  <span>After a file has been selected, it can be loaded into an existing table transformation or a new one can be created.</span>
+)
 
-  const ExplainerGenerate = (
-    <span>Alternativ kann hier eine neue Tabellentransformation automatisch generiert werden. </span>
-  )
+const ExplainerGenerate = (
+  <span>Alternatively, a new table transformation can be automatically generated here.</span>
+)
 
   const TipDataToSchema = function () {
     setTipData(false);
@@ -187,7 +187,7 @@ function Upload() {
   const confirmGeneratedName = function (newName) {
     
     if(isNameTaken(newName)){
-      setConfirmNameError("Der Name wird bereits verwendet");
+      setConfirmNameError("This name is already in use.");
       return;
     }
 

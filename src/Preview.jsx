@@ -59,28 +59,29 @@ export default function Preview() {
 
   const ExplainerInformationText = (
     <span> 
-      Hier wird die vorher ausgewählte Datei und Tabellentransformation angezeigt. 
-      Falls vorhanden werden außerdem Warnungen bzw. Fehler angezeigt die beim Generieren aufgetreten sind. 
+      The previously selected file and table transformation are displayed here. 
+      If available, any warnings or errors that occurred during generation are also shown. 
     </span>
   )
 
   const ExplainerTable = (
     <span> 
-      In diesem Bereich wird die Tabelle nach Anwendung der Tabellentransformation angezeigt. 
-      Es soll überprüft werden, ob die Daten korrekt sind und ob die Tabelle datenbankkonform ist ( 
+      This area displays the table after applying the table transformation.
+      You should check whether the data is correct and whether the table is database-compliant.
+      ( 
       <span 
         onClick={() => { window.open("/wiki?targetId=database", "_blank");}} 
         className="text-blue-400 underline cursor-pointer"
       >
-        siehe Wiki
+        See Docs
       </span>).
     </span>
   )
 
   const ExplainerButtons = (
     <span> 
-      Hier kann die Tabellentransformation angepasst werden, dabei kann die Struktur als auch der Inhalt der Tabelle verändert werden. 
-      Außerdem kann die Tabelle hochgeladen werden, damit sie in Metabase zur Visualisierung verfügbar ist.
+      Here you can adjust the table transformation, modifying both the structure and the content of the table.
+      Additionally, the table can be uploaded to make it available in Metabase for visualization.
     </span>
   )
 
@@ -91,17 +92,14 @@ export default function Preview() {
   }, [showSuccessMessage]);
 
   const previewText = [
+    
     {
-      header: "Thema (Work in Progress)",
-      text: "Wohnräume"
-    },
-    {
-      header: "Tabellentransformation",
+      header: "Table transformation",
       text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
     },
     {
-      header: "Datei",
-      text: selectedFile?.name || "keine Datei ausgewählt"
+      header: "File",
+      text: selectedFile?.name || "No File selected"
     },
   ]
 
@@ -182,21 +180,17 @@ export default function Preview() {
 
     try {
       if (generatedSchema) {
-        console.log("Using generated schema: ", generatedSchema);
         actualSchemaRef.current = generatedSchema;
       } else if (editedSchema) {
-        console.log("Using edited schema: ", editedSchema);
         actualSchemaRef.current = editedSchema;
       } else if (selectedSchema) {
         actualSchemaRef.current = await new Promise((resolve, reject) => {
-          console.log("Requested to get table structure from server");
           api.getTableStructure(selectedSchema.id, (error, data, response) => {
             if (error) {
               console.error(error);
               parseError(error);
               reject(error);
             } else {
-              console.log("API called to get tableStructure successfully. Returned data: ", data);
               resolve(data);
             }
           });
@@ -207,10 +201,8 @@ export default function Preview() {
           setErrorId("101");
           return;
         }
-        console.log("Using selected schema: ", actualSchemaRef.current);
       }
       
-      console.log("Actual schema set: ", actualSchemaRef.current);
     } catch (error) {
       console.error("Error during setActualSchema:", error);
       setErrorId("101");
@@ -221,7 +213,6 @@ export default function Preview() {
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async () => {
     
-    console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
       setErrorId("103");
@@ -235,8 +226,6 @@ export default function Preview() {
 
     const {api} = await getApiInstance();
       await new Promise((resolve, reject) => {
-        console.log("selectedFile: ", selectedFile);
-        console.log("selectedFileType: ", selectedFile.type);
         //set amount of rows based on window height
         let limit = computeTablelimit();
         if (limit < 5) { limit = 5 }
@@ -450,15 +439,15 @@ export default function Preview() {
         {showPPup
           && (
             <div className="mt-4 mx-auto bg-green-100 border border-green-500 text-green-800 px-6 py-3 rounded shadow">
-              Bearbeitung erfolgreich angewandt! Bitte überprüfen Sie die Vorschau und laden Sie die korrekte Datei hoch!        </div>
+              Editing applied successfully! Please review the preview and upload the correct file!</div>
           )}
         {/* Popups */}
           <DecisionDialog
             dialogRef={decisionDialogRef}
-            text={"Die Datei befindet sich bereits in der Datenbank. Es gibt die Möglichkeit die Datei zu ersetzen oder das Hochladen abzubrechen."}
-            label1={"Datei ersetzen"}
+            text={"The file already exists in the database. You can either replace the file or cancel the upload."}
+            label1={"Replace file"}
             function1={() => {replaceTableInServer(globalSchemaId)}}
-            label2={"Hochladen abbrechen"}
+            label2={"Cancel upload"}
             function2={() => navigate("/upload")}
           />
 
@@ -492,8 +481,8 @@ export default function Preview() {
         {/* Information text */}
           <div className="relative">
             <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
-              <StackedListDropDown title={"Vorschau"} headerTextArray={previewText} />
-              <StackedListDropDown title={"Fehlermeldungen"} headerTextArray={reportContent} isImportant={existReports} />
+              <StackedListDropDown title={"Preview"} headerTextArray={previewText} />
+              <StackedListDropDown title={"Error Message"} headerTextArray={reportContent} isImportant={existReports} />
             </div>
             <div className="absolute  top-0 left-full z-20">
               <Tooltip tooltipContent={ExplainerInformationText} onClick={TipInformationToTable} direction={"left"} showTutorial={tipInformation} />
@@ -516,7 +505,7 @@ export default function Preview() {
                       <ExclamationTriangleIcon aria-hidden="true" className="size-6 text-yellow-400" />
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-semibold text-yellow-800">Tabelle konnte nicht geladen werden</h3>
+                      <h3 className="text-sm font-semibold text-yellow-800">Table could not be loaded</h3>
                     </div>
                   </div>
                   {/*<p className="text-sm">{errorText}</p>*/}
@@ -567,7 +556,7 @@ export default function Preview() {
             className="mr-[5vw] rounded-md w-[25vw] py-2 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
             onClick={handleEditSchema}
           >
-            Tabellentransformation anpassen
+           Adjust table transformation
           </button>
           <button
             type="button"
@@ -578,7 +567,7 @@ export default function Preview() {
               } else checkboxDialogRef.current?.showModal();
             }}
           >
-            Hochladen
+            Upload
           </button>
         </div>
       </div>
