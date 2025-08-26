@@ -3,42 +3,23 @@ import arrow from './assets/arrow-right.svg';
 
 function Home() {
   const navigate = useNavigate();
-
   return (
-    <div className='flex justify-around items-around h-[85vh] bg-[#FEFAFA]'>
-      <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh] divide-y divide-gray-200 rounded-lg bg-white shadow'>
-        <div className="flex h-55% justify-center items-center">
-          <img style={{ height: "auto", width: "60%", objectFit: "contain" }} src="/UploadPic.png" alt="Logo" />
-        </div>
-        <div className="flex flex-col flex-grow justify-between h-45% p-4">
-          <p className='text-xl font-semibold'>Daten hochladen</p>
-          <p className='flex-grow'>Excel Datein auswählen, anpassen und in die Datenbank hochladen.</p>
-          <button
-            type="button"
-            className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => navigate("/upload")}
-          >
-            Daten hochladen
-          </button>
-        </div>
-      </div>
+    <div className="flex items-center justify-center bg-gray-50 p-6 mt-10">
+      <div className="w-full max-w-md bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl p-8 text-center">
+        <div className="flex flex-col items-center gap-4">
 
-      <div className='flex flex-col justify-start w-[35vw] h-[70vh] mt-[5vh] divide-y divide-gray-200 rounded-lg bg-white shadow'>
-        <div className="flex h-55% justify-center items-center">
-          <img style={{ height: "auto", width: "60%", objectFit: "contain" }} src="/DataVisPic.png" alt="Logo" />
-        </div>
-        <div className="flex flex-col flex-grow justify-between h-45% p-4">
-          <p className='text-xl font-semibold'>Datenvisualisierung</p>
-          <p className='flex-grow'>Daten aus der Datenbank zu Diagrammen und Statistiken aufbereiten.</p>
+          <h1 className="text-2xl font-semibold text-gray-800">Get Started</h1>
+          <p className="text-sm text-gray-500">
+            Begin the application process!
+          </p>
+
           <button
-            type="button"
-            className="rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={() => window.location.href = import.meta.env.VITE_METABASE_ENDPOINT}
+            onClick={() => navigate('/upload')}
+            className="mt-4 inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-md hover:scale-105 transform transition-transform focus:outline-none focus:ring-4 focus:ring-blue-200"
+            aria-label="Start the application and begin uploading your files"
           >
-            <div className="flex items-center justify-center g-3">
-              Visualisierung
-              <img src={arrow} alt="" />
-            </div>
+            <span className="font-medium text-lg">Start Application</span>
+            <img src={arrow} alt="" className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
       </div>

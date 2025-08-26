@@ -319,7 +319,7 @@ useEffect(() => {
                                 onClick={() => setShowOptional(v => !v)}
                                 className="text-sm text-indigo-600 hover:underline"
                             >
-                                {showOptional ? "Optionale Parameter verbergen ▲" : "Optionale Parameter anzeigen ▼"}
+                                {showOptional ? "Hide optional parameters ▲" : "Show optional parameters ▼"}
                             </button>
                         )}
 
@@ -350,7 +350,7 @@ useEffect(() => {
                                 onClick={() => handleExpandButton()}
                                 className={`text-xs ${isEditing && id !== 0 ? "text-gray-300 cursor-not-allowed" : "text-gray-600 hover:text-indigo-500"}`}
                             >
-                                {expanded ? "Ergebnis einklappen ▲" : "Ergebnis ausklappen ▼"}
+                                {expanded ? "Collapse result ▲" : "Expand result ▼"}
                             </button>
                         </div>
                     </div>
