@@ -470,7 +470,7 @@ export default function Preview() {
         <UploadFinishedPopup dialogRef={uploadFinishedDialogRef} />
 
         <ErrorDialog
-          text={"Fehler!"}
+          text={"Error!"}
           errorId={errorId}
           onConfirm={() => { errorDialogRef.current?.close();}}
           dialogRef={errorDialogRef}
