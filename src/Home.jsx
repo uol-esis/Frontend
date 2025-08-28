@@ -4,8 +4,8 @@ import arrow from './assets/arrow-right.svg';
 function Home() {
   const navigate = useNavigate();
   return (
-    <div className="flex items-center justify-center bg-gray-50 p-6 mt-10">
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl p-8 text-center">
+    <div className="flex items-center justify-center  p-6 mt-10">
+      <div className="w-full max-w-md  backdrop-blur-sm border border-gray-200 rounded-2xl shadow-xl p-8 text-center">
         <div className="flex flex-col items-center gap-4">
 
           <h1 className="text-2xl font-semibold text-gray-800">Get Started</h1>

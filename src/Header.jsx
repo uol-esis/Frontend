@@ -16,8 +16,8 @@ export default function Header() {
             <span className="sr-only">Your Company</span>
             <img
               alt="Logo"
-              src="logo.png"
-              className="h-8 w-auto"
+              src="prolificlogo.png"
+              className="h-18 w-auto pb-2"
             />
           </a>
           <div className="flex gap-x-12">
