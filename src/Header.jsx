@@ -7,7 +7,6 @@ import { UserCircleIcon } from '@heroicons/react/24/outline';
 // Navigation items for the left section
 const leftNavigation = [
   { name: 'Docs', href: '/wiki' },
-  { name: 'Metabase', href: import.meta.env.VITE_METABASE_ENDPOINT },
 ];
 
 // Navigation items for the right section
@@ -36,8 +35,7 @@ export default function Header() {
               <a
                 key={item.name}
                 href={item.href}
-                target={item.name === 'Metabase' ? '_blank' : '_self'}
-                rel={item.name === 'Metabase' ? 'noopener noreferrer' : undefined}
+                
                 className="text-sm/6 font-semibold text-gray-900 flex items-center hover:scale-105 transition-transform"
               >
                 {item.name}
