@@ -47,7 +47,7 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
 
       if (key === "reportType") {
         const translatedKey = await loadTranslation(value, "reportTypeDE");
-        array.push({ header: "Fehlerart: " + translatedKey, text: "" });
+        array.push({ header: "Errortype: " + translatedKey, text: "" });
       } else {
         const translatedKey = await loadTranslation(key, "reportTypeDE");
 
