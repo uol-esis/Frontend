@@ -91,10 +91,7 @@ export default function Preview() {
   }, [showSuccessMessage]);
 
   const previewText = [
-    {
-      header: "Thema (Work in Progress)",
-      text: "Wohnräume"
-    },
+    
     {
       header: "Tabellentransformation",
       text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
