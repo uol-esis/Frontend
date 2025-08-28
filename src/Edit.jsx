@@ -205,7 +205,7 @@ export default function Edit() {
     const field = formData?.[apiName];
     if (param.type === 'string') {
       if (!field || field.toString().trim() === "") {
-        return " ";
+        return "";
       } 
       return field;
     }
