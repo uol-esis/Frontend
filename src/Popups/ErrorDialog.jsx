@@ -7,7 +7,7 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
 
     {/* load error message based on id */}
     useEffect(() => {
-        fetch(`src/language/${locale}.json`)
+        fetch(`public/${locale}.json`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Netzwerkfehler: ' + response.status);
