@@ -85,17 +85,7 @@ function Upload() {
     localStorage.setItem("hideUploadTutorial", true);
   });
 
-  const getByteSize = (str) => {
-    const encoder = new TextEncoder();
-    const encoded = encoder.encode(str);
-    return encoded.length;
-  };
-
   
-
-
-  
-
   useEffect(() => {
       if(errorId == "none"){
         return;
@@ -197,7 +187,7 @@ function Upload() {
   const handleConfirmName = (newName) => {
     if (isNameTaken(newName)) {
       setConfirmNameError("Der Name wird bereits verwendet");
-      return;
+      return false;
     }
 
     if (confirmMode === "preview") {
@@ -212,23 +202,20 @@ function Upload() {
         state: {
           schemaToEdit: schema, selectedFile },
       });
+    } else if (confirmMode === "Readyprev") {
+      navigate("/preview", { state: { selectedFile, generatedSchema: schemaToPreview } });
     }
     setConfirmMode(null);
+    return true;
   };
 
-  const handleConfirmNewSchema = (newName) => { //NICHT VERW
-    const schema = {
-      name: newName
-    };
-    navigate("/edit", {
-      state: {
-        schemaToEdit: schema,
-        selectedFile: selectedFile,
-      },
-    });
-  };
 
-  const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
+  // Öffnet das ConfirmNameDialog bevor zur Preview navigiert wird (nur bei Klick auf "Weiter")
+  const handleConfirm = () => {
+    setConfirmMode("Readyprev");
+    setConfirmNameError("");
+    confirmNameRef.current?.showModal();
+  };
 
   {/* Actual page */ }
   return (
@@ -238,6 +225,7 @@ function Upload() {
       <ConfirmNameDialog
         dialogRef={confirmNameRef}
         name={schemaName}
+        file={selectedFile}
         onClickFunction={handleConfirmName}
         errorText={confirmNameError} />
       <ErrorDialog

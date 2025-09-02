@@ -1,11 +1,25 @@
 import { useState, useEffect } from "react";
-export default function ConfirmNameDialog({dialogRef, name, onClickFunction, errorText}){
+export default function ConfirmNameDialog({dialogRef, name, onClickFunction, errorText, file}){
     const [error, setError] = useState(errorText)
     const [text, setText] = useState(name);
+    const [filename, setFilename] = useState("");
 
     useEffect(() => {
         setText(name);
     }, [name]);
+
+    useEffect(() => { 
+        // store the file name (safe when file is null)
+        setFilename(file?.name ?? "");
+    }, [file]);
+
+    const getByteSize = (str) => {
+    const encoder = new TextEncoder();
+    const encoded = encoder.encode(str);
+    return encoded.length;
+  };
+
+    const tooLong = getByteSize(filename) > 63;
 
     useEffect(() => {
         setError(errorText);
@@ -13,6 +27,8 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction, err
 
     return(
         <dialog  className="justify-self-center mt-[20vh] w-[50vw] shadow-md bg-white " ref={dialogRef}>
+            { tooLong && ( 
+            <p className="text font-semibold"> Der Dateiname ist zu lang, bitte kürzen Sie ihn! </p> )}
             <div className="flex flex-col justify-between h-full p-5 bg-white">
                 <p className="text font-semibold ">Tabellentransformationsnamen bestätigen oder bearbeiten</p>
                 {/* Text input */} 
