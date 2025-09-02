@@ -6,7 +6,6 @@ export default function UploadComponent({setFile, setValid}){
     const [selectedFile, setSelectedFile] = useState(null);
     const fileInputRef = useRef(null); // Reference for the hidden input element
     const fileNameDialogRef = useRef(null);
-    const [modifiedFileName, setModifiedFileName] = useState(selectedFile?.name || "");
     const [showNamePopup, setShowNamePopup] = useState(false);
     const [isValidFile, setIsValidFile] = useState(false);
 
@@ -20,11 +19,10 @@ export default function UploadComponent({setFile, setValid}){
 
     if (selectedFile) {
       const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
-      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
 
-      setIsValidFile(isValidAndShortEnough);
+      setIsValidFile(isValid);
 
-      if (isValidAndShortEnough) {
+      if (isValid) {
         setFile(selectedFile);
         setValid(true);
       }
@@ -32,16 +30,6 @@ export default function UploadComponent({setFile, setValid}){
       setIsValidFile(false);
     }
   }, [selectedFile]);
-
-
-
-    useEffect(() => {
-        if (selectedFile && getByteSize(selectedFile.name) > 63) {
-          setModifiedFileName(selectedFile.name); // Set the initial name
-          fileNameDialogRef.current?.showModal(); // Open the popup
-      }
-      }, [selectedFile]);
-    
 
     const handleDragOver = (event) => {
         event.preventDefault();
@@ -71,7 +59,6 @@ export default function UploadComponent({setFile, setValid}){
 
     return(
       <div>
-        <FileNameDialog dialogRef={fileNameDialogRef} fileName={modifiedFileName} onConfirm={handleFileNameConfirm}/>
         <div
           className="flex flex-col p-4 w-full bg-white shadow rounded-[10px] min-h-[75vh]"
           onDragOver={handleDragOver}
@@ -138,7 +125,12 @@ export default function UploadComponent({setFile, setValid}){
           </button>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
           {selectedFile && (
-            <p className="mt-2 text-sm text-gray-700">Ausgewählte Datei: {selectedFile.name}</p>
+            <p className="mt-2 text-sm text-gray-700">
+              Ausgewählte Datei: {selectedFile.name}
+              {!isValidFile && (
+                <span className="ml-2 text-sm font-semibold text-red-600"> < br/>  Falsches Dateiformat. Laden Sie bitte eine .csv oder Excel (.xls/.xlsx) hoch.</span>
+              )}
+            </p>
           )}
         </div>
       </div>

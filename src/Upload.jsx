@@ -91,23 +91,10 @@ function Upload() {
     return encoded.length;
   };
 
-  useEffect(() => {
-    if (selectedFile && getByteSize(selectedFile.name) > 63) {
-      setModifiedFileName(selectedFile.name); // Set the initial name
-      fileNameDialogRef.current?.showModal(); // Open the popup
-    }
-  }, [selectedFile]);
+  
 
 
-  useEffect(() => {
-    if (selectedFile) {
-      const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
-      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
-      setIsValidFile(isValidAndShortEnough);
-    } else {
-      setIsValidFile(false);
-    }
-  }, [selectedFile]);
+  
 
   useEffect(() => {
       if(errorId == "none"){
