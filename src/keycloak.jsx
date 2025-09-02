@@ -2,7 +2,7 @@ import KeycloakReal from "keycloak-js";
 import KeycloakMock from "./__mocks__/keycloak-js";
 
 const KeycloakLib =
-    import.meta.env.VITE_ENABLE_AUTH === "false" ? KeycloakMock : KeycloakReal;
+    import.meta.env.VITE_OAUTH_ENABLE === "false" ? KeycloakMock : KeycloakReal;
 
 const keycloak = new KeycloakLib({
     url: import.meta.env.VITE_OAUTH_URL,
