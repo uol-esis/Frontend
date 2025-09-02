@@ -5,7 +5,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 import SelectionMenu from "./SelectionMenu";
-
+import MapInputField from "./MapInputField";
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description, collapseAllSignal}) {
     const [formData, setFormData] = useState(initialFormData || {});
@@ -132,6 +132,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
 
+        console.log(param + " " + JSON.stringify(value));
         let error = "";
 
         setFormData((prevData) => ({
@@ -219,7 +220,17 @@ useEffect(() => {
                                         {param.name}{param.required && <span className="text-red-500"> *</span>}
                                     </label>
                         
-                                    {param.type === "enum" ? (
+                                    {param.type === "map" ? (
+                                    <div className="flex flex-col gap-5">
+                                        <MapInputField
+                                        name1={"key"}
+                                        name2={"values"}
+                                        param={param}
+                                        handleInputChange={handleInputChange}
+                                        />
+                                    </div>
+                                    ):
+                                    param.type === "enum" ? (
                                         <SelectionMenu
                                         label={param.name}
                                         setCategory={changeCategoryState}

@@ -9,7 +9,6 @@ import { ApiClient, DefaultApi } from "th1";
 import { getApiInstance } from "./hooks/ApiInstance";
 import ErrorDialog from "./Popups/ErrorDialog";
 
-
 export default function Edit() {
   
   const isLoggedIn = useAuthGuard();
@@ -87,7 +86,7 @@ export default function Edit() {
       description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
     {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
       description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}], converterType: 'ADD_HEADER_NAME',
+    {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}, {name:'Hinzufügen oder ersetzen', type:"enum", required:true, options:["Oberhalb hinzufügen", "Bestehenden Header ersetzen"], values:['INSERT_AT_TOP', 'REPLACE_FIRST_ROW'], apiName:'headerPlacementType'}], converterType: 'ADD_HEADER_NAME',
       description: 'Mithilfe dieses Converters können die Spaltennamen verändert werden. Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet, der zweite Name auf die zweite Spalte und so weiter.'}, //AddHeaderNames
     {label: 'Fußzeile entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
       description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
@@ -105,7 +104,12 @@ export default function Edit() {
       description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
       {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalte nach Überschrift entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
       description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Bei den Spalten gilt es zu beachten, dass das Stichwort in der Spaltenüberschrift vorkommen muss. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
-    // add more...
+    {label:'Datenblöcke aufteilen', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'key', valueName:'Spaltenindex', map:true  }, {name:'Block Indeces', type:'array', apiName:'blockIndices'}, {name:'Namen verwenden zum füllen von Lücken', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
+      description:"unmöglich zu verstehen :("},
+      {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
+        description:"Hierbei werden die Zeilen und Spalten vertauscht."
+      }
+      // add more...
   ];
 
   //Converter dropdown
@@ -237,6 +241,13 @@ export default function Edit() {
       }
     }
     if(param.type === 'enum'){
+      if(!field){
+        return "";
+      }else{
+        return field;
+      }
+    }
+    if(param.type === 'map'){
       if(!field){
         return "";
       }else{
@@ -517,7 +528,7 @@ useEffect(() => {
       <div className="flex gap-8 px-4">
 
         {/* Linke Spalte: Converter-Buttons */}
-        <div className="w-1/5 space-y-2 pl-4 sticky top-20 self-start h-fit">
+        <div className="w-1/5 space-y-2 pl-4 sticky top-20 self-start h-fit relative">
 
             {/* Hinzufügen-Dropdown */}
         <button
@@ -590,12 +601,11 @@ useEffect(() => {
               </div>
           )}
 
-          
-            <div className=" absolute top-0 translate-x-full z-50">
-            <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
-          </div>
         </div>
-        
+
+        <div className=" absolute fixed top-1/4 left-1/5 w-1/2 z-50">
+            <Tooltip tooltipContent={ExplainerConverterList} showTutorial={showConverterListTip} direction={"left"} onClick={toolTipConverterListToCardList}/>
+        </div>
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20 relative">

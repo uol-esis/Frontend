@@ -1,5 +1,5 @@
 {
-    "0": "Es ist ein Fehler aufgetreten :(",
+    "0": "Es ist ein Fehler aufgetreten. Versuchen Sie die Seite zu aktualisieren oder sich erneut anzumelden",
     "100": "TH1 Modul konnte nicht geladen werden.",
     "101": "Fehler im Zusammenhang mit der Tabellentransformation. Es könnte sein, dass die ausgewählte Tabellentransformation nicht zur Datei passt. Versuchen Sie eine andere Tabellentransformation auszuwählen.",
     "102": "Fehler während des Ladevorgangs der Vorschau. Überprüfen Sie, ob die Datei zu der Tabellentransformation passt.",
