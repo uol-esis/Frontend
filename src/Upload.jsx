@@ -37,9 +37,12 @@ function Upload() {
   const [tipSchema, setTipSchema] = useState(false);
   const [tipGenerate, setTipGenerate] = useState(false);
 
-  const confirmNameToPreviewRef = useRef();
-  const confirmNameToEditRef = useRef();
+  const confirmNameToPreviewRef = useRef(); //NICHT VERW
+  const confirmNameToEditRef = useRef(); //NICHT VERW
+  const confirmNameRef = useRef();
   const errorDialogRef = useRef();
+
+  const [confirmMode, setConfirmMode] = useState(null); // "preview" or "edit"
 
   const navigate = useNavigate();
 
@@ -164,7 +167,8 @@ function Upload() {
         setReports(data.reports);
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
-        confirmNameToPreviewRef.current?.showModal();
+        setConfirmMode("preview");
+        confirmNameRef.current?.showModal();
       }
       setIsLoading(false);
       console.log(response);
@@ -183,7 +187,7 @@ function Upload() {
     return false;
   }
 
-  {/* Confirm name and navigate to preview page*/ }
+  {/* Confirm name and navigate to preview page NICHTVER*/ }
   const confirmGeneratedName = function (newName) {
     
     if(isNameTaken(newName)){
@@ -199,10 +203,33 @@ function Upload() {
 
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
-    confirmNameToEditRef.current?.showModal();
+    setConfirmMode("edit");
+    confirmNameRef.current?.showModal();
   };
 
-  const handleConfirmNewSchema = (newName) => {
+  const handleConfirmName = (newName) => {
+    if (isNameTaken(newName)) {
+      setConfirmNameError("Der Name wird bereits verwendet");
+      return;
+    }
+
+    if (confirmMode === "preview") {
+      jsonData.name = newName;
+      const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+      const reportsJson = JSON.parse(JSON.stringify(reports));
+      navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } });
+    } else if (confirmMode === "edit") {
+      const schema = {
+        name: newName };
+      navigate("/edit", {
+        state: {
+          schemaToEdit: schema, selectedFile },
+      });
+    }
+    setConfirmMode(null);
+  };
+
+  const handleConfirmNewSchema = (newName) => { //NICHT VERW
     const schema = {
       name: newName
     };
@@ -221,8 +248,11 @@ function Upload() {
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={handleConfirmNewSchema} />
+      <ConfirmNameDialog
+        dialogRef={confirmNameRef}
+        name={schemaName}
+        onClickFunction={handleConfirmName}
+        errorText={confirmNameError} />
       <ErrorDialog
         text={"Fehler!"}
         errorId={errorId}
