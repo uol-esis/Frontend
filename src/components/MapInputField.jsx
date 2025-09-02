@@ -23,22 +23,23 @@ export default function MapInputField({name1, name2, handleInputChange, isEditin
     return(
         //formData[param.apiName] || 
         <div>
-            <p>{name1}</p>
+            <p className="text-sm">{name1}</p>
             <input
                 type={"text"}
                 required={param.required}
                 value={customKey}
                 onChange={e => buildMap( e.target.value, true)}
-                
-                className={`shadow rounded px-2 py-1 text-sm }`}
+                disabled={!isEditing}
+                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}}`}
             />
-            <p>{name2}</p>
+            <p className="text-sm">{name2}</p>
             <input
                 type={"text"}
                 required={param.required}
                 value={values}
-                onChange={e => setValues(e.target.value.split(',').map(item => Number(item.trim())).filter(num => !isNaN(num)) )}
-                className={`shadow rounded px-2 py-1 text-sm ${isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                onChange={e => setValues(e.target.value.split(',').map(item => item.toString()) )}
+                disabled={!isEditing}
+                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
             />
         </div>
     );

@@ -132,7 +132,6 @@ export default function ConverterCard({id, label, parameters, converterType, for
 
     const handleInputChange = (param, value, type) => { //bisher sind die Parameter noch nicht kontrolliert im Hinblick auf required
 
-        console.log(param + " " + JSON.stringify(value));
         let error = "";
 
         setFormData((prevData) => ({
@@ -223,10 +222,11 @@ useEffect(() => {
                                     {param.type === "map" ? (
                                     <div className="flex flex-col gap-5">
                                         <MapInputField
-                                        name1={"key"}
-                                        name2={"values"}
+                                        name1={param.keyName}
+                                        name2={param.valueName}
                                         param={param}
                                         handleInputChange={handleInputChange}
+                                        isEditing={isEditing}
                                         />
                                     </div>
                                     ):
