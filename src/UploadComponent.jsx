@@ -21,6 +21,8 @@ export default function UploadComponent({setFile, setValid}){
       const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
 
       setIsValidFile(isValid);
+      setFile(selectedFile);
+      setValid(isValid);
 
       if (isValid) {
         setFile(selectedFile);
