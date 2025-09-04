@@ -44,7 +44,22 @@ export default function Edit() {
       Hier werden alle ausgewählten Converter angezeigt. Der neuste Converter wird immer ganz oben angezeigt und 
       alle vorherigen Converter werden darunter angezeigt. Die Reihenfolg der Converter ist wichtig, da sie logisch voneinander abhängig sind. Deswegen
       müssen alle Converter gespeichert werden, damit der aktuellste Converter angewendet werden kann.
-      </span>
+    </span>
+  )
+
+  const GroupHeaderExplainer = (
+    <span> 
+      Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden. 
+      Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. 
+      Außerdem muss in Startzeile und Startspalte angegeben werden, wo die tatsächlichen Daten beginnen. 
+      Ein ausführliches Beispiel ist im Wiki zu finden (
+      <span 
+        onClick={() => { window.open("/wiki?targetId=groupHeader&offset=-600", "_blank");}} 
+        className="text-blue-400 underline cursor-pointer"
+      >
+      siehe hier
+      </span>).
+    </span>
   )
 
   const toolTipConverterListToCardList = function (){
@@ -57,10 +72,37 @@ export default function Edit() {
     tutorialRef.current?.showModal();
   }
 
+  const getConverterByType = (type) => {
+      const match = converters.find(converter => {
+        return converter.converterType === type;
+      });
+      return match || null;
+    };
+
   const handleConverterClick = (label, params, converterType, description) => {
-    const newCard = {id: cardIdCounter, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true, description: description}; //Neue Card mit ID, label, Parametern, und converterType
-    setCards([newCard, ...cards]); //Neue Card wird an den Anfang der Liste gesetzt
-    setCardIdCounter(cardIdCounter + 1);
+    let newCards = [];
+    let cardId = cardIdCounter
+    let newCard;
+
+    if(converterType === 'REMOVE_GROUPED_HEADER'){
+      const fillRowConverter = getConverterByType("FILL_EMPTY_ROW");
+      newCard = {id: cardId++, label: fillRowConverter.label, parameters: fillRowConverter.params, converterType: fillRowConverter.converterType, selectedFile: selectedFile, isEditing: true, description: fillRowConverter.description};
+      newCards.push(newCard);
+
+      //REMOVE_GROUPED_HEADER
+      newCard = {id: cardId++, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true, description: description}; //Neue Card mit ID, label, Parametern, und converterType
+      newCards.push(newCard);
+
+      const addHeaderNameConverter = getConverterByType("ADD_HEADER_NAME");
+      newCard = {id: cardId++, label: addHeaderNameConverter.label, parameters: addHeaderNameConverter.params, converterType: addHeaderNameConverter.converterType, selectedFile: selectedFile, isEditing: true, description: addHeaderNameConverter.description};
+      newCards.push(newCard); 
+    }else{
+      newCard = {id: cardId++, label: label, parameters: params, converterType: converterType, selectedFile: selectedFile, isEditing: true, description: description}; //Neue Card mit ID, label, Parametern, und converterType
+      newCards.push(newCard);
+    }
+
+    setCards(prevCards => [...newCards.reverse(), ...prevCards]);
+    setCardIdCounter(cardId);
     setCardAdded(true); // Karte wurde hinzugefügt
   }
 
@@ -77,8 +119,8 @@ export default function Edit() {
   };
 
   const converters = [
-    {label: 'Gruppenüberschriften entfernen ', category: 'rmv', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Startspalte', type: 'number', required: false, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
-      description:'Mithilfe dieses Converters können Verschachtelungen in der Kopfzeile und in den Spalten aufgelöst werden. Dabei müssen die Zeilen und Spalten angegeben werden, in der die Verschachtelungen auftreten. Dies ist notwendig, da in der Datenbank keine Verschachtelungen auftreten dürfen und eine flache Struktur erforderlich ist. Ein ausführliches Beispiel ist im Wiki zu finden.' }, //RemoveGroupedHeader
+    {label: 'Gruppenüberschriften entfernen (Drei Schritte) ', category: 'rmv', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile der Daten', type: 'number', required: true, apiName: 'startRow'}, {name: 'Startspalte der Daten', type: 'number', required: true, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
+      description: GroupHeaderExplainer}, //RemoveGroupedHeader
     {label: 'Leere Zeilen ausfüllen ', category: 'add', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW', 
       description:'Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.' }, //FillEmptyRows
     {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
@@ -126,6 +168,12 @@ export default function Edit() {
       }
       errorDialogRef.current?.showModal();
     }, [errorId]);
+
+  useEffect(() => {
+    cards.map(card => {
+      console.log(card.id + " " + card.label);
+    })
+  }, [cards]);
 
   useEffect(() => {
     if (schemaToEdit) {
@@ -610,7 +658,6 @@ useEffect(() => {
             </div>
 
           {cards.slice().reverse().map((card) => (
-            
             <ConverterCard
               key={card.id}
               id={card.id}
