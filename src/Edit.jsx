@@ -170,12 +170,6 @@ export default function Edit() {
     }, [errorId]);
 
   useEffect(() => {
-    cards.map(card => {
-      console.log(card.id + " " + card.label);
-    })
-  }, [cards]);
-
-  useEffect(() => {
     if (schemaToEdit) {
       console.log("selectedfile:", selectedFile);
       console.log("Schema to edit:", schemaToEdit);
