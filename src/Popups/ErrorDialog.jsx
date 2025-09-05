@@ -1,4 +1,5 @@
 import { useState, useEffect} from "react";
+import dataString from "../language/errorsDE.json?raw";
 
 export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
 
@@ -7,19 +8,8 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
 
     {/* load error message based on id */}
     useEffect(() => {
-        fetch(`src/language/${locale}.json`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network error: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setErrorMsg(data[errorId]);
-            })
-            .catch(error => {
-                console.error('Error loading or processing:', error);
-            });
+        const data = JSON.parse(dataString);
+        setErrorMsg(data[errorId]);
     }, [errorId])
 
     return(
