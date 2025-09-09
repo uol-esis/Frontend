@@ -184,6 +184,11 @@ function Upload() {
     confirmNameRef.current?.showModal();
   };
 
+  const handleFileNameConfirm = (newName) => {
+      const newFile = new File([selectedFile], newName, { type: selectedFile.type });
+      setSelectedFile(newFile); // Update the file with the new name
+    };
+
   const handleConfirmName = (newName) => {
     if (isNameTaken(newName)) {
       setConfirmNameError("Der Name wird bereits verwendet");
@@ -227,6 +232,7 @@ function Upload() {
         name={schemaName}
         file={selectedFile}
         onClickFunction={handleConfirmName}
+        secondClickFunction={handleFileNameConfirm}
         errorText={confirmNameError} />
       <ErrorDialog
         text={"Fehler!"}
