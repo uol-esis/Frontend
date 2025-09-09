@@ -424,8 +424,8 @@ export default function Preview() {
       }
       
     } catch (error) {
+      parseError(error);
       console.error(error);
-      errorDialogRef.current?.showModal();
       }
   }
 
