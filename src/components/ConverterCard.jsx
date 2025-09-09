@@ -65,7 +65,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
         return;
     }
 
-    if(param.type === "boolean" || param.type === "enum"){
+    if(param.type === "boolean"){
         return;
     }
 
