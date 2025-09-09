@@ -184,41 +184,45 @@ function Upload() {
     confirmNameRef.current?.showModal();
   };
 
-  const handleFileNameConfirm = (newName) => {
-      const newFile = new File([selectedFile], newName, { type: selectedFile.type });
-      setSelectedFile(newFile); // Update the file with the new name
-    };
+  const handleConfirmName = async (newFileName, newTransformationName) => {
+  if (isNameTaken(newTransformationName)) {
+    setConfirmNameError("Der Name wird bereits verwendet");
+    return false;
+  }
 
-  const handleConfirmName = (newName) => {
-    if (isNameTaken(newName)) {
-      setConfirmNameError("Der Name wird bereits verwendet");
-      return false;
-    }
+  // Neuer File mit geändertem Namen
+  const updatedFile = new File([selectedFile], newFileName, { type: selectedFile.type });
 
-    let updatedFile = selectedFile;
-    if (selectedFile && selectedFile.name !== newName) {
-        updatedFile = new File([selectedFile], newName, { type: selectedFile.type });
-        setSelectedFile(updatedFile);
-    }
+  // State aktualisieren und sicherstellen, dass es gesetzt ist
+  await new Promise((resolve) => {
+    setSelectedFile(updatedFile);
+    setTimeout(resolve, 0); // kleiner Hack, um State-Sync zu erzwingen
+  });
 
-    if (confirmMode === "preview") {
-      jsonData.name = newName;
-      const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
-      const reportsJson = JSON.parse(JSON.stringify(reports));
-      navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } });
-    } else if (confirmMode === "edit") {
-      const schema = {
-        name: newName };
-      navigate("/edit", {
-        state: {
-          schemaToEdit: schema, selectedFile },
-      });
-    } else if (confirmMode === "Readyprev") {
-      navigate("/preview", { state: { selectedFile, generatedSchema: schemaToPreview } });
-    }
-    setConfirmMode(null);
-    return true;
-  };
+  // Transformation setzen
+  jsonData.name = newTransformationName;
+
+  if (confirmMode === "preview") {
+    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+    const reportsJson = JSON.parse(JSON.stringify(reports));
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: generatedSchemaJson, reports: reportsJson },
+    });
+  } else if (confirmMode === "edit") {
+    const schema = { name: newTransformationName };
+    navigate("/edit", {
+      state: { schemaToEdit: schema, selectedFile: updatedFile },
+    });
+  } else if (confirmMode === "Readyprev") {
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: schemaToPreview },
+    });
+  }
+
+  setConfirmMode(null);
+  return true;
+};
+
 
 
   // Öffnet das ConfirmNameDialog bevor zur Preview navigiert wird (nur bei Klick auf "Weiter")
@@ -238,7 +242,6 @@ function Upload() {
         name={schemaName}
         file={selectedFile}
         onClickFunction={handleConfirmName}
-        secondClickFunction={handleFileNameConfirm}
         errorText={confirmNameError} />
       <ErrorDialog
         text={"Fehler!"}

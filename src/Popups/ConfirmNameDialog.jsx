@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-export default function ConfirmNameDialog({dialogRef, name, onClickFunction, secondClickFunction, errorText, file}){
+export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  errorText, file}){
     const [error, setError] = useState(errorText)
     const [text, setText] = useState(name);
     const [filename, setFilename] = useState("");
@@ -32,16 +32,12 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction, sec
         // wenn secondClickFunction eine Funktion ist (sicher prüfen), erst Dateiname übergeben
         const newFileName = `${baseName}${extension}`;
 
-        if (file && typeof secondClickFunction === "function") {
-            secondClickFunction(newFileName);
+        if (typeof onClickFunction === "function") {
+            onClickFunction(newFileName, text);
             console.log("Dateiname : " + newFileName);
         }
 
-        // dann den Tabellentransformationsnamen übergeben, falls vorhanden
-        if (typeof onClickFunction === "function") {
-            onClickFunction(text);
-        }
-
+       
         dialogRef.current?.close();
     }
 
