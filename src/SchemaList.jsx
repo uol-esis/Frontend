@@ -11,7 +11,6 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
       { name: "Schema 2", description: "Description for Schema 2" },
       { name: "Schema 3", description: "Description for Schema 3" }
     ]); // Default for the list of schemata
-    const [themaList, setThemaList] = useState(["Thema 1", "Thema 2", "Thema 3", "Thema 4", "Thema 5", "Thema 6", "Thema 7", "Thema 8", "Thema 9", "Thema 10", "Thema 11", "Thema 12", "Thema 13", "Thema 14", "Thema 15", "Thema 16", "Thema 17", "Thema 18", "Thema 19", "Thema 20", "Thema 21", "Thema 22", "Thema 23", "Thema 24"]); // State for the list of themes
     const [searchQuery, setSearchQuery] = useState(""); // State for the search query
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedSchema, setSelectedSchema] = useState(null);
@@ -43,26 +42,9 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
         <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
             <h2 className="text-xl font-bold mb-2">Bestehende Tabellentransformation verwenden</h2>
             <div className="flex flex-row justify-between mb-2">
-              {/* Dropdown-Menü für Thema */}
-              <Menu as="div" className="relative inline-block text-left">
-                <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-400">
-                  Thema
-                  <ChevronDownIcon aria-hidden="true" className="-mr-1 h-5 w-5 text-gray-400" />
-                </MenuButton>
-                <MenuItems className="absolute left-0 z-10 w-56 max-h-[200px] rounded-md bg-white overflow-auto shadow-lg ring-1 ring-black/5">
-                  <div className="py-1">
-                    {themaList.map((thema, index) => (
-                      <MenuItem key={index}>
-                        <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          {thema}
-                        </a>
-                      </MenuItem>
-                    ))}
-                  </div>
-                </MenuItems>
-              </Menu>
+              
               {/* Search */}
-              <label className="flex w-full items-center gap-2 border border-gray-200 bg-white px-2">
+              <label className="flex w-full items-center gap-2 border border-gray-200 bg-white px-2 rounded-md">
                 <input
                   type="text"
                   className="grow p-1"
