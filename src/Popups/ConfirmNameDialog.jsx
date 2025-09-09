@@ -30,10 +30,11 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction, sec
 
     const handleConfirm = () => {
         // wenn secondClickFunction eine Funktion ist (sicher prüfen), erst Dateiname übergeben
+        const newFileName = `${baseName}${extension}`;
+
         if (file && typeof secondClickFunction === "function") {
-            const newFileName = `${baseName}${extension}`;
             secondClickFunction(newFileName);
-            console.log("Dateiname übergebenLULULULULULULULULULULULLU: " + newFileName);
+            console.log("Dateiname : " + newFileName);
         }
 
         // dann den Tabellentransformationsnamen übergeben, falls vorhanden

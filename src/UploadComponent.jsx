@@ -54,10 +54,7 @@ export default function UploadComponent({setFile, setValid}){
         fileInputRef.current.click();
     };
 
-    const handleFileNameConfirm = (newName) => {
-      const newFile = new File([selectedFile], newName, { type: selectedFile.type });
-      setSelectedFile(newFile); // Update the file with the new name
-    };
+    
 
     return(
       <div>

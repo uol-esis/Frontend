@@ -195,6 +195,12 @@ function Upload() {
       return false;
     }
 
+    let updatedFile = selectedFile;
+    if (selectedFile && selectedFile.name !== newName) {
+        updatedFile = new File([selectedFile], newName, { type: selectedFile.type });
+        setSelectedFile(updatedFile);
+    }
+
     if (confirmMode === "preview") {
       jsonData.name = newName;
       const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
