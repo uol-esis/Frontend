@@ -245,7 +245,6 @@ export default function Preview() {
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-            console.log('API response: ' + response);
             setData(data);
             resolve(data);
           }
@@ -377,6 +376,22 @@ export default function Preview() {
     });
   }
 
+  const updateTableStructure = async (schemaId) => {
+    const {api} = await getApiInstance();
+    console.log("schemaId " + schemaId);
+    console.log("actualSchemaRef " + JSON.stringify(actualSchemaRef.current));
+    return new Promise((resolve, reject) => {
+      api.updateTableStructure(schemaId, actualSchemaRef.current, (error, data, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+        } else {
+          console.log('API called successfully.');
+        }
+      });
+    } )
+  }
+
 
   {/* Load the schema and check if hidePopup is set */ }
   useEffect(() => {
@@ -415,7 +430,8 @@ export default function Preview() {
       } else if (editedSchema) {
         schemaId = await sendEditedSchemaToServer();
       }
-      setGlobalSchemaId(schemaId)
+      console.log("returned schemaId " + schemaId);
+      setGlobalSchemaId(schemaId);
       const result = await sendTableToServer(schemaId);
       if(result == "decision"){
         decisionDialogRef.current?.showModal();
@@ -426,6 +442,7 @@ export default function Preview() {
     } catch (error) {
       parseError(error);
       console.error(error);
+      updateTableStructure(schemaId);
       }
   }
 
