@@ -1,11 +1,6 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Tooltip from './ToolTip';
-import { getApiInstance } from "./hooks/ApiInstance";
 
-export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus, getSchemaList}){
+export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus, handleDeleteSchema}){
 
   const [schemaList, setSchemaList] = useState([
       { name: "Schema 1", description: "Description for Schema 1" },
@@ -26,20 +21,6 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
     useEffect (() => {
       setSelectedFile(file);
     }, [file]);
-      
-    const handleDeleteSchema = async (id) => {
-      const {api} = await getApiInstance();
-
-      api.deleteTableStructure(id, (error, data, response) => {
-        if (error) {
-          //TODO parseError
-          console.error(error);
-        } else {
-          console.log('API called successfully.');
-          getSchemaList();
-        }
-      });
-    };
 
     return(
         <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
