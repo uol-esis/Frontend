@@ -12,7 +12,6 @@ import CheckboxDialog from "./Popups/CheckBoxDialog";
 import { HeartIcon } from "@heroicons/react/24/solid";
 import UploadFinishedPopup from "./Popups/UploadFinishedPopup";
 import { ExclamationTriangleIcon } from '@heroicons/react/20/solid'
-import ErrorDialog from "./Popups/ErrorDialog";
 import { StackedList } from "./StackedList";
 import keycloak from "./keycloak";
 import { useAuthGuard } from "./hooks/AuthGuard";
@@ -54,7 +53,6 @@ export default function Preview() {
   const uploadDialogRef = useRef();
   const checkboxDialogRef = useRef();
   const uploadFinishedDialogRef = useRef();
-  const errorDialogRef = useRef();
   const decisionDialogRef = useRef();
 
   const ExplainerInformationText = (
@@ -156,9 +154,7 @@ export default function Preview() {
     }catch{
       setErrorId("0");
     }
-    if(currentErrorId == errorId){
-      errorDialogRef.current?.showModal();
-    }
+    
     setShowError(true);
   }
 
@@ -423,7 +419,6 @@ export default function Preview() {
       
     } catch (error) {
       console.error(error);
-      errorDialogRef.current?.showModal();
       }
   }
 
@@ -474,13 +469,6 @@ export default function Preview() {
         />
 
         <UploadFinishedPopup dialogRef={uploadFinishedDialogRef} />
-
-        <ErrorDialog
-          text={"Error!"}
-          errorId={errorId}
-          onConfirm={() => { errorDialogRef.current?.close();}}
-          dialogRef={errorDialogRef}
-        />
 
        
         <div className="flex justify-self-center h-[70vh] ">
