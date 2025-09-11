@@ -24,5 +24,6 @@
 "headerNames": "Kopfzeilenname",
 "columnsToFill": "Spalte füllen",
 "rowsToFill": "Zeile füllen",
-"mergeables": "Zusammenfassen"
+"mergeables": "Zusammenfassen",
+"replacementSearch": "Wert"
 }

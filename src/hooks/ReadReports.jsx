@@ -1,15 +1,15 @@
 
 const loadTranslation = async (key, dataName) => {
-  console.log(key + " " + dataName);
+  //console.log(key + " " + dataName);
   try {
     //public\errorsDE.json
     const response = await fetch(`public/${dataName}.json`);
-    console.log("response " + JSON.stringify(response));
+    //console.log("response " + JSON.stringify(response));
     if (!response.ok) {
       throw new Error(response.status);
     }
     const data = await response.json();
-    console.log("translation data " + data);
+    //console.log("translation data " + data);
     if(data[key] == null){
       return key;
     }
@@ -33,14 +33,19 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
         for (const [index, item] of value.entries()) {
           const translatedKey = await loadTranslation(key, "reportTypeDE");
           tempTexts += `${translatedKey} ${index}: `;
+          console.log("item " + JSON.stringify(item));
           await parseReports(item, array, index, tempTexts, true);
           tempTexts = "";
         }
       } else {
-        //if array contains values
+       //if array contains primitive values (e.g. columnIndex: [1])
         const translatedKey = await loadTranslation(key, "reportTypeDE");
         texts += `${translatedKey}: ${value}`;
-        array.push({ header: "", text: texts });
+
+        if (!isArray) {
+          array.push({ header: "", text: texts });
+          texts = "";
+        }
       }
 
     } else if (typeof value === 'object' && value !== null) {
@@ -63,11 +68,11 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
           array.push({ header: "", text: texts });
           texts = "";
         }
+        
       }
     }
   }
-
   if (isArray) {
-    array.push({ header: "", text: texts });
+   array.push({ header: "", text: texts });
   }
 };
