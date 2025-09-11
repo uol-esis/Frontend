@@ -447,16 +447,7 @@ const handleSaveUpToCard = async (upToCardId) => {
 
   }
 
-  const bottomRef = useRef(null);
   const prevCardCountRef = useRef(cards.length);
-
-useEffect(() => {
-  if (cardAdded) {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    setCardAdded(false); // zurücksetzen
-  }
-  // prevCardCountRef.current = cards.length; // nicht mehr nötig
-}, [cards.length, cardAdded]);
 
 
   return (
@@ -619,7 +610,7 @@ useEffect(() => {
               
             />
           ))}
-          <div ref={bottomRef} />
+          
 
           <div className="absolute top-0 -translate-y-full z-50"
             onMouseEnter={() => setIsPopupHovered(true)}
