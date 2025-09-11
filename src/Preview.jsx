@@ -301,6 +301,9 @@ export default function Preview() {
       } else {
         decisionDialogRef.current?.close();
         uploadFinishedDialogRef.current?.showModal();
+        setTimeout(() => {
+          uploadFinishedDialogRef.current?.close();
+        }, 2000)
         console.log('Table successfully replaced.');
       }
     });
@@ -413,6 +416,9 @@ export default function Preview() {
         decisionDialogRef.current?.showModal();
       }else{
         uploadFinishedDialogRef.current?.showModal();
+        setTimeout(() => {
+          uploadFinishedDialogRef.current?.close();
+        }, 2000);
       }
       
     } catch (error) {
