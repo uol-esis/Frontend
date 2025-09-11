@@ -9,6 +9,7 @@ services:
         OAUTH_URL: ${OAUTH_URL}
         OAUTH_REALM: ${OAUTH_REALM}
         OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
+        OAUTH_ENABLED: ${OAUTH_ENABLED}
     ports:
       - "127.0.0.1:5173:80"
     environment:
