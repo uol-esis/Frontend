@@ -62,6 +62,18 @@ export default function Edit() {
     setCardAdded(true); // Karte wurde hinzugefügt
   }
 
+  //Userfeedback Funktion da kein Scrolling mehr:
+  useEffect(() => {
+    if (cardAdded) {
+      const timer = setTimeout(() => {
+        setCardAdded(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [cardAdded])
+
+
+
   const handleDeleteCard = (idToDelete) => {
     setCards(prevCards => prevCards.filter(card => card.id !== idToDelete)
       .map((card) => {
@@ -489,6 +501,8 @@ const handleSaveUpToCard = async (upToCardId) => {
             <QuestionMarkCircleIcon className="h-7 w-7 text-gray-600 hover:text-indigo-500"/>
           </button>
       </div>
+
+      
      
      
 
@@ -577,6 +591,11 @@ const handleSaveUpToCard = async (upToCardId) => {
 
         {/* Rechte Spalte: Cards */}
         <div className="w-3/4 space-y-4 px-20 relative">
+        {cardAdded && (
+        <div className="mt-4 mx-auto bg-green-100 border border-green-500 text-green-800 px-6 py-3 rounded shadow">
+          Converter successfully added below! 
+        </div>
+      )}
         
           <div className="flex justify-end">
               <button
