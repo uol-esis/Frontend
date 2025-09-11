@@ -387,6 +387,7 @@ export default function Preview() {
           parseError(error);
         } else {
           console.log('API called successfully.');
+          uploadFinishedDialogRef.current?.showModal();
         }
       });
     } )
@@ -424,27 +425,56 @@ export default function Preview() {
   const handleCheckBoxConfirm = async () =>{
     let schemaId = null;
     checkboxDialogRef.current?.close();
+    let schemaName = "";
     try {
       if (generatedSchema) {
+        schemaName = generatedSchema.name;
         schemaId = await sendGeneratedSchemaToServer();
       } else if (editedSchema) {
+        schemaName = editedSchema.name;
         schemaId = await sendEditedSchemaToServer();
       }
-      console.log("returned schemaId " + schemaId);
+      
       setGlobalSchemaId(schemaId);
       const result = await sendTableToServer(schemaId);
       if(result == "decision"){
+        //file already exists in database
         decisionDialogRef.current?.showModal();
       }else{
         uploadFinishedDialogRef.current?.showModal();
       }
       
     } catch (error) {
-      parseError(error);
-      console.error(error);
-      updateTableStructure(schemaId);
+      const errorObj = JSON.parse(error.message);
+        if(errorObj.statusCode === 409){
+          //update tablestructure if name is already taken
+          const id = await getSchemaIdByName(schemaName);
+          updateTableStructure(id);
+        }else{
+          parseError(error);
+          console.error(error);
+        }
       }
   }
+
+  //TODO schemalist cachen? und MEthode wird in Upload schon verwendet
+  const getSchemaIdByName = async (name) => {
+
+    let {api} = await getApiInstance();
+    return new Promise((resolve, reject) => {
+      api.getTableStructures((error, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+          reject(error);
+        } else {
+          console.log("Response:", response);
+          const schema = response.find(schema => schema.name === name);
+          resolve(schema ? schema.id : null);
+        }
+      });
+    });
+};
 
   {/* Show error message after a short timeout */ }
   useEffect(() => {

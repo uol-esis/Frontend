@@ -266,7 +266,7 @@ function Upload() {
           {/* Schemalist*/}
           <div className="relative h-full min-h-0">
             <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} />
+              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} getSchemaList={getSchemaList} />
             </div>
             <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
               style={{ opacity: 1 }}
