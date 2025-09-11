@@ -130,6 +130,7 @@ export default function Preview() {
     }
 
     const array = [];
+    console.log("reports " + JSON.stringify( reports));
     await parseReports(reports, array);
 
     if(array.length == 0){
