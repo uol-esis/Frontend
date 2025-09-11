@@ -419,6 +419,10 @@ export default function Preview() {
       
     } catch (error) {
       console.error(error);
+      uploadFinishedDialogRef.current?.showModal();
+        setTimeout(() => {
+          uploadFinishedDialogRef.current?.close();
+        }, 2000)
       }
   }
 
