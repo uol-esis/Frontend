@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus, handleDeleteSchema}){
+export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus, deleteDialogRef, setId}){
 
   const [schemaList, setSchemaList] = useState([
       { name: "Schema 1", description: "Description for Schema 1" },
@@ -63,7 +63,11 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
                     <div className="flex gap-2">
                     
                       <button type ="button"
-                        onClick={(e) => {e.stopPropagation(); handleDeleteSchema(schema.id);}}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setId(schema.id); 
+                          deleteDialogRef.current?.showModal();
+                        }}
                         className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
                           🗑️
                         </button>

@@ -9,7 +9,6 @@ import { ApiClient, DefaultApi } from "th1";
 import { getApiInstance } from "./hooks/ApiInstance";
 import ErrorDialog from "./Popups/ErrorDialog";
 
-
 export default function Edit() {
   
   const isLoggedIn = useAuthGuard();
