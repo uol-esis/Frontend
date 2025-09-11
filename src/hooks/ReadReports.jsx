@@ -1,15 +1,12 @@
 
 const loadTranslation = async (key, dataName) => {
-  console.log(key + " " + dataName);
   try {
     //public\errorsDE.json
     const response = await fetch(`public/${dataName}.json`);
-    console.log("response " + JSON.stringify(response));
     if (!response.ok) {
       throw new Error(response.status);
     }
     const data = await response.json();
-    console.log("translation data " + data);
     if(data[key] == null){
       return key;
     }
@@ -20,7 +17,6 @@ const loadTranslation = async (key, dataName) => {
 };
 
 export const parseReports = async (data, array, number = 0, texts = "", isArray = false) => {
-  console.log("data " + JSON.stringify(data));
   if (typeof data !== 'object' || data === null) {
     return;
   }
