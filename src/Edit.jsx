@@ -366,7 +366,6 @@ const handleSaveUpToCard = async (upToCardId) => {
 
   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
   const getPreview = async (jsonData) => {
-    console.log("Attempting to get a preview from the server");
     if (!selectedFile) {
       console.error("No file selected");
       setErrorId("103");
@@ -377,8 +376,6 @@ const handleSaveUpToCard = async (upToCardId) => {
 
     try {
       const data = await new Promise((resolve, reject) => {
-        console.log("selectedFile: ", selectedFile);
-        console.log("selectedFileType: ", selectedFile.type);
         //set amount of rows based on window height
         let limit = computeTablelimit();
         if (limit < 5) { limit = 5 }
@@ -389,8 +386,6 @@ const handleSaveUpToCard = async (upToCardId) => {
             parseError(error);
             reject(error);
           } else {
-            console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-            console.log('API response: ' + response);
             resolve(data);
           }
         });
