@@ -73,7 +73,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                         Dateiname:
                     </p>
                 { tooLong && ( 
-                    <label htmlFor="filename" className="text-left block text-sm font-bold text-red-500">
+                    <label htmlFor="filename" className="text-sm font-semibold text-red-800 bg-red-200 mb-1">
                         Der Dateiname ist zu lang. Bitte kürzen Sie ihn.
                     </label> )}
                     
@@ -89,18 +89,21 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                         <span className="text-gray-500 pr-2">{extension}</span> {/* Display extension */}
                     </div>
                 
+                <div className="mt-8 border-t border-gray-300"></div>
+
             
-                <p className="text font-semibold pt-6">Tabellentransformationsnamen bestätigen oder bearbeiten</p>
+                <p className="text font-semibold pt-8 pb-4">Tabellentransformationsnamen bestätigen oder bearbeiten</p>
                 { tableTooLong && ( 
-                    <label htmlFor="filename" className="text-left block text-sm font-bold text-red-500">
+                    <label htmlFor="filename" className="text-sm font-semibold text-red-800 bg-red-200 mb-1">
                         Der generierte Tabellentransformationsname ist zu lang. Bitte kürzen Sie ihn.
                     </label> )}
                 {/* Text input */} 
                 <div className="flex flex-col">
-                    <p className="text-sm font-semibold text-red-800 bg-red-200">{error}</p>
+                    
                     <label htmlFor="username" className=" text-left block text-sm/6 font-medium text-gray-900">
                         Generierter Tabellentransformationsname:
                     </label>
+                    <p className="text-sm font-semibold text-red-800 bg-red-200 mb-1">{error}</p>
                         <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                         <input
                             id="username"
