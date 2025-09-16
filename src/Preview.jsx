@@ -480,7 +480,6 @@ export default function Preview() {
           <div className="relative">
             <div className="flex flex-col gap-4 p-4 mt-7 text-left flex-shrink-0 overflow-auto">
               <StackedListDropDown title={"Preview"} headerTextArray={previewText} />
-              <StackedListDropDown title={"Error Message"} headerTextArray={reportContent} isImportant={existReports} />
             </div>
             <div className="absolute  top-0 left-full z-20">
               <Tooltip tooltipContent={ExplainerInformationText} onClick={TipInformationToTable} direction={"left"} showTutorial={tipInformation} />

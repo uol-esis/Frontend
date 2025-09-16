@@ -26,7 +26,7 @@ export default function SelectionMenu({label, optionNames, optionValues, selecte
   }`}
   disabled={!isEditing}
 >
-  <option value={""}>Auswahl treffen...</option>
+  <option value={""}>Make a selection...</option>
   {optionValues.map((value, i) => (
     <option key={i} value={value}>
       {optionNames[i]}
