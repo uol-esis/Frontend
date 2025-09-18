@@ -51,7 +51,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
         }
         dialogRef.current?.close();
     }
-    
+
 
     const getByteSize = (str) => {
     const encoder = new TextEncoder();
@@ -126,7 +126,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                     </button>
                     <button
                         onClick={handleConfirm}
-                        disabled={tooLong || tableTooLong}
+                        disabled={tooLong || tableTooLong || errorText}
                         className={`p-5 rounded-md py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
                         ${tooLong || tableTooLong || errorText ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-600 text-white hover:bg-indigo-500"}`} >
                         Bestätigen
