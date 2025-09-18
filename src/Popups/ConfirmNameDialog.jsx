@@ -39,18 +39,19 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
         }
         }, [file]);
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         // wenn secondClickFunction eine Funktion ist (sicher prüfen), erst Dateiname übergeben
         const newFileName = `${baseName}${extension}`;
 
         if (typeof onClickFunction === "function") {
-            onClickFunction(newFileName, text);
-            console.log("Dateiname : " + newFileName);
+            const success = await onClickFunction(newFileName, text);
+            if(!success) {
+                return;
+            }
         }
-
-       
         dialogRef.current?.close();
     }
+    
 
     const getByteSize = (str) => {
     const encoder = new TextEncoder();
