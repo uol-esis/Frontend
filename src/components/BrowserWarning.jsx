@@ -7,14 +7,15 @@ const BrowserWarning = () => {
         const userAgent = navigator.userAgent;
 
         const isFirefox = userAgent.includes('Firefox');
-        const isChrome = userAgent.includes('Chrome') && !userAgent.includes('Edg');
+        const isChrome = userAgent.includes('Chrome') && !userAgent.includes('Edg') && !userAgent.includes('OPR') && !userAgent.includes('Opera');
         const isEdge = userAgent.includes('Edg');
+        const isOpera = userAgent.includes('OPR') || userAgent.includes('Opera');
 
         if(!isFirefox && !isChrome) {
             setShowWarning(true);
         }
 
-        if(isEdge) {
+        if(isEdge || isOpera) {
             setShowWarning(true);
         }
     }, []);
