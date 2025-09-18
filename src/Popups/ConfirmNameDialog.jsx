@@ -103,7 +103,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                     <label htmlFor="username" className=" text-left block text-sm/6 font-medium text-gray-900">
                         Generierter Tabellentransformationsname:
                     </label>
-                    <p className="text-sm font-semibold text-red-800 bg-red-200 mb-1">{error}</p>
+                    <p className="text-sm font-semibold text-red-800 bg-red-200 mb-1">{errorText}</p>
                         <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
                         <input
                             id="username"
@@ -127,7 +127,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                         onClick={handleConfirm}
                         disabled={tooLong || tableTooLong}
                         className={`p-5 rounded-md py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600
-                        ${tooLong || tableTooLong ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-600 text-white hover:bg-indigo-500"}`} >
+                        ${tooLong || tableTooLong || errorText ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gray-600 text-white hover:bg-indigo-500"}`} >
                         Bestätigen
                     </button>
                 </div>
