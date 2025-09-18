@@ -20,7 +20,7 @@ const loadTranslation = async (key, dataName) => {
 };
 
 export const parseReports = async (data, array, number = 0, texts = "", isArray = false) => {
-  console.log("data " + JSON.stringify(data));
+  //console.log("data " + JSON.stringify(data));
   if (typeof data !== 'object' || data === null) {
     return;
   }
@@ -33,7 +33,7 @@ export const parseReports = async (data, array, number = 0, texts = "", isArray 
         for (const [index, item] of value.entries()) {
           const translatedKey = await loadTranslation(key, "reportTypeDE");
           tempTexts += `${translatedKey} ${index}: `;
-          console.log("item " + JSON.stringify(item));
+          //console.log("item " + JSON.stringify(item));
           await parseReports(item, array, index, tempTexts, true);
           tempTexts = "";
         }
