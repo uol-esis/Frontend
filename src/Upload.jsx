@@ -42,6 +42,8 @@ function Upload() {
   const confirmNameToEditRef = useRef(); //NICHT VERW
   const confirmNameRef = useRef();
   const errorDialogRef = useRef();
+  const confirmDeleteRef = useRef();
+
 
   const [confirmMode, setConfirmMode] = useState(null); // "preview" or "edit"
 
