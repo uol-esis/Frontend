@@ -38,10 +38,14 @@ function Upload() {
   const [tipSchema, setTipSchema] = useState(false);
   const [tipGenerate, setTipGenerate] = useState(false);
 
-  const confirmNameToPreviewRef = useRef();
-  const confirmNameToEditRef = useRef();
+  const confirmNameToPreviewRef = useRef(); //NICHT VERW
+  const confirmNameToEditRef = useRef(); //NICHT VERW
+  const confirmNameRef = useRef();
   const errorDialogRef = useRef();
   const confirmDeleteRef = useRef();
+
+
+  const [confirmMode, setConfirmMode] = useState(null); // "preview" or "edit"
 
   const navigate = useNavigate();
 
@@ -84,30 +88,7 @@ function Upload() {
     localStorage.setItem("hideUploadTutorial", true);
   });
 
-  const getByteSize = (str) => {
-    const encoder = new TextEncoder();
-    const encoded = encoder.encode(str);
-    return encoded.length;
-  };
-
-  useEffect(() => {
-    if (selectedFile && getByteSize(selectedFile.name) > 63) {
-      setModifiedFileName(selectedFile.name); // Set the initial name
-      fileNameDialogRef.current?.showModal(); // Open the popup
-    }
-  }, [selectedFile]);
-
-
-  useEffect(() => {
-    if (selectedFile) {
-      const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
-      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
-      setIsValidFile(isValidAndShortEnough);
-    } else {
-      setIsValidFile(false);
-    }
-  }, [selectedFile]);
-
+  
   useEffect(() => {
       if(errorId == "none"){
         return;
@@ -166,7 +147,8 @@ function Upload() {
         setReports(data.reports);
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
-        confirmNameToPreviewRef.current?.showModal();
+        setConfirmMode("preview");
+        confirmNameRef.current?.showModal();
       }
       setIsLoading(false);
       console.log(response);
@@ -185,7 +167,7 @@ function Upload() {
     return false;
   }
 
-  {/* Confirm name and navigate to preview page*/ }
+  {/* Confirm name and navigate to preview page NICHTVER*/ }
   const confirmGeneratedName = function (newName) {
     
     if(isNameTaken(newName)){
@@ -201,6 +183,8 @@ function Upload() {
 
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
+        setConfirmMode("edit");
+
     confirmNameToEditRef.current?.showModal();
   };
 
@@ -221,19 +205,53 @@ function Upload() {
       });
     };
 
-  const handleConfirmNewSchema = (newName) => {
-    const schema = {
-      name: newName
-    };
-    navigate("/edit", {
-      state: {
-        schemaToEdit: schema,
-        selectedFile: selectedFile,
-      },
-    });
-  };
+  const handleConfirmName = async (newFileName, newTransformationName) => {
+  if (isNameTaken(newTransformationName)) {
+    setConfirmNameError("Der Name wird bereits verwendet");
+    return false;
+  }
 
-  const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
+  // Neuer File mit geändertem Namen
+  const updatedFile = new File([selectedFile], newFileName, { type: selectedFile.type });
+
+  // State aktualisieren und sicherstellen, dass es gesetzt ist
+  await new Promise((resolve) => {
+    setSelectedFile(updatedFile);
+    setTimeout(resolve, 0); // kleiner Hack, um State-Sync zu erzwingen
+  });
+
+  // Transformation setzen
+  jsonData.name = newTransformationName;
+
+  if (confirmMode === "preview") {
+    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+    const reportsJson = JSON.parse(JSON.stringify(reports));
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: generatedSchemaJson, reports: reportsJson },
+    });
+  } else if (confirmMode === "edit") {
+    const schema = { name: newTransformationName };
+    navigate("/edit", {
+      state: { schemaToEdit: schema, selectedFile: updatedFile },
+    });
+  } else if (confirmMode === "Readyprev") {
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: schemaToPreview },
+    });
+  }
+
+  setConfirmMode(null);
+  return true;
+};
+
+
+
+  // Öffnet das ConfirmNameDialog bevor zur Preview navigiert wird (nur bei Klick auf "Weiter")
+  const handleConfirm = () => {
+    setConfirmMode("Readyprev");
+    setConfirmNameError("");
+    confirmNameRef.current?.showModal();
+  };
 
   {/* Actual page */ }
   return (
@@ -241,8 +259,13 @@ function Upload() {
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
       <DecisionDialog dialogRef={confirmDeleteRef} text={"Möchten Sie die Tabellentransformation wirklich unwiderruflich löschen?"}  label1={"Ja"} function1={() => {handleDeleteSchema(idToDelete); confirmDeleteRef.current?.close();}} label2={"Nein"} function2={() => {confirmDeleteRef.current?.close()}} />
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={handleConfirmNewSchema} />
+
+      <ConfirmNameDialog
+        dialogRef={confirmNameRef}
+        name={schemaName}
+        file={selectedFile}
+        onClickFunction={handleConfirmName}
+        errorText={confirmNameError} />
       <ErrorDialog
         text={"Fehler!"}
         errorId={errorId}
