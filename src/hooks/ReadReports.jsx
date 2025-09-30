@@ -1,7 +1,8 @@
 
 const loadTranslation = async (key, dataName) => {
   try {
-    const response = await fetch(`src/language/${dataName}.json`);
+    //public\errorsDE.json
+    const response = await fetch(`public/${dataName}.json`);
     if (!response.ok) {
       throw new Error(response.status);
     }

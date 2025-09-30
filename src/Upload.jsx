@@ -9,8 +9,8 @@ import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
 import { getApiInstance } from "./hooks/ApiInstance";
 import { useAuthGuard } from "./hooks/AuthGuard";
-import { div } from "framer-motion/client";
 import ErrorDialog from "./Popups/ErrorDialog";
+import DecisionDialog from "./Popups/DecisionDialog";
 
 function Upload() {
 
@@ -32,6 +32,7 @@ function Upload() {
   const [confirmNameError, setConfirmNameError] = useState("");
   const [errorId, setErrorId] = useState("none");
   const [isLoading, setIsLoading] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
@@ -180,9 +181,27 @@ function Upload() {
 
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
-    setConfirmMode("edit");
-    confirmNameRef.current?.showModal();
+        setConfirmMode("edit");
+
+    confirmNameToEditRef.current?.showModal();
   };
+
+  const handleDeleteSchema = async (id) => {
+      const {api} = await getApiInstance();
+      if(!id){
+        setErrorId(0);
+      }
+
+      api.deleteTableStructure(id, (error, data, response) => {
+        if (error) {
+          parseError(error);
+          console.error(error);
+        } else {
+          console.log('API called successfully.');
+          getSchemaList();
+        }
+      });
+    };
 
   const handleConfirmName = async (newFileName, newTransformationName) => {
   if (isNameTaken(newTransformationName)) {
@@ -237,6 +256,8 @@ function Upload() {
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
+      <DecisionDialog dialogRef={confirmDeleteRef} text={"Möchten Sie die Tabellentransformation wirklich unwiderruflich löschen?"}  label1={"Ja"} function1={() => {handleDeleteSchema(idToDelete); confirmDeleteRef.current?.close();}} label2={"Nein"} function2={() => {confirmDeleteRef.current?.close()}} />
+
       <ConfirmNameDialog
         dialogRef={confirmNameRef}
         name={schemaName}
@@ -286,7 +307,7 @@ function Upload() {
           {/* Schemalist*/}
           <div className="relative h-full min-h-0">
             <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} />
+              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} handleDeleteSchema={handleDeleteSchema} setId={setIdToDelete} deleteDialogRef={confirmDeleteRef} />
             </div>
             <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
               style={{ opacity: 1 }}

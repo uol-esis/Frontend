@@ -130,6 +130,7 @@ export default function Preview() {
     }
 
     const array = [];
+    console.log("reports " + JSON.stringify( reports));
     await parseReports(reports, array);
 
     if(array.length == 0){
@@ -245,7 +246,6 @@ export default function Preview() {
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-            console.log('API response: ' + response);
             setData(data);
             resolve(data);
           }
@@ -377,6 +377,23 @@ export default function Preview() {
     });
   }
 
+  const updateTableStructure = async (schemaId) => {
+    const {api} = await getApiInstance();
+    console.log("schemaId " + schemaId);
+    console.log("actualSchemaRef " + JSON.stringify(actualSchemaRef.current));
+    return new Promise((resolve, reject) => {
+      api.updateTableStructure(schemaId, actualSchemaRef.current, (error, data, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+        } else {
+          console.log('API called successfully.');
+          uploadFinishedDialogRef.current?.showModal();
+        }
+      });
+    } )
+  }
+
 
   {/* Load the schema and check if hidePopup is set */ }
   useEffect(() => {
@@ -409,25 +426,56 @@ export default function Preview() {
   const handleCheckBoxConfirm = async () =>{
     let schemaId = null;
     checkboxDialogRef.current?.close();
+    let schemaName = "";
     try {
       if (generatedSchema) {
+        schemaName = generatedSchema.name;
         schemaId = await sendGeneratedSchemaToServer();
       } else if (editedSchema) {
+        schemaName = editedSchema.name;
         schemaId = await sendEditedSchemaToServer();
       }
-      setGlobalSchemaId(schemaId)
+      
+      setGlobalSchemaId(schemaId);
       const result = await sendTableToServer(schemaId);
       if(result == "decision"){
+        //file already exists in database
         decisionDialogRef.current?.showModal();
       }else{
         uploadFinishedDialogRef.current?.showModal();
       }
       
     } catch (error) {
-      console.error(error);
-      errorDialogRef.current?.showModal();
+      const errorObj = JSON.parse(error.message);
+        if(errorObj.statusCode === 409){
+          //update tablestructure if name is already taken
+          const id = await getSchemaIdByName(schemaName);
+          updateTableStructure(id);
+        }else{
+          parseError(error);
+          console.error(error);
+        }
       }
   }
+
+  //TODO schemalist cachen? und MEthode wird in Upload schon verwendet
+  const getSchemaIdByName = async (name) => {
+
+    let {api} = await getApiInstance();
+    return new Promise((resolve, reject) => {
+      api.getTableStructures((error, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+          reject(error);
+        } else {
+          console.log("Response:", response);
+          const schema = response.find(schema => schema.name === name);
+          resolve(schema ? schema.id : null);
+        }
+      });
+    });
+};
 
   {/* Show error message after a short timeout */ }
   useEffect(() => {

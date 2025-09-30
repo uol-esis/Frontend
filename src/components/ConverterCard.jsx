@@ -5,7 +5,7 @@ import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Tooltip from "../ToolTip";
 import { SaveStatus } from "./saveStateCC";
 import SelectionMenu from "./SelectionMenu";
-
+import MapInputField from "./MapInputField";
 
 export default function ConverterCard({id, label, parameters, converterType, formData: initialFormData, preview, onSave, onEditToggle, isEditing, cards, onRegisterFormDataGetter, onRegisterSaveFn, onSaveCascade, onDelete, description, collapseAllSignal}) {
     const [formData, setFormData] = useState(initialFormData || {});
@@ -219,7 +219,18 @@ useEffect(() => {
                                         {param.name}{param.required && <span className="text-red-500"> *</span>}
                                     </label>
                         
-                                    {param.type === "enum" ? (
+                                    {param.type === "map" ? (
+                                    <div className="flex flex-col gap-5">
+                                        <MapInputField
+                                        name1={param.keyName}
+                                        name2={param.valueName}
+                                        param={param}
+                                        handleInputChange={handleInputChange}
+                                        isEditing={isEditing}
+                                        />
+                                    </div>
+                                    ):
+                                    param.type === "enum" ? (
                                         <SelectionMenu
                                         label={param.name}
                                         setCategory={changeCategoryState}

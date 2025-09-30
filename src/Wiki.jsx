@@ -9,6 +9,7 @@ export default function Wiki() {
 
     const [searchParams] = useSearchParams();
     const targetId = searchParams.get("targetId");
+    const offset = searchParams.get("offset");
 
     const introductionRef = useRef();
     const databaseRef = useRef();
@@ -35,11 +36,12 @@ export default function Wiki() {
 
     const refsMap = {
     "database": databaseRef,
+    "groupHeader": removeGroupedHeaderRef,
   };
 
     useEffect(() => {
         if (targetId && refsMap[targetId]) {
-            scrollToWithOffset(refsMap[targetId]);
+            scrollToWithOffset(refsMap[targetId], offset);
         }
     }, [targetId]);
 
@@ -87,6 +89,7 @@ export default function Wiki() {
     ]
 
     const scrollToWithOffset = (ref, offset = window.innerHeight * 0.15) => {
+        console.log(offset);
         const element = ref.current;
         if (!element) return;
 
