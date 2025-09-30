@@ -15,7 +15,7 @@ export default function Wiki() {
     const databaseRef = useRef();
     const addColNameRef = useRef();
     const fillEmptyRowRef = useRef();
-    const fillEmptyColref = useRef();
+    const fillEmptyColRef = useRef();
     const removeColRef = useRef();
     const removeRowRef = useRef();
     const removeFooterRef = useRef();
@@ -31,6 +31,9 @@ export default function Wiki() {
     const metabaseSummaryRef = useRef();
     const metabaseVisualisierungRef = useRef();
     const metabaseJoinRef = useRef();
+    const removeLeadingColumnRef = useRef();
+    const removeKeywordRef  = useRef();
+    const transposeMatrixRef = useRef();
 
     const [enlargedImage, setEnlargedImage] = useState(null);
 
@@ -68,7 +71,7 @@ export default function Wiki() {
             name: 'Converter', href: '#', children: [
                 { name: 'Gruppenüberschrift entfernen', href: removeGroupedHeaderRef },
                 { name: 'Leere Zeilen ausfüllen', href: fillEmptyRowRef },
-                { name: 'Leere Spalte ausfüllen', href: fillEmptyColref },
+                { name: 'Leere Spalte ausfüllen', href: fillEmptyColRef },
                 { name: 'Spalte entfernen (nach Index)', href: removeColRef },
                 { name: 'Zeile entfernen (nach Index)', href: removeRowRef },
                 { name: 'Spalteüberschriften hinzufügen', href: addColNameRef },
@@ -78,6 +81,9 @@ export default function Wiki() {
                 { name: 'Zeile aufteilen', href: splitRowRef },
                 { name: 'Ungültige Zeilen entfernen', href: removeInvalidRowsRef },
                 { name: 'Nachträglich Spalten entfernen', href: removeTrailingColRef },
+                { name: 'Spalten am Anfang entfernen', href: removeLeadingColumnRef},
+                { name: 'Zeile oder Spalte nach Stichwort löschen', href: removeKeywordRef},
+                { name: 'Achsen tauschen', href: transposeMatrixRef},
             ]},
         {name: 'Metabase', href: '#', children: [
                 { name: 'Einstieg', href: metabaseEinstiegRef},
@@ -102,10 +108,10 @@ export default function Wiki() {
     };
 
     return(
-        <div className="flex h-full">
+        <div className="flex">
             {/* Sidebar */}
-            <div className="h-screen w-[15vw] fixed">
-                <Sidebar onClick={scrollToWithOffset} navigation={navigation}/>
+            <div className="fixed h-[90vh] w-[15vw] overflow-y-auto">
+                    <Sidebar onClick={scrollToWithOffset} navigation={navigation} />
             </div>
 
             {/* Wiki */}
@@ -114,7 +120,19 @@ export default function Wiki() {
                 {/* Introduction */}
                 <section ref={introductionRef}>
                     <h2 className="text font-semibold text-lg"> Einleitung </h2>
-                    <p> Work in Progress! </p>
+                     <p> 
+                        Dieses Wiki dient als zentrale Wissensbasis rund um die Nutzung des Tools Th1nk. 
+                        Ziel ist es, einen klaren Überblick über die bereitgestellten Funktionen, 
+                        deren Einsatzmöglichkeiten sowie Best Practices für die tägliche Arbeit mit Daten zu geben.
+
+                        Im ersten Abschnitt wird gezeigt wie die Daten opimal für den Upload in die Datenbank aussehen sollten. 
+                        Anschließend werden die Funktionen beschrieben, alos die einzelnen Converter. 
+                        Nutzer:innen erfahren hier, wofür die Converter verwendet werden können und wie sie funktionieren. 
+                        Zusätzlich gibt es Beispiele für das bessere Verständnis.
+
+                        Der zweite Schwerpunkt liegt auf der Datenvisualisierung mit Metabase. Hier bietet das Wiki eine praxisnahe Anleitung: 
+                        Von den ersten Schritten, über die Erstellung von Dashboards bis hin zu Filterfunktionen. 
+                    </p>
                 </section>
 
                 <section className="mt-10">
@@ -373,7 +391,7 @@ export default function Wiki() {
                 <div className="mt-6 border-1 border-gray-200"></div>
 
                 {/* fill empty column */}
-                <section ref={fillEmptyColref} className="mt-10">
+                <section ref={fillEmptyColRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Leere Spalten ausfüllen</h2>
                     <p>
                         Die Funktion "Leere Spalten ausfüllen" operiert von der Funktionsweise wie die Funktion "Leere Zeilen ausfüllen" bezogen auf Spalten. Sie füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.
@@ -477,7 +495,11 @@ export default function Wiki() {
                     <p>
                         Mithilfe dieses Converters können die Spaltennamen verändert werden.
                         Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet,
-                        der zweite Name auf die zweite Spalte und so weiter.
+                        der zweite Name auf die zweite Spalte und so weiter. <br/>
+                        Es kann ausgewählt werden, ob die bestehenden Spaltenüberschriften ersetzt werden sollen
+                        oder ob darüber eine neue Zeile mit den neuen Namen erstellt wird. Letzteres ist hilfreich, wenn die Ursprungstabelle keine 
+                        Spaltenüberschriften hat, sondern direkt mit den eigentlichen Daten beginnt, dann werden die Daten, die fälschlicherweise in der ersten Zeile
+                        stehen nicht überschrieben.
 
                     </p>
                     <div className="p-4">
@@ -573,16 +595,19 @@ export default function Wiki() {
                     <h2 className="text font-semibold text-lg" >Einträge ersetzen </h2>
                     <p>
                         Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren.
-                        Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt.
+                        Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt. 
+                        Zusätzlich muss angegeben werden in welchen Spalten nach dem Suchbegriff gesucht werden soll.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Wenn der Suchbegriff mehrfach vorkommt, so werden alle Vorkommen durch den neuen Wert ersetzt"}
+                            text={"- Wenn der Suchbegriff mehrfach vorkommt, so werden alle Vorkommen durch den neuen Wert ersetzt \n"+ 
+                                "- Um Einträge im Header (Zeile 0) zu ersetzen muss der Converter \"Spaltenüberschriften hinzufügen\" verwendet werden"
+                            }
                         />
                     </div>
 
-                    <p className="text-left font-semibold mt-4">Beispiel: "Stadtviertel" durch "Stadtteil" ersetzt</p>
+                    <p className="text-left font-semibold mt-4">Beispiel: "Neustadt" durch "Nordstadt Nord" ersetzen</p>
 
                     <div className="flex justify-center">
                         <figure>
@@ -600,7 +625,7 @@ export default function Wiki() {
 
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="wikiAssets/replaceEntriesTable.png" alt="remove Column" />
+                            <img className="object-contain" src="wikiAssets/replaceEntriesNew.png" alt="remove Column" />
 
                         </figure>
 
@@ -720,6 +745,124 @@ export default function Wiki() {
                         />
                     </div>
 
+                </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* remove leading columns */}
+                <section ref={removeLeadingColumnRef} className="mt-10">
+                    <h2 className="text font-semibold text-lg" >Spalten am Anfang entfernen</h2>
+                    <p>
+                        Dieser Converter entfernt ungültige Spalten, die sich am Anfang der Tabelle befinden. Standardmäßig werden komplett leere SPalten gelöscht. 
+                        Mit der Blocklist können weitere Werte angegeben werden die als ungültig gelten sollen und somit wird eine Spalte gelöscht, falls sie diese Werte beinhaltet.
+                    </p>
+                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left">
+                        //TODO Beschreibung und Bild
+                    </p>
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption></figcaption>
+                            <img className="mt-5 object-contain w-[50vw] " src="wikiAssets/FillEmptyRow_Input.png" alt="fill empty row" />
+                        </figure>
+                    </div>
+
+                </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* remove by keyword */}
+                <section ref={removeKeywordRef} className="mt-10">
+                    <h2 className="text font-semibold text-lg" >Zeile oder Spalte nach Stichwort löschen </h2>
+                    <p>
+                        Dieser Converter entfernt Spalten und oder Zeilen, die angegebene Stichwörter beinhalten. Zusätzlich kann
+                        angegeben werden, ob die Groß- und Kleinschreibung berücksichtigt werden soll und ob das Stichwort exakt so vorkommen muss oder ob es reicht, 
+                        wenn es Teil eines Wortes ist.
+                    </p>
+
+                    <div className="p-4">
+                        <InfoCard
+                            text={"- Achtung bei der Genauigkeit \"Beinhaltet Stichwort\" kann es zu ungewünschtem Verhalten kommen, z.B. wenn das Wort \"und\" gelöscht werden soll, dann wird auch beispielsweise Gesundheitszustand gelöscht \n "}
+                        />
+                    </div>
+
+
+
+                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left">
+                        In diesem Fall sollen alle Zeilen gelöscht werden in dem das Wort Straße vorkommt.
+                        Da Straße nicht als einzelnes Wort vorkommt muss bei Genauigkeit "Beinhaltet Stichwort" ausgewählt werden
+                        und da bei der Eingabe Straße großgeschrieben wurde, es aber in den Daten nur kleingeschrieben ist muss die
+                        Groß- und Kleinschreibung ignoriert werden.
+                    </p>
+
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="wikiAssets/removeKeywordParameter.png" alt="" />
+                        </figure>
+
+                    </div>
+
+                    <div className="flex justify-around p-4 ">
+                        <figure>
+                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <img className=" object-contain" src="wikiAssets/removeKeywordStandard.png" alt="remove Column" />
+
+                        </figure>
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <img className="object-contain" src="wikiAssets/removeKeywordNew.png" alt="remove Column" />
+
+                        </figure>
+                    </div>
+                </section>
+
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* transpose matrix */}
+                <section ref={transposeMatrixRef} className="mt-10">
+                    <h2 className="text font-semibold text-lg" >Achsen tauschen </h2>
+                    <p>
+                        Mit diesem Converter werden die Spalten zu Zeilen umgewandelt. Dies wird für eine spezielle Art von Tabellen benötigt
+                    </p>
+
+                    <div className="p-4">
+                        <InfoCard
+                            text={"- Achtung bei der Genauigkeit \"Beinhaltet Stichwort\" kann es zu ungewünschtem Verhalten kommen, z.B. wenn das Wort \"und\" gelöscht werden soll, dann wird auch beispielsweise Gesundheitszustand gelöscht \n "}
+                        />
+                    </div>
+
+
+
+                    <p className="text-left font-semibold mt-4">Beispiel:</p>
+                    <p className="text-left">
+                        In diesem Fall sollen alle Zeilen gelöscht werden in dem das Wort Straße vorkommt.
+                        Da Straße nicht als einzelnes Wort vorkommt muss bei Genauigkeit "Beinhaltet Stichwort" ausgewählt werden
+                        und da bei der Eingabe Straße großgeschrieben wurde, es aber in den Daten nur kleingeschrieben ist muss die
+                        Groß- und Kleinschreibung ignoriert werden.
+                    </p>
+
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="mt-5 object-contain" src="wikiAssets/removeKeywordParameter.png" alt="" />
+                        </figure>
+
+                    </div>
+
+                    <div className="flex justify-around p-4 ">
+                        <figure>
+                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <img className=" object-contain" src="wikiAssets/removeKeywordStandard.png" alt="remove Column" />
+
+                        </figure>
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <img className="object-contain" src="wikiAssets/removeKeywordNew.png" alt="remove Column" />
+
+                        </figure>
+                    </div>
                 </section>
 
                 <div className="mt-6
