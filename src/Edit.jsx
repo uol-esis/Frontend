@@ -125,9 +125,9 @@ export default function Edit() {
     {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
       description: 'Diese Funktion füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.' }, //FillEmptyColumns
     {label: 'Spalten entfernen (nach Index) ', category:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
-      description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
+      description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
     {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
-      description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma und ohne Leerzeichen voneinander getrennt werden.'},//RemoveColumnByIndex
+      description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Zeilen gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
     {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}, {name:'Hinzufügen oder ersetzen', type:"enum", required:true, options:["Oberhalb hinzufügen", "Bestehenden Header ersetzen"], values:['INSERT_AT_TOP', 'REPLACE_FIRST_ROW'], apiName:'headerPlacementType'}], converterType: 'ADD_HEADER_NAME',
       description: 'Mithilfe dieses Converters können die Spaltennamen verändert werden. Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet, der zweite Name auf die zweite Spalte und so weiter.'}, //AddHeaderNames
     {label: 'Fußzeile entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
@@ -273,7 +273,8 @@ export default function Edit() {
       if (!field || field.toString().trim() === ""){
         return [];
       } 
-      return field.split(',').map(item => item.toString().trim());
+      let numbers = isMultipleNumbers(field);
+      return numbers.split(',').map(item => item.toString().trim());
     }
     if(param.type === 'boolean'){
       if(!field){
@@ -300,6 +301,21 @@ export default function Edit() {
 
   const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
   const saveCardRefs = useRef({});
+
+ const isMultipleNumbers = (inputString) => {
+  let match = inputString.match("\\s*\\d+\\s*-\\s*\\d+\\s*");
+  if(!match){
+    return inputString;
+  }
+  let startAndEnd = match.toString().split('-').map(item => item.toString().trim());
+  let result = "";
+  for(let i = startAndEnd[0]; i < startAndEnd[1]; i++ ){
+    result = result + i + ",";
+  }
+  result = result + startAndEnd[1];
+  result = inputString.replace(match, result);
+  return result;
+}
 
  const parseError = (error) => {
     let currentErrorId = errorId;
