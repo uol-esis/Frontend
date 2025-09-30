@@ -26,7 +26,7 @@ const BrowserWarning = () => {
     return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-400 text-black font-semibold text-center p-3 shadow-md flex justify-center items-center">
         <span>
-            Hinweis: Sie verwenden einen Browser, auf dem Th1nk nicht getestet wurde. Es könnte zu Problemen kommen. Wir empfehlen die Nutzung von <a href="https://www.mozilla.org/de/firefox/new/" className="underline font-bold">Firefox</a> oder <a href="https://www.google.com/chrome/" className="underline font-bold">Chrome</a>.
+            Note: You are using a browser that has not been tested with Th1nk. This may cause problems. We recommend using <a href="https://www.mozilla.org/firefox/new/" className="underline font-bold">Firefox</a> or <a href="https://www.google.com/chrome/" className="underline font-bold">Chrome</a>.
         </span>
         <button
             onClick={() => setShowWarning(false)}
