@@ -150,7 +150,7 @@ export default function Edit() {
       description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
       {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
         description:"Hierbei werden die Zeilen und Spalten vertauscht."},
-      {label:'Spalten zusammenführen', category:"mdfy", params:[{name:'Spaltenindex', type:'array', required: true, apiName: 'columnIndex'}, {name: 'Spaltenüberschrift', type: 'string', required: true, apiName: 'headerName'}, {name:"Spalte mit Priorität (Index)", type:'array', required: false, apiName: 'precedenceOrder'}], converterType: 'MERGE_COLUMNS',
+      {label:'Spalten zusammenführen', category:"mdfy", params:[{name:'Spaltennummern', type:'array', required: true, apiName: 'columnIndex'}, {name: 'Spaltenüberschrift', type: 'string', required: true, apiName: 'headerName'}, {name:"Spalte mit Priorität (Index)", type:'array', required: false, apiName: 'precedenceOrder'}], converterType: 'MERGE_COLUMNS',
         description:"Mit diesem Converter lassen sich zwei Spalten zu einer zusammenführen, vorrausgesetzt jeweils ein Wert der beiden Spalten ist leer. Falls in beiden Spalten ein Wert steht, entscheidet die Priorität aus welcher Spalte der Wert übernommen wird."}
       // add more...
   ];
