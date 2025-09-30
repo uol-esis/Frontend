@@ -634,18 +634,20 @@ export default function Wiki() {
 
                 <div className="mt-6 border-1 border-gray-200"></div>
 
-                {/* split row */}
+                {/* split cell */}
                 <section ref={splitRowRef} className="mt-10">
-                    <h2 className="text font-semibold text-lg" >Zeile aufteilen </h2>
+                    <h2 className="text font-semibold text-lg" >Zelle aufteilen </h2>
                     <p>
-                        Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen aufgeteilt. Dies ist notwendig,
+                        Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere neue Zeilen oder Spalten aufgeteilt. Dies ist notwendig,
                         wenn sich in einer Zelle mehrere Werte befinden. In der Datenbank darf in jeder Zelle, allerdings nur ein Wert stehen, deswegen müssen die
-                        Werte auf mehrere Zeilen aufgeteilt werden.
+                        Werte auf mehrere Zeilen oder Spalten aufgeteilt werden.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Im Standardfall werden die Einträge nach einem Zeilenumbruch aufgeteilt"}
+                            text={"- Im Standardfall werden die Einträge nach einem Zeilenumbruch aufgeteilt \n" + 
+                                "- Bei den optionalen Parametern kann ein anderes Trennzeichen angegeben werden"
+                            }
                         />
                     </div>
 
@@ -653,18 +655,19 @@ export default function Wiki() {
                     <p className="text-left">
                         In der Spalte "Fallantragsbezeichnung" befinden sich in einer Zelle mehrerer Einträge,
                         diese sollen in separate Zeilen angegeben werden.
-                        Dafür muss der Index der entsprechenden Spalte angegeben werden.
+                        Dafür muss der Index der entsprechenden Spalte angegeben werden. Da hier die Einträge durch einen Zeilenumbruch getrennt sind
+                        muss bei den optionalen Parameter kein Trennzeichen angegeben werden.
                     </p>
 
                     <div className="flex justify-center">
                         <figure>
                             <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="wikiAssets/splitRowParameter.png" alt="" />
+                            <img className="mt-5 object-contain" src="wikiAssets/splitCellParameter.png" alt="" />
                         </figure>
 
                     </div>
 
-                    <div className="flex justify-around p-4 ">
+                    <div className="flex justify-around p-4 gap-5 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
                             <img className=" object-contain" src="wikiAssets/splitRowStandard.png" alt="remove Column" />
@@ -824,50 +827,39 @@ export default function Wiki() {
                 <section ref={transposeMatrixRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Achsen tauschen </h2>
                     <p>
-                        Mit diesem Converter werden die Spalten zu Zeilen umgewandelt. Dies wird für eine spezielle Art von Tabellen benötigt
+                        Mit diesem Converter werden die Spalten zu Zeilen umgewandelt. Dies kann bei bestimmten Tabellen zu einer übersichtlicheren Struktur führen.
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"- Achtung bei der Genauigkeit \"Beinhaltet Stichwort\" kann es zu ungewünschtem Verhalten kommen, z.B. wenn das Wort \"und\" gelöscht werden soll, dann wird auch beispielsweise Gesundheitszustand gelöscht \n "}
+                            text={"Es müssen keine Parameter angegeben werden \n "}
                         />
                     </div>
 
-
-
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     <p className="text-left">
-                        In diesem Fall sollen alle Zeilen gelöscht werden in dem das Wort Straße vorkommt.
-                        Da Straße nicht als einzelnes Wort vorkommt muss bei Genauigkeit "Beinhaltet Stichwort" ausgewählt werden
-                        und da bei der Eingabe Straße großgeschrieben wurde, es aber in den Daten nur kleingeschrieben ist muss die
-                        Groß- und Kleinschreibung ignoriert werden.
+                        Bei dieser Tabelle wird die Struktur so verändert, dass die Jahreszahlen die sich über mehere Spalten erstrecken in einer Spalte gebündelt werden
+                        Außerdem werden die Altersgruppen, die sich über mehrere Zeilen erstrecken nun in Spalten dargestellt. Zum Schluss können die leeren Spalten 
+                        mit dem Converter "Spalten entfernen (nach Index)" gelöscht werden.
                     </p>
 
-                    <div className="flex justify-center">
-                        <figure>
-                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
-                            <img className="mt-5 object-contain" src="wikiAssets/removeKeywordParameter.png" alt="" />
-                        </figure>
-
-                    </div>
-
-                    <div className="flex justify-around p-4 ">
+                    <div className="flex justify-around p-4 gap-5 ">
                         <figure>
                             <figcaption className="font-semibold p-4">Vorher </figcaption>
-                            <img className=" object-contain" src="wikiAssets/removeKeywordStandard.png" alt="remove Column" />
+                            <img className=" object-contain" src="wikiAssets/TransposeMatrixStandard.png" alt="remove Column" />
 
                         </figure>
                         <figure>
                             <figcaption className="font-semibold p-4"> Nachher</figcaption>
-                            <img className="object-contain" src="wikiAssets/removeKeywordNew.png" alt="remove Column" />
+                            <img className="object-contain" src="wikiAssets/TransposeMatrixNew.png" alt="remove Column" />
 
                         </figure>
                     </div>
                 </section>
 
-                <div className="mt-6
-                 border-1 border-gray-200"></div>
+                <div className="mt-6 border-1 border-gray-200"/>
 
+                {/* Metabase */}
                 <section className="mt-10">
                     <h1 className="text font-bold text-lg" ref={metabaseRef}>Metabase</h1>
                     <h2 className="text font-semibold text-lg" ref={metabaseEinstiegRef} >Einstieg finden</h2>
