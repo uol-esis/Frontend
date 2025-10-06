@@ -24,6 +24,7 @@ export default function Edit() {
     height: window.innerHeight
   });
   const [errorId, setErrorId] = useState("none");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [collapseAllSignal, setCollapseAllSignal] = useState(0);
 
@@ -323,6 +324,7 @@ export default function Edit() {
     try{
       const errorObj = JSON.parse(error.message);
       setErrorId(errorObj.status);
+      setErrorMsg(errorObj.detail);
     }catch{
       setErrorId("0");
     }
@@ -549,6 +551,7 @@ useEffect(() => {
     <ErrorDialog
       text={"Fehler!"}
       errorId={errorId}
+      message={errorMsg}
       onConfirm={() => { errorDialogRef.current?.close();}}
       dialogRef={errorDialogRef}
     />

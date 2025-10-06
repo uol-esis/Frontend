@@ -147,12 +147,9 @@ export default function ConverterCard({id, label, parameters, converterType, for
         setSaveState("unsaved");
     };
     
-
-
-
-useEffect(() => {
-  onRegisterSaveFn?.(id, handleSave);
-}, [handleSave]);
+    useEffect(() => {
+        onRegisterSaveFn?.(id, handleSave);
+    }, [handleSave]);
 
     const handleExpandButton = () => {
         setExpanded(!expanded); //Toggle den expanded State
@@ -212,9 +209,9 @@ useEffect(() => {
                           </p>
                         )}
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex justify-start items-start flex-wrap gap-4">
                             {requiredParameters.map(param => (
-                                <div key={param.apiName} className="flex flex-col">
+                                <div key={param.apiName} className="flex flex-col grow min-w-[15vw] max-w-[20vw]">
                                     <label className="text-sm font-medium mb-1">
                                         {param.name}{param.required && <span className="text-red-500"> *</span>}
                                     </label>
@@ -222,25 +219,25 @@ useEffect(() => {
                                     {param.type === "map" ? (
                                     <div className="flex flex-col gap-5">
                                         <MapInputField
-                                        name1={param.keyName}
-                                        name2={param.valueName}
-                                        param={param}
-                                        handleInputChange={handleInputChange}
-                                        isEditing={isEditing}
+                                            name1={param.keyName}
+                                            name2={param.valueName}
+                                            param={param}
+                                            handleInputChange={handleInputChange}
+                                            isEditing={isEditing}
                                         />
                                     </div>
                                     ):
                                     param.type === "enum" ? (
                                         <SelectionMenu
-                                        label={param.name}
-                                        setCategory={changeCategoryState}
-                                        optionNames={param.options}
-                                        optionValues={param.values}
-                                        selectedValue={formData[param.apiName]}
-                                        index={param.index}
-                                        apiName={param.apiName}
-                                        isEditing={isEditing}
-                                    />
+                                            label={param.name}
+                                            setCategory={changeCategoryState}
+                                            optionNames={param.options}
+                                            optionValues={param.values}
+                                            selectedValue={formData[param.apiName]}
+                                            index={param.index}
+                                            apiName={param.apiName}
+                                            isEditing={isEditing}
+                                        />
                                     ):(
                                     
                                     param.type === "boolean" ? 
@@ -269,45 +266,48 @@ useEffect(() => {
                                     )}
                                 </div>
                             ))}
-                            {showOptional && optionalParameters.map(param => (
-                                <div key={param.apiName} className="flex flex-col">
-                                    <label className="text-sm font-medium mb-1">{param.name}</label>
-                                    {
-                                    param.type === "enum" ? 
-                                        <SelectionMenu
-                                        label={param.name}
-                                        setCategory={changeCategoryState}
-                                        optionNames={param.options}
-                                        optionValues={param.values}
-                                        index={param.index}
-                                        apiName={param.apiName}
-                                        isEditing={isEditing}
-                                    />
-                                    :
-                                    param.type === "boolean" ? 
-                                        <input
-                                            type="checkbox"
-                                            checked={checkBoxStates[param.index]}
-                                            onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
-                                            disabled={!isEditing}
+
+                            <div className={`${converterType === "PIVOT_MATRIX" ? "flex flex-col gap-15 mt-7" : "flex flex-wrap grow gap-4"}`}>
+                                {showOptional && optionalParameters.map(param => (
+                                    <div key={param.apiName} className="flex flex-col grow min-w-[15vw] max-w-[20vw] ">
+                                        <label className="text-sm font-medium mb-1">{param.name}</label>
+                                        {
+                                        param.type === "enum" ?
+                                            <SelectionMenu
+                                                label={param.name}
+                                                setCategory={changeCategoryState}
+                                                optionNames={param.options}
+                                                optionValues={param.values}
+                                                index={param.index}
+                                                apiName={param.apiName}
+                                                isEditing={isEditing}
+                                            />
+                                        :
+                                        param.type === "boolean" ?
+                                            <input
+                                                type="checkbox"
+                                                checked={checkBoxStates[param.index]}
+                                                onChange={(e) => changeCheckBoxState(param.index, param.apiName)}
+                                                disabled={!isEditing}
+                                                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
+                                            />
+                                        :(
+                                            <input
+                                            type={param.type === "number"? "number": "text"
+                                                }
+                                            value={formData[param.apiName] || ""}
+                                            onChange={e => handleInputChange(param.apiName, e.target.value)}
+                                            readOnly={!isEditing}
                                             className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                                         />
-                                    :(
-                                        <input
-                                        type={param.type === "number"? "number": "text"
-                                            }
-                                        value={formData[param.apiName] || ""}
-                                        onChange={e => handleInputChange(param.apiName, e.target.value)}
-                                        readOnly={!isEditing}
-                                        className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
-                                    />
-                                    )}
-                                    
-                                    {errors[param.apiName] && (
-                                        <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
-                                    )}
-                                </div>
-                            ))}
+                                        )}
+                                
+                                        {errors[param.apiName] && (
+                                            <p className="text-red-500 text-xs mt-1">{errors[param.apiName]}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                     {validationError && (

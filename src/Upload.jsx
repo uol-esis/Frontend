@@ -31,6 +31,7 @@ function Upload() {
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const [confirmNameError, setConfirmNameError] = useState("");
   const [errorId, setErrorId] = useState("none");
+  const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
 
@@ -114,6 +115,7 @@ function Upload() {
     try{
       const errorObj = JSON.parse(error.message);
       setErrorId(errorObj.status);
+      setErrorMsg(errorObj.detail);
     }catch{
       setErrorId("0");
     }
@@ -183,7 +185,7 @@ function Upload() {
 
   const handleAddSchema = () => {
     setSchemaName(selectedFile.name);
-        setConfirmMode("edit");
+    setConfirmMode("edit");
 
     confirmNameToEditRef.current?.showModal();
   };
@@ -269,6 +271,7 @@ function Upload() {
       <ErrorDialog
         text={"Fehler!"}
         errorId={errorId}
+        message={errorMsg}
         onConfirm={() => { errorDialogRef.current?.close(); }}
         dialogRef={errorDialogRef}
       />

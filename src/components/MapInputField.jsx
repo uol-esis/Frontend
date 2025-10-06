@@ -1,46 +1,96 @@
 import { useState, useEffect } from "react";
+import InputPair from "./InputPair";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function MapInputField({name1, name2, handleInputChange, isEditing, param}){
 
-    const [customKey, setKey] = useState("");
-    const [values, setValues] = useState([]);
+    const [valuesArr, setValuesArr] = useState([""]);
+    const [inputValues, setInputValues] = useState([""]);
+    const [keys, setKeys] = useState([""]);
+    const [items, setItems] = useState([{ name1: "Neuer Spaltenname", name2: "Spaltennummern"}]);
 
+  
     useEffect(() => {
-        const map = {
-            [customKey]: values
-        };
-        handleInputChange(param.apiName, map);
-    },[customKey, values])
-
-    const buildMap = (value, isKey) => {
-        if(isKey){
-             setKey(value);
-        }else{
-            setValues(value);
+        let map = [];
+        for (let i = 0; i < keys.length; i++) {
+            let entry = {
+                [keys[i]] :  valuesArr[i]
+            }
+            map = [...map, entry];
         }
+        console.log(map);
+        handleInputChange(param.apiName, map);
+    },[keys, valuesArr])
+
+    const addNewMapEntry = () => {
+        const item = { name1: "Neuer Spaltenname", name2: "Spaltennummern"};
+        const newItems = [...items, item];
+        setItems(newItems);
+    }
+
+    const setKeysAtIndex = (value, index) => {
+        console.log("set key");
+       const newKeys = [...keys];
+        newKeys[index] = value;
+        setKeys(newKeys);
+    }
+
+    const setValuesAtIndex = (valArr, index) => {
+        inputValues[index] = valArr;
+        const intArray = inputValues[index]
+            .map(v => v.trim())               
+            .filter(v => v !== "")             
+            .map(v => Number(v)); 
+        console.log("intArray " + intArray);
+
+        const newValues = [...valuesArr];
+        newValues[index] = intArray;
+        setValuesArr(newValues);
+    };
+
+    const removeAtIndex = (indexToRemove) => {
+        //remove key
+        const newKeys = keys.filter((_, index) => index !== indexToRemove);
+        setKeys(newKeys);
+
+        //remove value
+        const newValues = valuesArr.filter((_, index) => index !== indexToRemove);
+        setValuesArr(newValues);
+
+        //remove items
+        const newItems = items.filter((_, index) => index !== indexToRemove);
+        setItems(newItems);
     }
 
     return(
-        //formData[param.apiName] || 
-        <div>
-            <p className="text-sm">{name1}</p>
-            <input
-                type={"text"}
-                required={param.required}
-                value={customKey}
-                onChange={e => buildMap( e.target.value, true)}
-                disabled={!isEditing}
-                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}}`}
-            />
-            <p className="text-sm">{name2}</p>
-            <input
-                type={"text"}
-                required={param.required}
-                value={values}
-                onChange={e => setValues(e.target.value.split(',').map(item => item.toString()) )}
-                disabled={!isEditing}
-                className={`shadow rounded px-2 py-1 text-sm ${!isEditing ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
-            />
-        </div>
+    
+        
+            <div className="flex flex-col gap-4">
+                {items.map((item, index) => (
+                <div className="flex justify-center">
+                    <InputPair
+                        key={index}
+                        name1={item.name1}
+                        name2={item.name2}
+                        param={item.param}
+                        customKey={keys[index]}
+                        buildMap={(val) => setKeysAtIndex(val, index)}
+                        isEditing={isEditing}
+                        values={inputValues[index]}
+                        setValues={valArr => setValuesAtIndex(valArr, index)}
+                    />
+                    <XMarkIcon className="h-4 w-4 mt-2 ml-2 shrink hover:text-indigo-600" onClick={() => {removeAtIndex(index)}} />
+                    </div>
+                ))}
+                <button
+                    type="button"
+                    className="rounded-md p-2 mt-5 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
+                    onClick={addNewMapEntry}
+                >
+                    Neuer Eintrag
+                </button>
+            </div>
+            
+        
     );
 }
