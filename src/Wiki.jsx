@@ -2,7 +2,7 @@ import { div } from "framer-motion/client";
 import {useEffect, useRef, useState} from "react";
 import Sidebar from "./Sidebar";
 import InfoCard from "./components/InfoCard";
-import {useLocation } from "react-router-dom";
+import {href, useLocation } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 
 export default function Wiki() {
@@ -31,6 +31,7 @@ export default function Wiki() {
     const metabaseSummaryRef = useRef();
     const metabaseVisualisierungRef = useRef();
     const metabaseJoinRef = useRef();
+    const pivotMatrixRef = useRef();
 
     const [enlargedImage, setEnlargedImage] = useState(null);
 
@@ -78,6 +79,7 @@ export default function Wiki() {
                 { name: 'Zeile aufteilen', href: splitRowRef },
                 { name: 'Ungültige Zeilen entfernen', href: removeInvalidRowsRef },
                 { name: 'Nachträglich Spalten entfernen', href: removeTrailingColRef },
+                { name: 'Pivot Matrix', href: pivotMatrixRef},
             ]},
         {name: 'Metabase', href: '#', children: [
                 { name: 'Einstieg', href: metabaseEinstiegRef},
@@ -725,18 +727,18 @@ export default function Wiki() {
                 <div className="mt-6 border-1 border-gray-200"></div>
 
                 {/* Pivot Matrix */}
-                <section ref={replaceEntriesRef} className="mt-10">
+                <section ref={pivotMatrixRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Pivot Matrix </h2>
                     <p>
                         Dieser Converter kann thematisch gleiche Spalten in einer neuen Spalte zusammenfassen und die dazugehörigen Werte übernehmen.
                         Bei "Neuer Spaltenname" wird der Name für die neu entstehende Spalte festgelegt. Bei den Spaltennummern müssen die 
-                        Indizes der thematisch gleichen Spalten angegeben werden. Bei dem optionalen Parameter "Blocklist" müssen alle restlichen Spalten angegeben werden,
+                        Indizes der thematisch gleichen Spalten angegeben werden. Bei dem optionalen Parameter "Blockindizes" müssen alle restlichen Spalten angegeben werden,
                         die nicht in der neuen Spalte zusammengefasst werden sollen. 
                     </p>
 
                     <div className="p-4">
                         <InfoCard
-                            text={"Spalten, die nicht bei Spaltennummern eingetragen sind müssen in die optionale Blocklist geschrieben werden"}
+                            text={"Spalten, die nicht bei Spaltennummern eingetragen sind müssen in die optionalen Blockindizes geschrieben werden"}
                         />
                     </div>
 
@@ -744,7 +746,7 @@ export default function Wiki() {
                     <p className="text-left">
                         Bei diesem Beispiel werden die Spalten, in denen das Alter angegeben ist in einer neuen Spalte "Altersgruppen" zusammengefasst.
                         Die Spalte "Gegenstand der Nachweisung" beinhaltet Jahreszahlen auf die sich die Altersgruppen beziehen, deswegen soll diese Spalte erhalten bleiben
-                        und muss in die Blocklist eingetragen werden.
+                        und muss in die Blockindizes eingetragen werden.
                     </p>
 
                     <div className="flex justify-center">
