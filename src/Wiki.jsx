@@ -722,6 +722,87 @@ export default function Wiki() {
 
                 </section>
 
+                <div className="mt-6 border-1 border-gray-200"></div>
+
+                {/* Pivot Matrix */}
+                <section ref={replaceEntriesRef} className="mt-10">
+                    <h2 className="text font-semibold text-lg" >Pivot Matrix </h2>
+                    <p>
+                        Dieser Converter kann thematisch gleiche Spalten in einer neuen Spalte zusammenfassen und die dazugehörigen Werte übernehmen.
+                        Bei "Neuer Spaltenname" wird der Name für die neu entstehende Spalte festgelegt. Bei den Spaltennummern müssen die 
+                        Indizes der thematisch gleichen Spalten angegeben werden. Bei dem optionalen Parameter "Blocklist" müssen alle restlichen Spalten angegeben werden,
+                        die nicht in der neuen Spalte zusammengefasst werden sollen. 
+                    </p>
+
+                    <div className="p-4">
+                        <InfoCard
+                            text={"Spalten, die nicht bei Spaltennummern eingetragen sind müssen in die optionale Blocklist geschrieben werden"}
+                        />
+                    </div>
+
+                    <p className="text-left font-semibold mt-4">Beispiel 1: Einen Abschnitt umwandeln</p>
+                    <p className="text-left">
+                        Bei diesem Beispiel werden die Spalten, in denen das Alter angegeben ist in einer neuen Spalte "Altersgruppen" zusammengefasst.
+                        Die Spalte "Gegenstand der Nachweisung" beinhaltet Jahreszahlen auf die sich die Altersgruppen beziehen, deswegen soll diese Spalte erhalten bleiben
+                        und muss in die Blocklist eingetragen werden.
+                    </p>
+
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="w-[50vw] mt-5 object-contain" src="wikiAssets/pivotParameter.png" alt="" />
+                        </figure>
+                    </div>
+
+                    <div className="flex justify-around p-4 gap-4 ">
+                        <figure>
+                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <img className=" object-contain" src="wikiAssets/pivotStandard.png" alt="remove Column" />
+
+                        </figure>
+
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <img className="object-contain" src="wikiAssets/pivotNew.png" alt="remove Column" />
+
+                        </figure>
+
+                    </div>
+
+                    <p className="text-left font-semibold mt-4">Beispiel 2: Zwei Abschnitte umwandeln</p>
+                    <p className="text-left">
+                        Bei dieser Tabelle gibt es zusätzlich zu den Daten aus dem ersten Beispiel nochmal den gleichen Aufbau mit der Bevölkerung und Pflegebedürftige.
+                        Jetzt werden zwei Umformungen durchgeführt: Die neue Spalte Kategorie umfasst Bevölkerung und Pflegebedürftige und die zweite
+                        neue Spalte Altersgruppen beinhaltet alle Altersgruppen aus Bevölkerung und Pflegebedürftige. Bei der Blocklist muss
+                        wieder die Spalte mit den Jahreszahlen angegeben werden. Zusätzlich kann bei "Lücken füllen in Spalten" der Spaltenname angegeben werden, damit
+                        bei einem leeren Eintrag der Wert aus der vorherigen Zeile übernommen wird. Ohne diese Angabe würde nur in einer Zeile Pflegebedürftige und Bevölkerung stehen und nicht in allen.
+                        <br/>
+                        Mit dem Converter "Einträge ersetzen" könnte man die leeren Einträge bei Altersgruppen mit einem passenden Begriff ersetzen.
+                    </p>
+
+                    <div className="flex justify-center">
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Parameter </figcaption>
+                            <img className="w-[50vw] mt-5 object-contain" src="wikiAssets/pivot2Parameter.png" alt="" />
+                        </figure>
+                    </div>
+
+                    <div className="flex justify-around p-4 gap-4 ">
+                        <figure>
+                            <figcaption className="font-semibold p-4">Vorher </figcaption>
+                            <img className=" object-contain" src="wikiAssets/pivot2Standard.png" alt="remove Column" />
+
+                        </figure>
+
+                        <figure>
+                            <figcaption className="font-semibold p-4"> Nachher</figcaption>
+                            <img className="object-contain" src="wikiAssets/pivot2New.png" alt="remove Column" />
+
+                        </figure>
+
+                    </div>
+                </section>
+
                 <div className="mt-6
                  border-1 border-gray-200"></div>
 

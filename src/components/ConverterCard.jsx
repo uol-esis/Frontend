@@ -267,7 +267,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                                 </div>
                             ))}
 
-                            <div className={`${converterType === "PIVOT_MATRIX" ? "flex flex-col gap-15 mt-7" : "flex flex-wrap grow gap-4"}`}>
+                            <div className={`${converterType === "PIVOT_MATRIX" ? "flex flex-col gap-3 mt-7" : "flex flex-wrap grow gap-4"}`}>
                                 {showOptional && optionalParameters.map(param => (
                                     <div key={param.apiName} className="flex flex-col grow min-w-[15vw] max-w-[20vw] ">
                                         <label className="text-sm font-medium mb-1">{param.name}</label>
@@ -348,7 +348,7 @@ export default function ConverterCard({id, label, parameters, converterType, for
                                 <button
                                     className="text-xs bg-gray-600 hover:bg-indigo-500 text-white rounded px-4 py-2"
                                     onClick={() => {
-                                        onEditToggle(id, true)
+                                        onEditToggle(id, true);
                                         setSaveState("unsaved");
                                     }}
                                     

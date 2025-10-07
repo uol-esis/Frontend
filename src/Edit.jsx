@@ -147,7 +147,7 @@ export default function Edit() {
       description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
       {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalte nach Überschrift entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
       description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Bei den Spalten gilt es zu beachten, dass das Stichwort in der Spaltenüberschrift vorkommen muss. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
-    {label:'Datenblöcke aufteilen', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Spaltenüberschriften verwenden zum Füllen von Lücken', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
+    {label:'Pivot Matrix', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Lücken füllen in Spalten (Name)', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
       description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
       {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
         description:"Hierbei werden die Zeilen und Spalten vertauscht."},
@@ -305,18 +305,16 @@ export default function Edit() {
   const saveCardRefs = useRef({});
 
  const isMultipleNumbers = (inputString) => {
-  let match = inputString.match("\\s*\\d+\\s*-\\s*\\d+\\s*");
-  if(!match){
-    return inputString;
-  }
-  let startAndEnd = match.toString().split('-').map(item => item.toString().trim());
-  let result = "";
-  for(let i = startAndEnd[0]; i < startAndEnd[1]; i++ ){
-    result = result + i + ",";
-  }
-  result = result + startAndEnd[1];
-  result = inputString.replace(match, result);
-  return result;
+  return inputString.replace(/\s*(\d+)\s*-\s*(\d+)\s*/g, (_, start, end) => {
+    start = parseInt(start);
+    end = parseInt(end);
+
+    const numbers = [];
+    for (let i = start; i <= end; i++) {
+      numbers.push(i);
+    }
+    return numbers.join(',');
+  });
 }
 
  const parseError = (error) => {

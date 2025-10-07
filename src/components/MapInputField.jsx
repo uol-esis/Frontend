@@ -1,24 +1,20 @@
 import { useState, useEffect } from "react";
 import InputPair from "./InputPair";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
 
 export default function MapInputField({name1, name2, handleInputChange, isEditing, param}){
 
     const [valuesArr, setValuesArr] = useState([""]);
-    const [inputValues, setInputValues] = useState([""]);
     const [keys, setKeys] = useState([""]);
     const [items, setItems] = useState([{ name1: "Neuer Spaltenname", name2: "Spaltennummern"}]);
 
   
     useEffect(() => {
-        let map = [];
+        let map = {};
         for (let i = 0; i < keys.length; i++) {
-            let entry = {
-                [keys[i]] :  valuesArr[i]
-            }
-            map = [...map, entry];
+            map[keys[i]] = valuesArr[i];
         }
-        console.log(map);
         handleInputChange(param.apiName, map);
     },[keys, valuesArr])
 
@@ -36,15 +32,8 @@ export default function MapInputField({name1, name2, handleInputChange, isEditin
     }
 
     const setValuesAtIndex = (valArr, index) => {
-        inputValues[index] = valArr;
-        const intArray = inputValues[index]
-            .map(v => v.trim())               
-            .filter(v => v !== "")             
-            .map(v => Number(v)); 
-        console.log("intArray " + intArray);
-
         const newValues = [...valuesArr];
-        newValues[index] = intArray;
+        newValues[index] = valArr;
         setValuesArr(newValues);
     };
 
@@ -76,7 +65,7 @@ export default function MapInputField({name1, name2, handleInputChange, isEditin
                         customKey={keys[index]}
                         buildMap={(val) => setKeysAtIndex(val, index)}
                         isEditing={isEditing}
-                        values={inputValues[index]}
+                        values={valuesArr[index]}
                         setValues={valArr => setValuesAtIndex(valArr, index)}
                     />
                     <XMarkIcon className="h-4 w-4 mt-2 ml-2 shrink hover:text-indigo-600" onClick={() => {removeAtIndex(index)}} />
@@ -84,10 +73,11 @@ export default function MapInputField({name1, name2, handleInputChange, isEditin
                 ))}
                 <button
                     type="button"
-                    className="rounded-md p-2 mt-5 text-sm font-semibold text-white shadow-sm bg-gray-600 hover:bg-indigo-500 focus-visible:outline-indigo-600"
+                    className="h-8 w-8 hover:text-indigo-600 self-center"
+                    disabled={!isEditing}
                     onClick={addNewMapEntry}
                 >
-                    Neuer Eintrag
+                    <PlusCircleIcon/>
                 </button>
             </div>
             
