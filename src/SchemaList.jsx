@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus, deleteDialogRef, setId}){
+export default function SchemaList({list, setSchema, setSchemaName, file, handleConfirm, handlePlus, deleteDialogRef, setId}){
 
   const [schemaList, setSchemaList] = useState([
       { name: "Schema 1", description: "Description for Schema 1" },
@@ -56,7 +56,7 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
                   <li
                     key={index}
                     className={`flex justify-between items-center cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
-                    onClick={() => {setSchema(schema); setSelectedSchema(schema);}}
+                    onClick={() => {setSchema(schema); setSelectedSchema(schema); setSchemaName(schema.name);}}
                   >
                     {/* schema */}
                     {schema.name}

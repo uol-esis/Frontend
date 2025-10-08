@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  errorText, file}){
+export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  errorText, file, useExistingSchema}){
     const [error, setError] = useState(errorText)
     const [text, setText] = useState(name);
     const [filename, setFilename] = useState("");
@@ -57,9 +57,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
     const encoder = new TextEncoder();
     const encoded = encoder.encode(str);
     return encoded.length;
-  };
-
-    
+  };  
 
     useEffect(() => {
         setError(errorText);
@@ -102,7 +100,7 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                 <div className="flex flex-col">
                     
                     <label htmlFor="username" className=" text-left block text-sm/6 font-medium text-gray-900">
-                        Generierter Tabellentransformationsname:
+                        Tabellentransformationsname:
                     </label>
                     <p className="text-sm font-semibold text-red-800 bg-red-200 mb-1">{error}</p>
                         <div className="flex items-center rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
@@ -111,11 +109,12 @@ export default function ConfirmNameDialog({dialogRef, name, onClickFunction,  er
                             name="dataName"
                             type="text"
                             value={text}
+                            disabled={useExistingSchema}
                             onChange={(evt) => { 
                                 setText(evt.target.value);
                                 setError("");
                             }}
-                            className="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+                            className={`block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6 ${useExistingSchema ? "bg-gray-100 text-gray-500 cursor-not-allowed" : "bg-white"}`}
                         />
                         </div>
                 </div>

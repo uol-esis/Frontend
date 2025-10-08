@@ -33,13 +33,12 @@ function Upload() {
   const [errorId, setErrorId] = useState("none");
   const [isLoading, setIsLoading] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
+  const [schemaIsSelected, setSchemaIsSelected] = useState(false);
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
   const [tipGenerate, setTipGenerate] = useState(false);
 
-  const confirmNameToPreviewRef = useRef(); //NICHT VERW
-  const confirmNameToEditRef = useRef(); //NICHT VERW
   const confirmNameRef = useRef();
   const errorDialogRef = useRef();
   const confirmDeleteRef = useRef();
@@ -76,8 +75,15 @@ function Upload() {
     if (isLoggedIn) {
       getSchemaList();
     }
-  }, [isLoggedIn]);
-  
+  }, []);
+
+  useEffect(() => {
+    if(selectedSchema){
+      setSchemaIsSelected(true);
+    }else{
+      setSchemaIsSelected(false);
+    }
+  }, [selectedSchema]);
 
   useEffect(() => {
     const dontShowAgain = localStorage.getItem("hideUploadTutorial");
@@ -113,7 +119,11 @@ function Upload() {
     let currentErrorId = errorId;
     try{
       const errorObj = JSON.parse(error.message);
-      setErrorId(errorObj.status);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+      }else{
+        setErrorId("0");
+      }
     }catch{
       setErrorId("0");
     }
@@ -124,6 +134,7 @@ function Upload() {
 
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
+    setSelectedSchema(null);
     setIsLoading(true);
     const {api, Th1} = await getApiInstance();
     if (!api ) {
@@ -159,8 +170,13 @@ function Upload() {
   }
 
   const isNameTaken = function (newName) {
+    let selectedSchemaName = "";
+    if(selectedSchema){
+      selectedSchemaName = selectedSchema.name;
+    }
+
     for (const schema of schemaList) {
-      if (schema.name === newName) {
+      if (schema.name === newName && schema.name != selectedSchemaName) {
         return true;
       }
     }
@@ -182,10 +198,11 @@ function Upload() {
   };
 
   const handleAddSchema = () => {
+    setSelectedSchema(null);
     setSchemaName(selectedFile.name);
-        setConfirmMode("edit");
+    setConfirmMode("edit");
 
-    confirmNameToEditRef.current?.showModal();
+    confirmNameRef.current?.showModal();
   };
 
   const handleDeleteSchema = async (id) => {
@@ -221,7 +238,9 @@ function Upload() {
   });
 
   // Transformation setzen
-  jsonData.name = newTransformationName;
+  if(jsonData){
+    jsonData.name = newTransformationName;
+  }
 
   if (confirmMode === "preview") {
     const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
@@ -236,7 +255,7 @@ function Upload() {
     });
   } else if (confirmMode === "Readyprev") {
     navigate("/preview", {
-      state: { selectedFile: updatedFile, generatedSchema: schemaToPreview },
+      state: { selectedFile: updatedFile, generatedSchema: selectedSchema },
     });
   }
 
@@ -265,7 +284,10 @@ function Upload() {
         name={schemaName}
         file={selectedFile}
         onClickFunction={handleConfirmName}
-        errorText={confirmNameError} />
+        errorText={confirmNameError} 
+        useExistingSchema={schemaIsSelected}
+      />
+        
       <ErrorDialog
         text={"Fehler!"}
         errorId={errorId}
@@ -309,7 +331,7 @@ function Upload() {
           {/* Schemalist*/}
           <div className="relative h-full min-h-0">
             <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} handleDeleteSchema={handleDeleteSchema} setId={setIdToDelete} deleteDialogRef={confirmDeleteRef} />
+              <SchemaList list={schemaList} setSchema={setSelectedSchema} setSchemaName={setSchemaName} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} handleDeleteSchema={handleDeleteSchema} setId={setIdToDelete} deleteDialogRef={confirmDeleteRef} />
             </div>
             <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
               style={{ opacity: 1 }}

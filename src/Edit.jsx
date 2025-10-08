@@ -322,7 +322,11 @@ export default function Edit() {
     let currentErrorId = errorId;
     try{
       const errorObj = JSON.parse(error.message);
-      setErrorId(errorObj.status);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+      }else{
+        setErrorId("0");
+      }
     }catch{
       setErrorId("0");
     }
