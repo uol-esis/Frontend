@@ -125,10 +125,10 @@ export default function Wiki() {
                         Ziel ist es, einen klaren Überblick über die bereitgestellten Funktionen, 
                         deren Einsatzmöglichkeiten sowie Best Practices für die tägliche Arbeit mit Daten zu geben.
 
-                        Im ersten Abschnitt wird gezeigt wie die Daten opimal für den Upload in die Datenbank aussehen sollten. 
-                        Anschließend werden die Funktionen beschrieben, alos die einzelnen Converter. 
+                        Im ersten Abschnitt wird gezeigt, wie die Daten optimal für den Upload in die Datenbank aussehen sollten. 
+                        Anschließend werden die Funktionen beschrieben, also die einzelnen Converter. 
                         Nutzer:innen erfahren hier, wofür die Converter verwendet werden können und wie sie funktionieren. 
-                        Zusätzlich gibt es Beispiele für das bessere Verständnis.
+                        Zusätzlich gibt es Beispiele für ein besseres Verständnis.
 
                         Der zweite Schwerpunkt liegt auf der Datenvisualisierung mit Metabase. Hier bietet das Wiki eine praxisnahe Anleitung: 
                         Von den ersten Schritten, über die Erstellung von Dashboards bis hin zu Filterfunktionen. 
@@ -756,19 +756,15 @@ export default function Wiki() {
                 <section ref={removeLeadingColumnRef} className="mt-10">
                     <h2 className="text font-semibold text-lg" >Spalten am Anfang entfernen</h2>
                     <p>
-                        Dieser Converter entfernt ungültige Spalten, die sich am Anfang der Tabelle befinden. Standardmäßig werden komplett leere SPalten gelöscht. 
-                        Mit der Blocklist können weitere Werte angegeben werden die als ungültig gelten sollen und somit wird eine Spalte gelöscht, falls sie diese Werte beinhaltet.
+                        Dieser Converter entfernt ungültige Spalten, die sich am Anfang der Tabelle befinden. Standardmäßig werden komplett leere Spalten gelöscht. 
+                        Mit der Blocklist können weitere Werte angegeben werden, die als ungültig gelten sollen und somit wird eine Spalte gelöscht, falls sie diese Werte beinhaltet.
                     </p>
-                    <p className="text-left font-semibold mt-4">Beispiel:</p>
-                    <p className="text-left">
-                        //TODO Beschreibung und Bild
-                    </p>
-                    <div className="flex justify-center">
-                        <figure>
-                            <figcaption></figcaption>
-                            <img className="mt-5 object-contain w-[50vw] " src="wikiAssets/FillEmptyRow_Input.png" alt="fill empty row" />
-                        </figure>
+                    <div className="p-4">
+                        <InfoCard
+                            text={"Um gezielt Spalten zu entfernen sollte der Converter \"Spalte entfernen (nach Index)\" genutzt werden"}
+                        />
                     </div>
+                    
 
                 </section>
 
@@ -793,7 +789,7 @@ export default function Wiki() {
 
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     <p className="text-left">
-                        In diesem Fall sollen alle Zeilen gelöscht werden in dem das Wort Straße vorkommt.
+                        In diesem Fall sollen alle Zeilen gelöscht werden in denen das Wort Straße vorkommt.
                         Da Straße nicht als einzelnes Wort vorkommt muss bei Genauigkeit "Beinhaltet Stichwort" ausgewählt werden
                         und da bei der Eingabe Straße großgeschrieben wurde, es aber in den Daten nur kleingeschrieben ist muss die
                         Groß- und Kleinschreibung ignoriert werden.
@@ -838,7 +834,7 @@ export default function Wiki() {
 
                     <p className="text-left font-semibold mt-4">Beispiel:</p>
                     <p className="text-left">
-                        Bei dieser Tabelle wird die Struktur so verändert, dass die Jahreszahlen die sich über mehere Spalten erstrecken in einer Spalte gebündelt werden
+                        Bei dieser Tabelle wird die Struktur so verändert, dass die Jahreszahlen die sich über mehrere Spalten erstrecken in einer Spalte gebündelt werden
                         Außerdem werden die Altersgruppen, die sich über mehrere Zeilen erstrecken nun in Spalten dargestellt. Zum Schluss können die leeren Spalten 
                         mit dem Converter "Spalten entfernen (nach Index)" gelöscht werden.
                     </p>
