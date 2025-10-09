@@ -138,10 +138,10 @@ export default function Wiki() {
                 <section className="mt-10">
                     <h2 className="text font-semibold text-lg" >Funktionen / Converter</h2>
                     <p>
-                        Funktionen werden in der Ansicht "Tabellentransformation bearbeiten" verwendent.
-                        Eine Funktion entspricht einem Bearbeitungsschritt, der auf die Tabelle angwendet wird.
+                        Funktionen werden in der Ansicht "Tabellentransformation bearbeiten" verwendet.
+                        Eine Funktion entspricht einem Bearbeitungsschritt, der auf die Tabelle angewandt wird.
                         Damit dieser Bearbeitungsschritt korrekt durchgeführt wird, braucht jede Funktion verschiedene Informationen, beispielsweise
-                        Start- und Endreihe. Im Folgenden werden alle Funktionen aufgelistet und deren Funktionweise genauer erklärt.
+                        Start- und Endzeile. Im Folgenden werden alle Funktionen aufgelistet und deren Funktionweise genauer erklärt.
 
                     </p>
                 </section>
