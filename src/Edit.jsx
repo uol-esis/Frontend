@@ -24,6 +24,7 @@ export default function Edit() {
     height: window.innerHeight
   });
   const [errorId, setErrorId] = useState("none");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [collapseAllSignal, setCollapseAllSignal] = useState(0);
 
@@ -134,7 +135,7 @@ export default function Edit() {
       description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
     {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
       description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
-    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}, {name: 'Endspalte', type: 'number', required: false, apiName: 'endColumn'} ], converterType: 'REPLACE_ENTRIES',
+    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Suchstruktur (Regex)', type:'String', required: false, apiName:'regexSearch' }, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'} ], converterType: 'REPLACE_ENTRIES',
       description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt. Lässt man den Suchebgriff leer, werden Leerzeichen bzw. leere Einträge ersetzt. '}, //ReplaceEntries
     {label: 'Zellen aufteilen ', category: 'mdfy', params: [{name:"Aufteilen in Spalten oder Zeilen" ,type:"enum", required:true, options:["Zeile", "Spalte"], values:["row", "column"], index:0, apiName: "mode"}, {name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_CELL', 
       description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen oder Spalten aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt. Im Feld Delimiter kann ein anderes Trennzeichen eingegeben werden. Für ein Leerzeichen muss nichts beim Delimiter eingegeben werden.'}, //SplitRow
@@ -146,12 +147,11 @@ export default function Edit() {
       description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
       {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalte nach Überschrift entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
       description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Bei den Spalten gilt es zu beachten, dass das Stichwort in der Spaltenüberschrift vorkommen muss. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
-    {label:'Datenblöcke aufteilen', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Spaltenüberschriften verwenden zum Füllen von Lücken', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
+    {label:'Pivot Matrix', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Lücken füllen in Spalten (Name)', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
       description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
       {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
-        description:"Hierbei werden die Zeilen und Spalten vertauscht."},
-      {label:'Spalten zusammenführen', category:"mdfy", params:[{name:'Spaltennummern', type:'array', required: true, apiName: 'columnIndex'}, {name: 'Spaltenüberschrift', type: 'string', required: true, apiName: 'headerName'}, {name:"Spalte mit Priorität (Index)", type:'array', required: false, apiName: 'precedenceOrder'}], converterType: 'MERGE_COLUMNS',
-        description:"Mit diesem Converter lassen sich zwei Spalten zu einer zusammenführen, vorrausgesetzt jeweils ein Wert der beiden Spalten ist leer. Falls in beiden Spalten ein Wert steht, entscheidet die Priorität aus welcher Spalte der Wert übernommen wird."}
+        description:"Bei diesem Converter werden die Zeilen und Spalten vertauscht."
+      }
       // add more...
   ];
 
@@ -251,6 +251,9 @@ export default function Edit() {
     const apiName = param.apiName;
     const field = formData?.[apiName];
     if (param.type === 'string') {
+      if(param.apiName === 'delimiter' && !field){
+        return "\n";
+      }
       if (!field || field.toString().trim() === "") {
         return "";
       } 
@@ -304,18 +307,16 @@ export default function Edit() {
   const saveCardRefs = useRef({});
 
  const isMultipleNumbers = (inputString) => {
-  let match = inputString.match("\\s*\\d+\\s*-\\s*\\d+\\s*");
-  if(!match){
-    return inputString;
-  }
-  let startAndEnd = match.toString().split('-').map(item => item.toString().trim());
-  let result = "";
-  for(let i = startAndEnd[0]; i < startAndEnd[1]; i++ ){
-    result = result + i + ",";
-  }
-  result = result + startAndEnd[1];
-  result = inputString.replace(match, result);
-  return result;
+  return inputString.replace(/\s*(\d+)\s*-\s*(\d+)\s*/g, (_, start, end) => {
+    start = parseInt(start);
+    end = parseInt(end);
+
+    const numbers = [];
+    for (let i = start; i <= end; i++) {
+      numbers.push(i);
+    }
+    return numbers.join(',');
+  });
 }
 
  const parseError = (error) => {
@@ -324,6 +325,7 @@ export default function Edit() {
       const errorObj = JSON.parse(error.message);
       if(errorObj.status){
         setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
       }else{
         setErrorId("0");
       }
@@ -461,10 +463,27 @@ const handleSaveUpToCard = async (upToCardId) => {
       const data = await new Promise((resolve, reject) => {
         console.log("selectedFile: ", selectedFile);
         console.log("selectedFileType: ", selectedFile.type);
+
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+              const text = e.target.result;
+              const rows = text
+                  .split("\n")            // Datei in Zeilen splitten
+                  .slice(0, 5)            // nur die ersten 5 Zeilen nehmen
+                  .map(row => row.split(",")); // jede Zeile in Zellen splitten
+
+              console.log("selectedFile in frontend " + rows);
+          };
+
+          reader.readAsText(selectedFile);
+
+
         //set amount of rows based on window height
         let limit = computeTablelimit();
         if (limit < 5) { limit = 5 }
         let opts = { "limit": limit };
+        console.log("json " + JSON.stringify(jsonData));
         api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
           if (error) {
             console.error(error);
@@ -472,7 +491,7 @@ const handleSaveUpToCard = async (upToCardId) => {
             reject(error);
           } else {
             console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-            console.log('API response: ' + response);
+            console.log('API response: ' + JSON.stringify(response));
             resolve(data);
           }
         });
@@ -553,6 +572,7 @@ useEffect(() => {
     <ErrorDialog
       text={"Fehler!"}
       errorId={errorId}
+      message={errorMsg}
       onConfirm={() => { errorDialogRef.current?.close();}}
       dialogRef={errorDialogRef}
     />
