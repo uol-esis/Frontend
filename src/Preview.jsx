@@ -153,9 +153,14 @@ export default function Preview() {
     let currentErrorId = errorId;
     try{
       const errorObj = JSON.parse(error.message);
-      setErrorId(errorObj.status);
-      setErrorMsg(errorObj.detail);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
+      }else{
+        setErrorId("0");
+      }
     }catch{
+      console.log("error 0");
       setErrorId("0");
     }
     if(currentErrorId == errorId){
