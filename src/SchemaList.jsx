@@ -1,10 +1,6 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Tooltip from './ToolTip';
 
-export default function SchemaList({list, setSchema, file, handleConfirm, handlePlus}){
+export default function SchemaList({list, setSchema, setSchemaName, file, handleConfirm, handlePlus, deleteDialogRef, setId}){
 
   const [schemaList, setSchemaList] = useState([
       { name: "Schema 1", description: "Description for Schema 1" },
@@ -14,9 +10,6 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
     const [searchQuery, setSearchQuery] = useState(""); // State for the search query
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedSchema, setSelectedSchema] = useState(null);
-    const [schemaName, setSchemaName] = useState("");
-
-    const navigate = useNavigate();
 
     const filteredSchemaList = schemaList
     .filter(schema => schema.name.toLowerCase().includes(searchQuery.toLowerCase())); // Filter based on the search query
@@ -28,15 +21,6 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
     useEffect (() => {
       setSelectedFile(file);
     }, [file]);
-
-    //noch ausfüllen
-      
-      const handleEditSchema = () => {
-        console.log("Edit schema clicked"); 
-      };
-      const handleDeleteSchema = () => {
-        console.log("Delete schema clicked");   
-      };
 
     return(
         <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
@@ -72,14 +56,18 @@ export default function SchemaList({list, setSchema, file, handleConfirm, handle
                   <li
                     key={index}
                     className={`flex justify-between items-center cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
-                    onClick={() => {setSchema(schema); setSelectedSchema(schema);}}
+                    onClick={() => {setSchema(schema); setSelectedSchema(schema); setSchemaName(schema.name);}}
                   >
                     {/* schema */}
                     {schema.name}
                     <div className="flex gap-2">
                     
                       <button type ="button"
-                        onClick={(e) => {e.stopPropagation(); handleDeleteSchema();}}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setId(schema.id); 
+                          deleteDialogRef.current?.showModal();
+                        }}
                         className="p-1 rounded hover:bg-gray-200 transform transition-transform duration-150 hover:scale-110">
                           🗑️
                         </button>

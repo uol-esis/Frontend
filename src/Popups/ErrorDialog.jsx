@@ -1,25 +1,15 @@
 import { useState, useEffect} from "react";
+import dataString from "../language/errorsDE.json?raw";
 
-export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
+export default function ErrorDialog({dialogRef, text, message, onConfirm, errorId}){
 
     const [errorMsg, setErrorMsg] = useState("");
     const locale = "errorsDE";
 
     {/* load error message based on id */}
     useEffect(() => {
-        fetch(`public/${locale}.json`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Netzwerkfehler: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setErrorMsg(data[errorId]);
-            })
-            .catch(error => {
-                console.error('Fehler beim Laden oder Verarbeiten:', error);
-            });
+        const data = JSON.parse(dataString);
+        setErrorMsg(data[errorId]);
     }, [errorId])
 
     return(
@@ -29,6 +19,7 @@ export default function ErrorDialog({dialogRef, text, onConfirm, errorId}){
                 <p className="text-base font-semibold">{text}</p>
                 <p className="text-base font-semibold">Fehlercode {errorId}</p>
                 <p>{errorMsg}</p>
+                <p className="whitespace-pre-line [overflow-wrap:anywhere] [word-break:break-word] text-gray-700 leading-relaxed">{message}</p>
             </div>
             <button
                     className=" p-5 mt-3 w-[15vw] rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

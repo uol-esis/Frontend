@@ -35,9 +35,9 @@ function classNames(...classes) {
 
 export default function Sidebar({onClick, navigation}) {
   return (
-    <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 p-2 bg-white h-full shadow">
+    <div className="flex overflow-y-auto h-full border-r border-gray-200 bg-white shadow p-2 ">
       
-      <nav className="flex flex-1 flex-col ">
+      <nav className="flex flex-col ">
        
           
             <ul role="list" className="">
@@ -71,17 +71,22 @@ export default function Sidebar({onClick, navigation}) {
                       <DisclosurePanel as="ul" className="mt-1 px-2">
                         {item.children.map((subItem) => (
                           <li key={subItem.name}>
-                            <DisclosureButton
-                              as="a"
-                              onClick={() => {onClick(subItem.href)}}
-
-                              className={classNames(
-                                subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50',
-                                'block rounded-md py-2 pr-2 pl-9 text-sm/6 text-gray-700',
-                              )}
-                            >
-                              {subItem.name}
-                            </DisclosureButton>
+                            <div className='group flex w-full items-center gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-700'>
+                              <ChevronRightIcon
+                                aria-hidden="true"
+                                className="size-5 shrink-0 text-gray-400 group-data-open:rotate-90 group-data-open:text-gray-500"
+                              />
+                              <button
+                                as="a"
+                                onClick={() => {onClick(subItem.href)}}
+                                className={classNames(
+                                  subItem.current ? 'bg-gray-50' : 'hover:bg-gray-50',
+                                  'block rounded-md w-full text-left text-sm/6 text-gray-700',
+                                )}
+                              >
+                                {subItem.name}
+                              </button>
+                            </div>
                           </li>
                         ))}
                       </DisclosurePanel>

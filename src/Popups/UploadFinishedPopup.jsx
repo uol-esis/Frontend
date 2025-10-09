@@ -9,14 +9,14 @@ export default function UploadFinishedPopup({dialogRef}){
                 <img className="h-[15vh] w-[15vw] object-contain" src="greenHook.jpg" alt="Upload finished" />
                 <p>Die Daten wurden erfolgreich hochgeladen</p>
                 <button
-                    className=" p-5 w-[15vw] rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="p-5 w-[15vw] rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     onClick={() => {navigate("/upload")}}
                 >
                     Weitere Datei hochladen
                 </button>
 
                 <button
-                    className=" p-5 w-[15vw] rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="p-5 w-[15vw] rounded-md bg-gray-600 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     onClick={() => {navigate("/")}}
                 >
                     Zurück zur Startseite

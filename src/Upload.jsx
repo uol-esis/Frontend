@@ -9,8 +9,8 @@ import GenerateSchemaComponent from "./GenerateSchemaComponent";
 import Tooltip from "./ToolTip";
 import { getApiInstance } from "./hooks/ApiInstance";
 import { useAuthGuard } from "./hooks/AuthGuard";
-import { div } from "framer-motion/client";
 import ErrorDialog from "./Popups/ErrorDialog";
+import DecisionDialog from "./Popups/DecisionDialog";
 
 function Upload() {
 
@@ -31,15 +31,21 @@ function Upload() {
   const fileInputRef = useRef(null); // Reference for the hidden input element
   const [confirmNameError, setConfirmNameError] = useState("");
   const [errorId, setErrorId] = useState("none");
+  const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
+  const [schemaIsSelected, setSchemaIsSelected] = useState(false);
 
   const [tipDate, setTipData] = useState(false);
   const [tipSchema, setTipSchema] = useState(false);
   const [tipGenerate, setTipGenerate] = useState(false);
 
-  const confirmNameToPreviewRef = useRef();
-  const confirmNameToEditRef = useRef();
+  const confirmNameRef = useRef();
   const errorDialogRef = useRef();
+  const confirmDeleteRef = useRef();
+
+
+  const [confirmMode, setConfirmMode] = useState(null); // "preview" or "edit"
 
   const navigate = useNavigate();
 
@@ -70,8 +76,15 @@ function Upload() {
     if (isLoggedIn) {
       getSchemaList();
     }
-  }, [isLoggedIn]);
-  
+  }, []);
+
+  useEffect(() => {
+    if(selectedSchema){
+      setSchemaIsSelected(true);
+    }else{
+      setSchemaIsSelected(false);
+    }
+  }, [selectedSchema]);
 
   useEffect(() => {
     const dontShowAgain = localStorage.getItem("hideUploadTutorial");
@@ -82,30 +95,7 @@ function Upload() {
     localStorage.setItem("hideUploadTutorial", true);
   });
 
-  const getByteSize = (str) => {
-    const encoder = new TextEncoder();
-    const encoded = encoder.encode(str);
-    return encoded.length;
-  };
-
-  useEffect(() => {
-    if (selectedFile && getByteSize(selectedFile.name) > 63) {
-      setModifiedFileName(selectedFile.name); // Set the initial name
-      fileNameDialogRef.current?.showModal(); // Open the popup
-    }
-  }, [selectedFile]);
-
-
-  useEffect(() => {
-    if (selectedFile) {
-      const isValid = selectedFile.name.endsWith(".csv") || selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".xls");
-      const isValidAndShortEnough = isValid && getByteSize(selectedFile.name) <= 63;
-      setIsValidFile(isValidAndShortEnough);
-    } else {
-      setIsValidFile(false);
-    }
-  }, [selectedFile]);
-
+  
   useEffect(() => {
       if(errorId == "none"){
         return;
@@ -130,7 +120,12 @@ function Upload() {
     let currentErrorId = errorId;
     try{
       const errorObj = JSON.parse(error.message);
-      setErrorId(errorObj.status);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
+      }else{
+        setErrorId("0");
+      }
     }catch{
       setErrorId("0");
     }
@@ -141,6 +136,7 @@ function Upload() {
 
   {/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
+    setSelectedSchema(null);
     setIsLoading(true);
     const {api, Th1} = await getApiInstance();
     if (!api ) {
@@ -164,7 +160,8 @@ function Upload() {
         setReports(data.reports);
         setJsonData(data.tableStructure);
         setSchemaName(selectedFile.name);
-        confirmNameToPreviewRef.current?.showModal();
+        setConfirmMode("preview");
+        confirmNameRef.current?.showModal();
       }
       setIsLoading(false);
       console.log(response);
@@ -175,15 +172,20 @@ function Upload() {
   }
 
   const isNameTaken = function (newName) {
+    let selectedSchemaName = "";
+    if(selectedSchema){
+      selectedSchemaName = selectedSchema.name;
+    }
+
     for (const schema of schemaList) {
-      if (schema.name === newName) {
+      if (schema.name === newName && schema.name != selectedSchemaName) {
         return true;
       }
     }
     return false;
   }
 
-  {/* Confirm name and navigate to preview page*/ }
+  {/* Confirm name and navigate to preview page NICHTVER*/ }
   const confirmGeneratedName = function (newName) {
     
     if(isNameTaken(newName)){
@@ -198,34 +200,100 @@ function Upload() {
   };
 
   const handleAddSchema = () => {
+    setSelectedSchema(null);
     setSchemaName(selectedFile.name);
-    confirmNameToEditRef.current?.showModal();
+    setConfirmMode("edit");
+
+    confirmNameRef.current?.showModal();
   };
 
-  const handleConfirmNewSchema = (newName) => {
-    const schema = {
-      name: newName
+  const handleDeleteSchema = async (id) => {
+      const {api} = await getApiInstance();
+      if(!id){
+        setErrorId(0);
+      }
+
+      api.deleteTableStructure(id, (error, data, response) => {
+        if (error) {
+          parseError(error);
+          console.error(error);
+        } else {
+          console.log('API called successfully.');
+          getSchemaList();
+        }
+      });
     };
-    navigate("/edit", {
-      state: {
-        schemaToEdit: schema,
-        selectedFile: selectedFile,
-      },
-    });
-  };
 
-  const handleConfirm = () => navigate("/preview", { state: { selectedFile, selectedSchema } }); //name-popup to preview
+  const handleConfirmName = async (newFileName, newTransformationName) => {
+  if (isNameTaken(newTransformationName)) {
+    setConfirmNameError("Der Name wird bereits verwendet");
+    return false;
+  }
+
+  // Neuer File mit geändertem Namen
+  const updatedFile = new File([selectedFile], newFileName, { type: selectedFile.type });
+
+  // State aktualisieren und sicherstellen, dass es gesetzt ist
+  await new Promise((resolve) => {
+    setSelectedFile(updatedFile);
+    setTimeout(resolve, 0); // kleiner Hack, um State-Sync zu erzwingen
+  });
+
+  // Transformation setzen
+  if(jsonData){
+    jsonData.name = newTransformationName;
+  }
+
+  if (confirmMode === "preview") {
+    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
+    const reportsJson = JSON.parse(JSON.stringify(reports));
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: generatedSchemaJson, reports: reportsJson },
+    });
+  } else if (confirmMode === "edit") {
+    const schema = { name: newTransformationName };
+    navigate("/edit", {
+      state: { schemaToEdit: schema, selectedFile: updatedFile },
+    });
+  } else if (confirmMode === "Readyprev") {
+    navigate("/preview", {
+      state: { selectedFile: updatedFile, generatedSchema: selectedSchema },
+    });
+  }
+
+  setConfirmMode(null);
+  return true;
+};
+
+
+
+  // Öffnet das ConfirmNameDialog bevor zur Preview navigiert wird (nur bei Klick auf "Weiter")
+  const handleConfirm = () => {
+    setConfirmMode("Readyprev");
+    setConfirmNameError("");
+    confirmNameRef.current?.showModal();
+  };
 
   {/* Actual page */ }
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
       {/* Popup */}
-      <ConfirmNameDialog dialogRef={confirmNameToPreviewRef} name={schemaName} errorText={confirmNameError} onClickFunction={confirmGeneratedName} />
-      <ConfirmNameDialog dialogRef={confirmNameToEditRef} name={schemaName} errorText={confirmNameError} onClickFunction={handleConfirmNewSchema} />
+      <DecisionDialog dialogRef={confirmDeleteRef} text={"Möchten Sie die Tabellentransformation wirklich unwiderruflich löschen?"}  label1={"Ja"} function1={() => {handleDeleteSchema(idToDelete); confirmDeleteRef.current?.close();}} label2={"Nein"} function2={() => {confirmDeleteRef.current?.close()}} />
+
+      <ConfirmNameDialog
+        dialogRef={confirmNameRef}
+        name={schemaName}
+        file={selectedFile}
+        onClickFunction={handleConfirmName}
+        errorText={confirmNameError} 
+        useExistingSchema={schemaIsSelected}
+      />
+        
       <ErrorDialog
         text={"Fehler!"}
         errorId={errorId}
+        message={errorMsg}
         onConfirm={() => { errorDialogRef.current?.close(); }}
         dialogRef={errorDialogRef}
       />
@@ -266,7 +334,7 @@ function Upload() {
           {/* Schemalist*/}
           <div className="relative h-full min-h-0">
             <div className={`h-full ${isValidFile ? "" : "opacity-50 pointer-events-none"}`}>
-              <SchemaList list={schemaList} setSchema={setSelectedSchema} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} />
+              <SchemaList list={schemaList} setSchema={setSelectedSchema} setSchemaName={setSchemaName} file={selectedFile} handleConfirm={handleConfirm} handlePlus={handleAddSchema} handleDeleteSchema={handleDeleteSchema} setId={setIdToDelete} deleteDialogRef={confirmDeleteRef} />
             </div>
             <div className="absolute -left-1/5 top-1/2 -translate-y-1/2  w-[15vw] pointer-events-auto"
               style={{ opacity: 1 }}
