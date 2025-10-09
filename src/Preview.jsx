@@ -38,6 +38,7 @@ export default function Preview() {
   const [dontShowAgain, setDontShowAgain] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorId, setErrorId] = useState("none");
+  const [errorMsg, setErrorMsg] = useState("");
   const [globalSchemaId, setGlobalSchemaId] = useState("");
   const [reportContent, setReportContent] = useState([]);
   const [existReports, setExistReports] = useState(false);
@@ -154,6 +155,7 @@ export default function Preview() {
       const errorObj = JSON.parse(error.message);
       if(errorObj.status){
         setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
       }else{
         setErrorId("0");
       }
@@ -273,7 +275,7 @@ export default function Preview() {
            if (error) {
             console.error(error);
             const errorObj = JSON.parse(error.message);
-            if(errorObj.statusCode == "409"){
+            if(errorObj.status == "409"){
               decisionDialogRef.current?.showModal();
               resolve("decision");
             }else{
@@ -452,7 +454,7 @@ export default function Preview() {
       
     } catch (error) {
       const errorObj = JSON.parse(error.message);
-        if(errorObj.statusCode === 409){
+        if(errorObj.status === 409){
           //update tablestructure if name is already taken
           const id = await getSchemaIdByName(schemaName);
           updateTableStructure(id);
@@ -533,6 +535,7 @@ export default function Preview() {
         <ErrorDialog
           text={"Fehler!"}
           errorId={errorId}
+          message={errorMsg}
           onConfirm={() => { errorDialogRef.current?.close();}}
           dialogRef={errorDialogRef}
         />
