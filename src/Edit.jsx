@@ -149,7 +149,7 @@ export default function Edit() {
     {label:'Pivot Matrix', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Spaltenüberschriften verwenden zum Füllen von Lücken', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
       description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
       {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
-        description:"Hierbei werden die Zeilen und Spalten vertauscht."
+        description:"Bei diesem Converter werden die Zeilen und Spalten vertauscht."
       }
       // add more...
   ];
