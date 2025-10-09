@@ -1,19 +1,13 @@
+import dataString from "../language/reportTypeDE.json?raw";
 
 const loadTranslation = async (key, dataName) => {
-  try {
-    //public\errorsDE.json
-    const response = await fetch(`public/${dataName}.json`);
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    const data = await response.json();
-    if(data[key] == null){
-      return key;
-    }
-    return data[key];
-  } catch (error) {
-    console.error(error);
+  const jsonObj = JSON.parse(dataString)
+  if(!jsonObj[key]){
+    return key;
+  }else{
+    return jsonObj[key];
   }
+  
 };
 
 export const parseReports = async (data, array, number = 0, texts = "", isArray = false) => {
