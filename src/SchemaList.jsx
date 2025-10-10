@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getApiInstance } from "./hooks/ApiInstance";
 
 export default function SchemaList({list, setSchema, setSchemaName, file, handleConfirm, handlePlus, deleteDialogRef, setId}){
 
@@ -21,6 +22,17 @@ export default function SchemaList({list, setSchema, setSchemaName, file, handle
     useEffect (() => {
       setSelectedFile(file);
     }, [file]);
+
+    const getSelectedTableStructure= async function (id) {
+      const {api} = await getApiInstance();
+      api.getTableStructure(id, (error, data, response) => {
+        if (error) {
+          console.error(error);
+        } else {
+          setSchema(JSON.parse(JSON.stringify(data))  );
+        }
+      });
+  }
 
     return(
         <div className="flex-1 p-4 bg-white shadow rounded-[10px] flex flex-col h-full overflow-auto">
@@ -56,7 +68,7 @@ export default function SchemaList({list, setSchema, setSchemaName, file, handle
                   <li
                     key={index}
                     className={`flex justify-between items-center cursor-pointer p-1 rounded whitespace-nowrap text-sm text-gray-700 hover:bg-gray-200 ${selectedSchema === schema ? 'bg-gray-300' : ''}`}
-                    onClick={() => {setSchema(schema); setSelectedSchema(schema); setSchemaName(schema.name);}}
+                    onClick={() => {setSelectedSchema(schema); getSelectedTableStructure(schema.id); setSchemaName(schema.name);}}
                   >
                     {/* schema */}
                     {schema.name}

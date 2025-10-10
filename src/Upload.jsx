@@ -79,6 +79,7 @@ function Upload() {
   }, []);
 
   useEffect(() => {
+    console.log("selected " + JSON.stringify(selectedSchema));
     if(selectedSchema){
       setSchemaIsSelected(true);
     }else{
