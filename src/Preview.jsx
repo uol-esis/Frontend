@@ -58,6 +58,19 @@ export default function Preview() {
   const errorDialogRef = useRef();
   const decisionDialogRef = useRef();
 
+  const previewText = [
+    {
+      header: "Tabellentransformation",
+      text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
+    },
+    {
+      header: "Datei",
+      text: selectedFile?.name || "keine Datei ausgewählt"
+    },
+  ]
+
+  /* -------------- Tutorial ------------------------ */
+
   const ExplainerInformationText = (
     <span> 
       Hier wird die vorher ausgewählte Datei und Tabellentransformation angezeigt. 
@@ -85,23 +98,33 @@ export default function Preview() {
     </span>
   )
 
+  const TipInformationToTable = function () {
+    setTipInformation(false);
+    setTipTable(true);
+  }
+
+  const TipTableToButtons = function () {
+    setTipTable(false);
+    setTipButtons(true);
+  }
+
+  /* ----------------- Helper functions  ----------------------*/
+
+  //show message if you edited the schema on the edit page
   useEffect(() => {
     if (showSuccessMessage) {
       setShowPPup(true);
     }
   }, [showSuccessMessage]);
 
-  const previewText = [
-    
-    {
-      header: "Tabellentransformation",
-      text: selectedSchema?.name || generatedSchema?.name || editedSchema?.name
-    },
-    {
-      header: "Datei",
-      text: selectedFile?.name || "keine Datei ausgewählt"
-    },
-  ]
+  {/* Show error message after a short timeout */ }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowError(true);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     readReports();
@@ -113,34 +136,6 @@ export default function Preview() {
     }
 
   }, [showSuccessMessage]);
-
-  const TipInformationToTable = function () {
-    setTipInformation(false);
-    setTipTable(true);
-  }
-
-  const TipTableToButtons = function () {
-    setTipTable(false);
-    setTipButtons(true);
-  }
-
-  const readReports = async () => {
-    if(!reports){
-      console.log("no reports");
-      return;
-    }
-
-    const array = [];
-    console.log("reports " + JSON.stringify( reports));
-    await parseReports(reports, array);
-
-    if(array.length == 0){
-      setExistReports(false);
-    }else setExistReports(true);
-    
-    setReportContent(array);
-    
-  }
 
   const computeTablelimit = () => {
     let limit = windowSize.height;
@@ -169,16 +164,45 @@ export default function Preview() {
     setShowError(true);
   }
 
-  const createDataObject = () => {
-    if (!selectedFile) {
-      console.error("No file selected");
-      setErrorId("103");
+    const getSchemaIdByName = async (name) => {
+
+    let {api} = await getApiInstance();
+    return new Promise((resolve, reject) => {
+      api.getTableStructures((error, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+          reject(error);
+        } else {
+          console.log("Response:", response);
+          const schema = response.find(schema => schema.name === name);
+          resolve(schema ? schema.id : null);
+        }
+      });
+    });
+};
+
+/* -------------- reports ------------------ */
+
+  const readReports = async () => {
+    if(!reports){
+      console.log("no reports");
       return;
     }
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-    return formData;
-  };
+
+    const array = [];
+    console.log("reports " + JSON.stringify( reports));
+    await parseReports(reports, array);
+
+    if(array.length == 0){
+      setExistReports(false);
+    }else setExistReports(true);
+    
+    setReportContent(array);
+    
+  }
+
+  /* ------------------- schema handling ------------------ */
 
   {/* Function to set the actual schema */ }
   const setActualSchema = async () => {
@@ -260,6 +284,116 @@ export default function Preview() {
       });
   };
 
+  {/* Send the generated schema to the server (if a generated schema was used) */ }
+  const sendGeneratedSchemaToServer = async () => {
+    if (!generatedSchema) {
+      console.error("No generated schema to send");
+      setErrorId("101");
+      return null;
+    }
+    
+    const {api, Th1} = await getApiInstance();
+    return new Promise((resolve, reject) => {
+      api.createTableStructure(generatedSchema, (error, data, response) => {
+        try{
+          if (error) {
+            const errorObj = JSON.parse(error.message);
+            if(errorObj.status == "409"){
+              setErrorId(errorObj.status + "CreateTableStructure");
+            }else setErrorId(errorObj.status);
+            
+            reject(error);
+          } else {
+            console.log('API called successfully. data: ', data);
+            const id = data; // Assuming `response` contains the ID
+            resolve(id);
+          }
+        }catch(error){
+          console.error(error);
+          parseError(error);
+        }
+        
+      });
+    });
+  }
+
+    //only used if schema is selected from schemalist in upload
+  const sendEditedSchemaToServer = async () => {
+    if (!editedSchema) {
+      console.error("No generated schema to send");
+      setErrorId("101");
+      return null;
+    }
+    
+    const {api} = await getApiInstance();
+    return new Promise((resolve, reject) => {
+      api.createTableStructure(editedSchema, (error, data, response) => {
+        try{
+          if (error) {
+            const errorObj = JSON.parse(error.message);
+            if(errorObj.status == "409"){
+              setErrorId(errorObj.status + "CreateTableStructure");
+            }else setErrorId(errorObj.status);
+            reject(error);
+          } else {
+            console.log('API called successfully. data: ', data);
+            const id = data; // Assuming `response` contains the ID
+            resolve(id);
+          }
+        }catch(error){
+          console.error(error);
+        }
+        
+      });
+    });
+  }
+
+  const updateTableStructure = async (schemaId) => {
+    const {api} = await getApiInstance();
+    console.log("schemaId " + schemaId);
+    console.log("actualSchemaRef " + JSON.stringify(actualSchemaRef.current));
+    return new Promise((resolve, reject) => {
+      api.updateTableStructure(schemaId, actualSchemaRef.current, (error, data, response) => {
+        if (error) {
+          console.error(error);
+          parseError(error);
+        } else {
+          console.log('API called successfully.');
+          uploadFinishedDialogRef.current?.showModal();
+        }
+      });
+    } )
+  }
+
+  {/* Load the schema and check if hidePopup is set */ }
+  useEffect(() => {
+    const initialize = async () => {
+      await setActualSchema(); // Set the actual schema first
+      if (actualSchemaRef.current) {
+        await getPreview(); // Call getPreview only if the schema is set
+      }
+    };
+
+    initialize();
+
+    const hidePopup = localStorage.getItem("hidePopup");
+    if (hidePopup) {
+      setDontShowAgain(true);
+    }
+  }, []);
+
+  const handleEditSchema = () => {
+    const serializableSchema = JSON.parse(JSON.stringify(actualSchemaRef.current));
+
+    navigate("/edit", {
+      state: {
+        selectedFile: selectedFile,
+        schemaToEdit: serializableSchema,
+      },
+    });
+  }
+
+  /* ----------- table handling ---------------- */
 
   {/* Send the converted table to the server, when the preview is good */ }
   const sendTableToServer = async (schemaId) => {
@@ -321,114 +455,7 @@ export default function Preview() {
     });
   }
 
-  {/* Send the generated schema to the server (if a generated schema was used) */ }
-  const sendGeneratedSchemaToServer = async () => {
-    if (!generatedSchema) {
-      console.error("No generated schema to send");
-      setErrorId("101");
-      return null;
-    }
-    
-    const {api, Th1} = await getApiInstance();
-    return new Promise((resolve, reject) => {
-      api.createTableStructure(generatedSchema, (error, data, response) => {
-        try{
-          if (error) {
-            const errorObj = JSON.parse(error.message);
-            if(errorObj.status == "409"){
-              setErrorId(errorObj.status + "CreateTableStructure");
-            }else setErrorId(errorObj.status);
-            
-            reject(error);
-          } else {
-            console.log('API called successfully. data: ', data);
-            const id = data; // Assuming `response` contains the ID
-            resolve(id);
-          }
-        }catch(error){
-          console.error(error);
-          parseError(error);
-        }
-        
-      });
-    });
-  }
-
-  const sendEditedSchemaToServer = async () => {
-    if (!editedSchema) {
-      console.error("No generated schema to send");
-      setErrorId("101");
-      return null;
-    }
-    
-    const {api} = await getApiInstance();
-    return new Promise((resolve, reject) => {
-      api.createTableStructure(editedSchema, (error, data, response) => {
-        try{
-          if (error) {
-            const errorObj = JSON.parse(error.message);
-            if(errorObj.status == "409"){
-              setErrorId(errorObj.status + "CreateTableStructure");
-            }else setErrorId(errorObj.status);
-            reject(error);
-          } else {
-            console.log('API called successfully. data: ', data);
-            const id = data; // Assuming `response` contains the ID
-            resolve(id);
-          }
-        }catch(error){
-          console.error(error);
-        }
-        
-      });
-    });
-  }
-
-  const updateTableStructure = async (schemaId) => {
-    const {api} = await getApiInstance();
-    console.log("schemaId " + schemaId);
-    console.log("actualSchemaRef " + JSON.stringify(actualSchemaRef.current));
-    return new Promise((resolve, reject) => {
-      api.updateTableStructure(schemaId, actualSchemaRef.current, (error, data, response) => {
-        if (error) {
-          console.error(error);
-          parseError(error);
-        } else {
-          console.log('API called successfully.');
-          uploadFinishedDialogRef.current?.showModal();
-        }
-      });
-    } )
-  }
-
-
-  {/* Load the schema and check if hidePopup is set */ }
-  useEffect(() => {
-    const initialize = async () => {
-      await setActualSchema(); // Set the actual schema first
-      if (actualSchemaRef.current) {
-        await getPreview(); // Call getPreview only if the schema is set
-      }
-    };
-
-    initialize();
-
-    const hidePopup = localStorage.getItem("hidePopup");
-    if (hidePopup) {
-      setDontShowAgain(true);
-    }
-  }, []);
-
-  const handleEditSchema = () => {
-    const serializableSchema = JSON.parse(JSON.stringify(actualSchemaRef.current));
-
-    navigate("/edit", {
-      state: {
-        selectedFile: selectedFile,
-        schemaToEdit: serializableSchema,
-      },
-    });
-  }
+  /* --------------- handle upload --------------------- */
 
   const handleCheckBoxConfirm = async () =>{
     let schemaId = null;
@@ -465,34 +492,7 @@ export default function Preview() {
       }
   }
 
-  //TODO schemalist cachen? und MEthode wird in Upload schon verwendet
-  const getSchemaIdByName = async (name) => {
-
-    let {api} = await getApiInstance();
-    return new Promise((resolve, reject) => {
-      api.getTableStructures((error, response) => {
-        if (error) {
-          console.error(error);
-          parseError(error);
-          reject(error);
-        } else {
-          console.log("Response:", response);
-          const schema = response.find(schema => schema.name === name);
-          resolve(schema ? schema.id : null);
-        }
-      });
-    });
-};
-
-  {/* Show error message after a short timeout */ }
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowError(true);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
+/* ------------- Actual page ---------------- */
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="relative">

@@ -35,6 +35,20 @@ export default function Edit() {
 
   const [cardAdded, setCardAdded] = useState(false); //für das Unterbinden des initalen Scrollings
 
+  const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
+  const saveCardRefs = useRef({});
+
+  const bottomRef = useRef(null);
+  const prevCardCountRef = useRef(cards.length);
+
+  //Converter dropdown
+  const [openCategory, setOpenCategory]=useState(null);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isRmvOpen, setIsRmvOpen] = useState(false);
+  const [isMdfyOpen, setIsMdfyOpen] = useState(false);
+
+  /* -------------  Tutorials ------------- */
+
   const ExplainerConverterList = (
     <span>Hier sind alle Converter, die auf die Tabelle angewendet werden können aufgelistet. Ein Converter ist ein Bearbeitungsschritt, der auf die Tabelle angewendet wird.</span>
   )
@@ -71,6 +85,51 @@ export default function Edit() {
     setShowCardListTip(false);
     tutorialRef.current?.showModal();
   }
+
+
+  /* ------------- Convertercards -------------  */
+    const converters = [
+    {label: 'Gruppenüberschriften entfernen (Drei Schritte) ', category: 'rmv', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile der Daten', type: 'number', required: true, apiName: 'startRow'}, {name: 'Startspalte der Daten', type: 'number', required: true, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
+      description: GroupHeaderExplainer}, //RemoveGroupedHeader
+    {label: 'Leere Zeilen ausfüllen ', category: 'add', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW', 
+      description:'Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.' }, //FillEmptyRows
+    {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
+      description: 'Diese Funktion füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.' }, //FillEmptyColumns
+    {label: 'Spalten entfernen (nach Index) ', category:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
+      description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
+    {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
+      description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Zeilen gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
+    {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}, {name:'Hinzufügen oder ersetzen', type:"enum", required:true, options:["Oberhalb hinzufügen", "Bestehenden Header ersetzen"], values:['INSERT_AT_TOP', 'REPLACE_FIRST_ROW'], apiName:'headerPlacementType'}], converterType: 'ADD_HEADER_NAME',
+      description: 'Mithilfe dieses Converters können die Spaltennamen verändert werden. Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet, der zweite Name auf die zweite Spalte und so weiter.'}, //AddHeaderNames
+    {label: 'Fußzeile entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
+      description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
+    {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
+      description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
+    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Suchstruktur (Regex)', type:'String', required: false, apiName:'regexSearch' }, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'} ], converterType: 'REPLACE_ENTRIES',
+      description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt. Lässt man den Suchebgriff leer, werden Leerzeichen bzw. leere Einträge ersetzt. '}, //ReplaceEntries
+    {label: 'Zellen aufteilen ', category: 'mdfy', params: [{name:"Aufteilen in Spalten oder Zeilen" ,type:"enum", required:true, options:["Zeile", "Spalte"], values:["row", "column"], index:0, apiName: "mode"}, {name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_CELL', 
+      description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen oder Spalten aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt. Im Feld Delimiter kann ein anderes Trennzeichen eingegeben werden. Für ein Leerzeichen muss nichts beim Delimiter eingegeben werden.'}, //SplitRow
+    {label: 'Ungültige Zeilen entfernen ', category: 'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
+      description: 'Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
+    {label: 'Nachträgliche Spalten entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMN',
+      description: 'Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle leer sind, so werden diese entfernt.'}, //RemoveTrailingColumns
+     {label: 'Spalten am Anfang entfernen ', category:'rmv', params: [{name:'Blocklist', type: 'array', apiName: 'blocklist'}], converterType: 'REMOVE_LEADING_COLUMN',
+      description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
+      {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalte nach Überschrift entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
+      description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Bei den Spalten gilt es zu beachten, dass das Stichwort in der Spaltenüberschrift vorkommen muss. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
+    {label:'Pivot Matrix', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Lücken füllen in Spalten (Name)', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
+      description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
+      {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
+        description:"Bei diesem Converter werden die Zeilen und Spalten vertauscht."
+      }
+      // add more...
+  ];
+
+  const categorizedConverters={
+    add: converters.filter((c) => c.category === 'add'),
+    rmv: converters.filter((c)=> c.category === 'rmv'),
+    mdfy: converters.filter((c) => c.category === 'mdfy')
+  };
 
   const getConverterByType = (type) => {
       const match = converters.find(converter => {
@@ -118,62 +177,6 @@ export default function Edit() {
       }));
   };
 
-  const converters = [
-    {label: 'Gruppenüberschriften entfernen (Drei Schritte) ', category: 'rmv', params: [ {name: 'Zeilennummer', type: 'array', required: true, apiName: 'rowIndex'}, {name: 'Spaltennummer', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Startzeile der Daten', type: 'number', required: true, apiName: 'startRow'}, {name: 'Startspalte der Daten', type: 'number', required: true, apiName: 'startColumn'}], converterType: 'REMOVE_GROUPED_HEADER', 
-      description: GroupHeaderExplainer}, //RemoveGroupedHeader
-    {label: 'Leere Zeilen ausfüllen ', category: 'add', params: [{name: 'Zeilennummer', type:'array', required: true, apiName: 'rowIndex'}], converterType: 'FILL_EMPTY_ROW', 
-      description:'Nutzen Sie die Funktion "Leere Zeilen ausfüllen", wenn Sie leere Zellen in der von Ihnen angegebenen Zeile durch Werte, die links von den leeren Zellen stehen, ersetzen wollen.' }, //FillEmptyRows
-    {label: 'Leere Spalten ausfüllen ', category: 'add', params: [{name: 'Spaltennummer', type:'array', required: true, apiName: 'columnIndex'}], converterType: 'FILL_EMPTY_COLUMN',
-      description: 'Diese Funktion füllt leere Zellen in der von Ihnen angegebenen Spalte durch Werte, die oberhalb der leeren Zellen stehen.' }, //FillEmptyColumns
-    {label: 'Spalten entfernen (nach Index) ', category:'rmv', params: [{name: 'Spaltennummern', type: 'array', required: true, apiName: 'columnIndex'}], converterType: 'REMOVE_COLUMN_BY_INDEX',
-      description:'Diese Funktion kann eine oder mehrere Spalten entfernen, indem der Index angegeben wird. Wenn mehrere Spalten gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
-    {label: 'Zeilen entfernen (nach Index) ', category: 'rmv', params: [{name: 'Zeilennummern', type: 'array', required: true, apiName: 'rowIndex'}], converterType: 'REMOVE_ROW_BY_INDEX', 
-      description: 'Diese Funktion kann eine oder mehrere Zeilen entfernen, indem der Index angegeben wird. Wenn mehrere Zeilen gelöscht werden sollen, müssen die Zahlen mit einem Komma oder Bindestrich getrennt werden (z.B. 1-4).'},//RemoveColumnByIndex
-    {label: 'Spaltenüberschriften hinzufügen ', category: 'add', params: [{name: 'Überschriftenliste (Kommagetrennt)', type: 'array', required: true, apiName: 'headerNames'}, {name:'Hinzufügen oder ersetzen', type:"enum", required:true, options:["Oberhalb hinzufügen", "Bestehenden Header ersetzen"], values:['INSERT_AT_TOP', 'REPLACE_FIRST_ROW'], apiName:'headerPlacementType'}], converterType: 'ADD_HEADER_NAME',
-      description: 'Mithilfe dieses Converters können die Spaltennamen verändert werden. Die Namen werden durch ein Komma getrennt und der erste Name wird auf die erste Spalte angewendet, der zweite Name auf die zweite Spalte und so weiter.'}, //AddHeaderNames
-    {label: 'Fußzeile entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name:'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_FOOTER', 
-      description:'Mit diesem Converter wird der Abschnitt unter den eigentlichen Daten entfernt. Dies dient dazu, die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können.'}, //RemoveFooter
-    {label: 'Kopfzeile entfernen ',category:'rmv', params: [{name: 'Threshold', type: 'number', required: false, apiName: 'threshold'}, {name: 'Blocklist', type: 'array', required: false, apiName: 'blockList'}], converterType: 'REMOVE_HEADER',
-      description: 'Mit diesem Converter wird der Abschnitt über den eigentlichen Daten entfernt. Dies dient dazu die Tabelle vom Text mit Metainformationen zu trennen und korrekt anzeigen zu können. '}, //RemoveHeader
-    {label: 'Einträge ersetzen ', category: 'mdfy', params: [ {name: 'Suchbegriff', type: 'string', required: true, apiName: 'search'}, {name: 'Suchstruktur (Regex)', type:'String', required: false, apiName:'regexSearch' }, {name: 'Ersetzen durch: ', type: 'string', required: true, apiName: 'replacement'},{name: 'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name: 'Suche in Spalten', type: 'array', required: true, apiName: 'columnIndex'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'} ], converterType: 'REPLACE_ENTRIES',
-      description: 'Dieser Converter kann einzelne Einträge in der Tabelle ersetzen, um beispielsweise fehlerhafte Einträge zu korrigieren. Dabei wird die gesamte Tabelle nach dem Suchbegriff durchsucht und anschließend durch den "Ersetzen durch" - Wert ersetzt. Lässt man den Suchebgriff leer, werden Leerzeichen bzw. leere Einträge ersetzt. '}, //ReplaceEntries
-    {label: 'Zellen aufteilen ', category: 'mdfy', params: [{name:"Aufteilen in Spalten oder Zeilen" ,type:"enum", required:true, options:["Zeile", "Spalte"], values:["row", "column"], index:0, apiName: "mode"}, {name:'Spaltenindex', type: 'number', required: true, apiName: 'columnIndex'}, {name: 'Trennzeichen', type: 'string', required: false, apiName: 'delimiter'}, {name:'Startzeile', type: 'number', required: false, apiName: 'startRow'}, {name:'Endzeile', type: 'number', required: false, apiName: 'endRow'}], converterType: 'SPLIT_CELL', 
-      description: 'Bei Anwendung dieses Converters werden die Einträge der angegebenen Spalte in mehrere Zeilen oder Spalten aufgeteilt. Dies ist notwendig, wenn sich in einer Zelle mehrere Werte befinden. Die Werte werden im Standardfall nach einem Zeilenumbruch aufgeteilt. Im Feld Delimiter kann ein anderes Trennzeichen eingegeben werden. Für ein Leerzeichen muss nichts beim Delimiter eingegeben werden.'}, //SplitRow
-    {label: 'Ungültige Zeilen entfernen ', category: 'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name: 'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_INVALID_ROWS',
-      description: 'Dieser Converter entfernt ungültige Zeilen. Im Standardfall wird eine Zeile als ungültig angesehen, sobald sich mindestens eine leere Zelle in dieser Zeile befindet. Der Threshold gibt an, wie viele Einträge in einer Zeile korrekt gefüllt sein müssen, damit sie nicht gelöscht werden. Komplett leere Zeilen werden immer gelöscht '}, //RemoveInvalidRows
-    {label: 'Nachträgliche Spalten entfernen ', category:'rmv', params: [{name:'Threshold', type: 'number', apiName: 'threshold'}, {name:'Blocklist', type: 'array', apiName: 'blockList'}], converterType: 'REMOVE_TRAILING_COLUMN',
-      description: 'Dieser Converter entfernt Spalten am Ende der Tabelle. Zum Beispiel wenn die letzten beiden Spalten der Tabelle leer sind, so werden diese entfernt.'}, //RemoveTrailingColumns
-     {label: 'Spalten am Anfang entfernen ', category:'rmv', params: [{name:'Blocklist', type: 'array', apiName: 'blocklist'}], converterType: 'REMOVE_LEADING_COLUMN',
-      description: 'Entfernt ungültige Spalten am Anfang der Tabelle. Standardmäßig werden Spalten mit leere Zellen als ungültig angesehen. Mit der Blocklist können weitere Werte als ungültig festgelegt werden.'}, //RemoveTrailingColumns
-      {label: 'Zeile oder Spalte nach Stichwort löschen ', category:'rmv', params: [{name:'Stichwörter', type: 'array', required:true, apiName: 'keywords'}, {name:'Zeilen entfernen', type: 'boolean',required:true, apiName: 'removeRows', index:0}, {name:'Spalte nach Überschrift entfernen', type: 'boolean', required:true, apiName: 'removeColumns', index:1},{name:'Groß- und Kleinschreibung ignorieren', type: 'boolean', required:true, apiName: 'ignoreCase', index:2}, {name:'Genauigkeit', type: 'enum', required: true, options:["Beinhaltet Stichwort", "Exakt gleich"], values:["CONTAINS", "EQUALS"], apiName: 'matchType', index: 0} ], converterType: 'REMOVE_KEYWORD',
-      description: 'Dieser Converter entfernt Zeilen und oder Spalten in denen ein bestimmtes Stichwort vorkommt. Bei den Spalten gilt es zu beachten, dass das Stichwort in der Spaltenüberschrift vorkommen muss. Die Suche kann verfeinert werden, indem auf Groß- und Kleinschreibung geachtet wird oder ob nur ein Teil des Wortes vorkommen muss damit es gelöscht wird. '}, //RemoveTrailingColumns
-    {label:'Pivot Matrix', category:'mdfy', params:[{name:'Pivot Feld', type:'map', required: true, apiName:'pivotField', keyName:'Überschrift', valueName:'Spaltenindex', map:true  }, {name:'Block Indizes', type:'array', apiName:'blockIndices'}, {name:'Lücken füllen in Spalten (Name)', type:'array', apiName:'keysToCarryForward'}], converterType:'PIVOT_MATRIX',
-      description:"Dieser Converter entfernt bestimmte Spalten aus einer Tabelle mit zusammengefassten Daten anhand ihrer Spaltennummern. Mit dem Feld Block-Indizes lässt sich die Tabelle in mehrere logische Abschnitte aufteilen – hilfreich, wenn in derselben Tabelle mehrere solcher Strukturen nacheinander stehen. Mit dem Feld Spaltenüberschriften verwenden zum füllen von Lücken kann man Spalten festlegen, deren Werte automatisch aus der vorherigen Zeile übernommen werden, falls in einer Zeile nichts eingetragen ist"},
-      {label:'Achsen tauschen', category:'mdfy',params:[], converterType:'TRANSPOSE_MATRIX',
-        description:"Bei diesem Converter werden die Zeilen und Spalten vertauscht."
-      }
-      // add more...
-  ];
-
-  //Converter dropdown
-  const [openCategory, setOpenCategory]=useState(null);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isRmvOpen, setIsRmvOpen] = useState(false);
-  const [isMdfyOpen, setIsMdfyOpen] = useState(false);
-  const categorizedConverters={
-    add: converters.filter((c) => c.category === 'add'),
-    rmv: converters.filter((c)=> c.category === 'rmv'),
-    mdfy: converters.filter((c) => c.category === 'mdfy')
-  };
-
-
-  useEffect(() => {
-      if(errorId == "none"){
-        return;
-      }
-      errorDialogRef.current?.showModal();
-    }, [errorId]);
-
   useEffect(() => {
     if (schemaToEdit) {
       console.log("selectedfile:", selectedFile);
@@ -205,7 +208,6 @@ export default function Edit() {
 
     fetchStartCardPreview();
   }, [schemaToEdit]);
-
 
   // Funktion um Cards aus einem zu bearbeitendem Schema zu initialisieren
   const initializeCardsFromSchema = async (schema) => {
@@ -247,6 +249,7 @@ export default function Edit() {
     setCardIdCounter(newCards.length + 1); // Update the card ID counter
   };
 
+  //get a value from a parameter from a convertercard
   function getValueFromFormData(param, formData) {
     const apiName = param.apiName;
     const field = formData?.[apiName];
@@ -303,47 +306,63 @@ export default function Edit() {
     }
   }
 
-  const formDataRefs = useRef({}); // speichert Zugriff auf formData je Karte
-  const saveCardRefs = useRef({});
-
- const isMultipleNumbers = (inputString) => {
-  return inputString.replace(/\s*(\d+)\s*-\s*(\d+)\s*/g, (_, start, end) => {
-    start = parseInt(start);
-    end = parseInt(end);
-
-    const numbers = [];
-    for (let i = start; i <= end; i++) {
-      numbers.push(i);
+   {/* If a file and schema are selected, sends them to the server to get a preview*/ }
+  const getPreview = async (jsonData) => {
+    console.log("Attempting to get a preview from the server");
+    if (!selectedFile) {
+      console.error("No file selected");
+      setErrorId("103");
+      return;
     }
-    return numbers.join(',');
-  });
-}
 
- const parseError = (error) => {
-    let currentErrorId = errorId;
-    try{
-      const errorObj = JSON.parse(error.message);
-      if(errorObj.status){
-        setErrorId(errorObj.status);
-        setErrorMsg(errorObj.detail);
-      }else{
-        setErrorId("0");
-      }
-    }catch{
-      setErrorId("0");
-    }
-    if(currentErrorId == errorId){
-      errorDialogRef.current?.showModal();
-    }
-  }
+    const {api} = await getApiInstance();
 
-  const registerFormDataGetter = (cardId, getterFn) => {
-    formDataRefs.current[cardId] = getterFn;
+    try {
+      const data = await new Promise((resolve, reject) => {
+        console.log("selectedFile: ", selectedFile);
+        console.log("selectedFileType: ", selectedFile.type);
+
+          const reader = new FileReader();
+
+          reader.onload = function (e) {
+              const text = e.target.result;
+              const rows = text
+                  .split("\n")            // Datei in Zeilen splitten
+                  .slice(0, 5)            // nur die ersten 5 Zeilen nehmen
+                  .map(row => row.split(",")); // jede Zeile in Zellen splitten
+
+              console.log("selectedFile in frontend " + rows);
+          };
+
+          reader.readAsText(selectedFile);
+
+
+        //set amount of rows based on window height
+        let limit = computeTablelimit();
+        if (limit < 5) { limit = 5 }
+        let opts = { "limit": limit };
+        console.log("json " + JSON.stringify(jsonData));
+        api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
+          if (error) {
+            console.error(error);
+            parseError(error);
+            reject(error);
+          } else {
+            console.log('API called to get preview successfully to get preview. Returned data: ' + data);
+            console.log('API response: ' + JSON.stringify(response));
+            resolve(data);
+          }
+        });
+      });
+      return data;
+    } catch (error) {
+      console.error("Error during previewConvertTable:", error);
+      setErrorId("105");
+      return null;
+    }
   };
 
-  const registerSaveFn = (cardId, saveFn) => {
-  saveCardRefs.current[cardId] = saveFn;
-};
+  /* -------------- handle save state in convertercards ----------------- */
 
   const handleSaveFromCard = async (cardId, formData) => {
     console.log(`Data saved from card ${cardId}:`, formData);
@@ -408,7 +427,7 @@ export default function Edit() {
     setCollapseAllSignal(s => s+1)
   };
 
-   const handleSaveAllCards = async () => {
+const handleSaveAllCards = async () => {
   const sortedCards = [...cards.filter((c) => c.id !== 0)].sort((a, b) => a.id - b.id);
 
   for (const card of sortedCards) {
@@ -439,6 +458,54 @@ const handleSaveUpToCard = async (upToCardId) => {
     );
   };
 
+/* --------------------- Helper functions  -------------------- */
+
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
+
+//translate 1-4 notation into 1,2,3,4
+ const isMultipleNumbers = (inputString) => {
+  return inputString.replace(/\s*(\d+)\s*-\s*(\d+)\s*/g, (_, start, end) => {
+    start = parseInt(start);
+    end = parseInt(end);
+
+    const numbers = [];
+    for (let i = start; i <= end; i++) {
+      numbers.push(i);
+    }
+    return numbers.join(',');
+  });
+}
+
+ const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
+      }else{
+        setErrorId("0");
+      }
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+  }
+
+const registerFormDataGetter = (cardId, getterFn) => {
+  formDataRefs.current[cardId] = getterFn;
+};
+
+const registerSaveFn = (cardId, saveFn) => {
+  saveCardRefs.current[cardId] = saveFn;
+};
 
   const computeTablelimit = () => {
     let limit = windowSize.height;
@@ -447,65 +514,16 @@ const handleSaveUpToCard = async (upToCardId) => {
     return parseInt(limit);
   }
 
+useEffect(() => {
+  if (cardAdded) {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    setCardAdded(false); // zurücksetzen
+  }
+  // prevCardCountRef.current = cards.length; // nicht mehr nötig
+}, [cards.length, cardAdded]);
 
-  {/* If a file and schema are selected, sends them to the server to get a preview*/ }
-  const getPreview = async (jsonData) => {
-    console.log("Attempting to get a preview from the server");
-    if (!selectedFile) {
-      console.error("No file selected");
-      setErrorId("103");
-      return;
-    }
-
-    const {api} = await getApiInstance();
-
-    try {
-      const data = await new Promise((resolve, reject) => {
-        console.log("selectedFile: ", selectedFile);
-        console.log("selectedFileType: ", selectedFile.type);
-
-          const reader = new FileReader();
-
-          reader.onload = function (e) {
-              const text = e.target.result;
-              const rows = text
-                  .split("\n")            // Datei in Zeilen splitten
-                  .slice(0, 5)            // nur die ersten 5 Zeilen nehmen
-                  .map(row => row.split(",")); // jede Zeile in Zellen splitten
-
-              console.log("selectedFile in frontend " + rows);
-          };
-
-          reader.readAsText(selectedFile);
-
-
-        //set amount of rows based on window height
-        let limit = computeTablelimit();
-        if (limit < 5) { limit = 5 }
-        let opts = { "limit": limit };
-        console.log("json " + JSON.stringify(jsonData));
-        api.previewConvertTable(selectedFile, jsonData, opts, (error, data, response) => {
-          if (error) {
-            console.error(error);
-            parseError(error);
-            reject(error);
-          } else {
-            console.log('API called to get preview successfully to get preview. Returned data: ' + data);
-            console.log('API response: ' + JSON.stringify(response));
-            resolve(data);
-          }
-        });
-      });
-      return data;
-    } catch (error) {
-      console.error("Error during previewConvertTable:", error);
-      setErrorId("105");
-      return null;
-    }
-  };
-
-
-  const handleEditComplete = () => {
+//save leave edit page and show preview 
+const handleEditComplete = () => {
     // Check if any card is still in editing mode
     const unsavedCards = cards.filter((card) => card.isEditing);
     if (unsavedCards.length > 0) {
@@ -553,18 +571,7 @@ const handleSaveUpToCard = async (upToCardId) => {
 
   }
 
-  const bottomRef = useRef(null);
-  const prevCardCountRef = useRef(cards.length);
-
-useEffect(() => {
-  if (cardAdded) {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    setCardAdded(false); // zurücksetzen
-  }
-  // prevCardCountRef.current = cards.length; // nicht mehr nötig
-}, [cards.length, cardAdded]);
-
-
+  /* ----------------- Actual page -------------------- */ 
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="pb-20 "> {/* pb-20 damit der Footer nicht überlappt. */}
