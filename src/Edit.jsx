@@ -46,12 +46,6 @@ export default function Edit() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isRmvOpen, setIsRmvOpen] = useState(false);
   const [isMdfyOpen, setIsMdfyOpen] = useState(false);
-  const categorizedConverters={
-    add: converters.filter((c) => c.category === 'add'),
-    rmv: converters.filter((c)=> c.category === 'rmv'),
-    mdfy: converters.filter((c) => c.category === 'mdfy')
-  };
-
 
   /* -------------  Tutorials ------------- */
 
@@ -130,6 +124,12 @@ export default function Edit() {
       }
       // add more...
   ];
+
+  const categorizedConverters={
+    add: converters.filter((c) => c.category === 'add'),
+    rmv: converters.filter((c)=> c.category === 'rmv'),
+    mdfy: converters.filter((c) => c.category === 'mdfy')
+  };
 
   const getConverterByType = (type) => {
       const match = converters.find(converter => {
