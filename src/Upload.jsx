@@ -44,10 +44,11 @@ function Upload() {
   const errorDialogRef = useRef();
   const confirmDeleteRef = useRef();
 
-
   const [confirmMode, setConfirmMode] = useState(null); // "preview" or "edit"
 
   const navigate = useNavigate();
+
+  /* ------------- Tutorials ------------------- */
 
   const ExplainerUpload = (
     <span>Zuerst muss eine Datei ausgewählt werden, die hochgeladen werden soll. Es können nur Excel oder CSV Datein ausgewählt werden.</span>
@@ -71,40 +72,9 @@ function Upload() {
     setTipGenerate(true);
   }
 
-{/* get schemalist from api */}
-  useEffect(() => {
-    if (isLoggedIn) {
-      getSchemaList();
-    }
-  }, []);
+/* --------------- Schema List Component --------------------- */
 
-  useEffect(() => {
-    console.log("selected " + JSON.stringify(selectedSchema));
-    if(selectedSchema){
-      setSchemaIsSelected(true);
-    }else{
-      setSchemaIsSelected(false);
-    }
-  }, [selectedSchema]);
-
-  useEffect(() => {
-    const dontShowAgain = localStorage.getItem("hideUploadTutorial");
-    if (dontShowAgain) {
-      return;
-    }
-    setTipData(true);
-    localStorage.setItem("hideUploadTutorial", true);
-  });
-
-  
-  useEffect(() => {
-      if(errorId == "none"){
-        return;
-      }
-      errorDialogRef.current?.showModal();
-    }, [errorId]);
-
-  const getSchemaList = async function () {
+const getSchemaList = async function () {
     const {api} = await getApiInstance();
     api.getTableStructures((error, response) => {
       if (error) {
@@ -117,25 +87,33 @@ function Upload() {
     });
   }
 
-  const parseError = (error) => {
-    let currentErrorId = errorId;
-    try{
-      const errorObj = JSON.parse(error.message);
-      if(errorObj.status){
-        setErrorId(errorObj.status);
-        setErrorMsg(errorObj.detail);
-      }else{
-        setErrorId("0");
-      }
-    }catch{
-      setErrorId("0");
-    }
-    if(currentErrorId == errorId){
-      errorDialogRef.current?.showModal();
-    }
-  }
+  const handleAddSchema = () => {
+    setSelectedSchema(null);
+    setSchemaName(selectedFile.name);
+    setConfirmMode("edit");
 
-  {/* Generate a new Schema for the selected File */ }
+    confirmNameRef.current?.showModal();
+  };
+
+  const handleDeleteSchema = async (id) => {
+      const {api} = await getApiInstance();
+      if(!id){
+        setErrorId(0);
+      }
+
+      api.deleteTableStructure(id, (error, data, response) => {
+        if (error) {
+          parseError(error);
+          console.error(error);
+        } else {
+          console.log('API called successfully.');
+          getSchemaList();
+        }
+      });
+    };
+
+/* -------------- Generation ------------------------ */
+{/* Generate a new Schema for the selected File */ }
   const generateNewSchema = async function () {
     setSelectedSchema(null);
     setIsLoading(true);
@@ -172,6 +150,61 @@ function Upload() {
     
   }
 
+/* -------------- Helper functions ----------------- */
+
+{/* get schemalist from api */}
+  useEffect(() => {
+    if (isLoggedIn) {
+      getSchemaList();
+    }
+  }, []);
+
+  //save selected schema
+  useEffect(() => {
+    console.log("selected " + JSON.stringify(selectedSchema));
+    if(selectedSchema){
+      setSchemaIsSelected(true);
+    }else{
+      setSchemaIsSelected(false);
+    }
+  }, [selectedSchema]);
+
+  //save if tutorial is displayed at start
+  useEffect(() => {
+    const dontShowAgain = localStorage.getItem("hideUploadTutorial");
+    if (dontShowAgain) {
+      return;
+    }
+    setTipData(true);
+    localStorage.setItem("hideUploadTutorial", true);
+  });
+
+  
+  useEffect(() => {
+      if(errorId == "none"){
+        return;
+      }
+      errorDialogRef.current?.showModal();
+    }, [errorId]);
+
+  const parseError = (error) => {
+    let currentErrorId = errorId;
+    try{
+      const errorObj = JSON.parse(error.message);
+      if(errorObj.status){
+        setErrorId(errorObj.status);
+        setErrorMsg(errorObj.detail);
+      }else{
+        setErrorId("0");
+      }
+    }catch{
+      setErrorId("0");
+    }
+    if(currentErrorId == errorId){
+      errorDialogRef.current?.showModal();
+    }
+  }
+
   const isNameTaken = function (newName) {
     let selectedSchemaName = "";
     if(selectedSchema){
@@ -186,44 +219,7 @@ function Upload() {
     return false;
   }
 
-  {/* Confirm name and navigate to preview page NICHTVER*/ }
-  const confirmGeneratedName = function (newName) {
-    
-    if(isNameTaken(newName)){
-      setConfirmNameError("Der Name wird bereits verwendet");
-      return;
-    }
-
-    jsonData.name = newName;
-    const generatedSchemaJson = JSON.parse(JSON.stringify(jsonData));
-    const reportsJson = JSON.parse(JSON.stringify(reports));
-    navigate("/preview", { state: { selectedFile, generatedSchema: generatedSchemaJson, reports: reportsJson } }) // or data // Pass data to preview page
-  };
-
-  const handleAddSchema = () => {
-    setSelectedSchema(null);
-    setSchemaName(selectedFile.name);
-    setConfirmMode("edit");
-
-    confirmNameRef.current?.showModal();
-  };
-
-  const handleDeleteSchema = async (id) => {
-      const {api} = await getApiInstance();
-      if(!id){
-        setErrorId(0);
-      }
-
-      api.deleteTableStructure(id, (error, data, response) => {
-        if (error) {
-          parseError(error);
-          console.error(error);
-        } else {
-          console.log('API called successfully.');
-          getSchemaList();
-        }
-      });
-    };
+  /* -------------- confirm name popup --------------- */
 
   const handleConfirmName = async (newFileName, newTransformationName) => {
   if (isNameTaken(newTransformationName)) {
@@ -266,8 +262,6 @@ function Upload() {
   return true;
 };
 
-
-
   // Öffnet das ConfirmNameDialog bevor zur Preview navigiert wird (nur bei Klick auf "Weiter")
   const handleConfirm = () => {
     setConfirmMode("Readyprev");
@@ -275,7 +269,7 @@ function Upload() {
     confirmNameRef.current?.showModal();
   };
 
-  {/* Actual page */ }
+  /* ----------------- Actual page -------------------- */ 
   return (
     !isLoggedIn ? <div>Not logged in</div>:
     <div className="flex flex-col h-[80vh] w-full gap-1 p-3">
